@@ -42,56 +42,63 @@ function App() {
   };
 
   const sendPrompt = async () => {
-  setResponse("");
+    setResponse("");
 
-  try {
-    const res = await fetch("http://127.0.0.1:8081/completions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        prompt,
-        max_tokens: 200,
-        stream: true,
-      }),
-    });
+    try {
+      // Use the chat completions endpoint instead of raw completions
+      const res = await fetch("http://127.0.0.1:8081/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [
+            { role: "user", content: prompt }
+          ],
+          // These parameters are optional if defaults are set in the server,
+          // but we can override or ensure them here.
+          max_tokens: 256,
+          stream: true,
+        }),
+      });
 
-    if (!res.body) throw new Error("No response body");
+      if (!res.body) throw new Error("No response body");
 
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
 
-    let buffer = "";
+      let buffer = "";
 
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
 
-      buffer += decoder.decode(value, { stream: true });
+        buffer += decoder.decode(value, { stream: true });
 
-      const lines = buffer.split("\n");
-      buffer = lines.pop() || "";
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
 
-      for (const line of lines) {
-        if (!line.startsWith("data:")) continue;
+        for (const line of lines) {
+          if (!line.startsWith("data:")) continue;
 
-        const payload = line.replace("data:", "").trim();
-        if (payload === "[DONE]") return;
+          const payload = line.replace("data:", "").trim();
+          if (payload === "[DONE]") return;
 
-        try {
-          const json = JSON.parse(payload);
-          if (json.content) {
-            setResponse(prev => prev + json.content);
+          try {
+            const json = JSON.parse(payload);
+            
+            const delta = json.choices?.[0]?.delta;
+            if (delta && delta.content) {
+              setResponse(prev => prev + delta.content);
+            }
+          } catch {
+            // ignore parse errors
           }
-        } catch {
-        
         }
       }
+    } catch (err) {
+      console.error(err);
+      setResponse("Streaming error");
     }
-  } catch (err) {
-    console.error(err);
-    setResponse("Streaming error");
-  }
-};
+  };
 
 
   return (

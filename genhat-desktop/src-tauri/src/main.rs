@@ -100,6 +100,16 @@ fn spawn_llama_process(model_path: PathBuf) -> Child {
             "8081",
             "--host",
             "127.0.0.1",
+            "-n", // max_tokens
+            "256",
+            "--temp",
+            "0.7",
+            "--top-p",
+            "0.9",
+            "--top-k",
+            "40",
+            "--repeat-penalty",
+            "1.1",
         ])
         .current_dir(work_dir)
         .stdout(Stdio::piped())
@@ -224,7 +234,16 @@ fn main() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![stop_llama, list_models, switch_model])
-        .run(tauri::generate_context!())
-        .expect("error running tauri");
+        .build(tauri::generate_context!())
+        .expect("error building tauri app")
+        .run(|app_handle, event| match event {
+            tauri::RunEvent::Exit => {
+                let state = app_handle.state::<AppState>();
+                if let Some(mut child) = state.llama.lock().unwrap().take() {
+                    let _ = child.kill();
+                };
+            }
+            _ => {}
+        });
 }
 
