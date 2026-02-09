@@ -31,12 +31,22 @@ fn get_models_dir() -> PathBuf {
             return p;
         }
     }
-    // Hardcoded path as requested
-    PathBuf::from(r"D:\GenHat---The-Local-Intelligence-Engine\models")
+    // Resolve the models dir relative to the cargo manifest dir at compile time,
+    // so the path is absolute and works regardless of the working directory.
+    let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")); // .../src-tauri
+    let models = manifest_dir.join("../../models");
+    // Canonicalize to get a clean absolute path; fall back to the joined path
+    models.canonicalize().unwrap_or(models)
 }
 
 
 fn resolve_llama_exe() -> PathBuf {
+    let exe_name = if cfg!(windows) {
+        "llama-server.exe"
+    } else {
+        "llama-server"
+    };
+
     let exe_path = std::env::current_exe().unwrap();
     let mut checked = Vec::new();
     exe_path
@@ -44,17 +54,17 @@ fn resolve_llama_exe() -> PathBuf {
         // Walk upward to find src-tauri/bin/llama in dev builds or bin/llama in release.
         .find_map(|dir| {
             // Check for dev path
-            let dev = dir.join("src-tauri/bin/llama/llama-server.exe");
+            let dev = dir.join("src-tauri/bin/llama").join(exe_name);
             checked.push(dev.clone());
             if dev.exists() { return Some(dev); }
             
             // Check for release path (typically in bundled resources)
-            let rel = dir.join("bin/llama/llama-server.exe");
+            let rel = dir.join("bin/llama").join(exe_name);
             checked.push(rel.clone());
             if rel.exists() { return Some(rel); }
 
             // Check for resources directory structure
-            let res = dir.join("resources/bin/llama/llama-server.exe");
+            let res = dir.join("resources/bin/llama").join(exe_name);
             checked.push(res.clone());
             if res.exists() { return Some(res); }
 
@@ -67,7 +77,8 @@ fn resolve_llama_exe() -> PathBuf {
                 .collect::<Vec<_>>()
                 .join("\n");
             panic!(
-                "llama-server.exe not found. Checked the following paths:\n{checked_list}"
+                "{} not found. Checked the following paths:\n{checked_list}",
+                exe_name
             );
         })
 }
