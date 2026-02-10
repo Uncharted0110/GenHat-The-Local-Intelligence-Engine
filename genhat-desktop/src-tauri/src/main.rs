@@ -61,7 +61,14 @@ fn resolve_llama_exe() -> PathBuf {
             // Check for release path (typically in bundled resources)
             let rel = dir.join("bin/llama").join(exe_name);
             checked.push(rel.clone());
-            if rel.exists() { return Some(rel); }
+            // Ensure we only pick it if dependencies are present (e.g. on Windows, llama.dll)
+            // This prevents picking up a stray executable in target/debug/bin/llama that has no DLLs.
+            if rel.exists() { 
+                let dll_name = if cfg!(windows) { "llama.dll" } else { "libllama.so" };
+                if rel.parent().unwrap().join(dll_name).exists() {
+                     return Some(rel); 
+                }
+            }
 
             // Check for resources directory structure
             let res = dir.join("resources/bin/llama").join(exe_name);
