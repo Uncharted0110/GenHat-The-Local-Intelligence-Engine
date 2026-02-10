@@ -27,7 +27,9 @@
     "active": true,
     "targets": "all",
     "resources": [
-      "bin/llama/llama-server.exe"
+      "bin/llama-lin/*",
+      "bin/llama-win/*",
+      "bin/llama-mac/*"
     ],
     "icon": [
       "icons/32x32.png",

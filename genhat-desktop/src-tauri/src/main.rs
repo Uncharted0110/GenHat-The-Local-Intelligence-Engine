@@ -41,40 +41,61 @@ fn get_models_dir() -> PathBuf {
 
 
 fn resolve_llama_exe() -> PathBuf {
-    let exe_name = if cfg!(windows) {
-        "llama-server.exe"
+    // Determine OS-specific folder name
+    let os_folder = if cfg!(windows) {
+        "llama-win"
+    } else if cfg!(target_os = "macos") {
+        "llama-mac"
     } else {
-        "llama-server"
+        "llama-lin"
+    };
+
+    // Build a list of candidate executable names depending on platform.
+    let exe_names: Vec<&str> = if cfg!(windows) {
+        vec!["llama-server.exe"]
+    } else if cfg!(target_os = "macos") {
+        // macOS builds may include architecture or platform suffixes.
+        vec![
+            "llama-server",
+            "llama-server-macos",
+            "llama-server-macos-arm64",
+            "llama-server-macos-x86_64",
+            "llama-server-arm64",
+            "llama-server-x86_64",
+        ]
+    } else {
+        vec!["llama-server"]
     };
 
     let exe_path = std::env::current_exe().unwrap();
     let mut checked = Vec::new();
+
     exe_path
         .ancestors()
-        // Walk upward to find src-tauri/bin/llama in dev builds or bin/llama in release.
+        // Walk upward to find src-tauri/bin/{os_folder} in dev builds or bin/{os_folder} in release.
         .find_map(|dir| {
-            // Check for dev path
-            let dev = dir.join("src-tauri/bin/llama").join(exe_name);
-            checked.push(dev.clone());
-            if dev.exists() { return Some(dev); }
-            
-            // Check for release path (typically in bundled resources)
-            let rel = dir.join("bin/llama").join(exe_name);
-            checked.push(rel.clone());
-            // Ensure we only pick it if dependencies are present (e.g. on Windows, llama.dll)
-            // This prevents picking up a stray executable in target/debug/bin/llama that has no DLLs.
-            if rel.exists() { 
-                let dll_name = if cfg!(windows) { "llama.dll" } else { "libllama.so" };
-                if rel.parent().unwrap().join(dll_name).exists() {
-                     return Some(rel); 
+            for &exe_name in &exe_names {
+                // Check for dev path
+                let dev = dir.join("src-tauri/bin").join(os_folder).join(exe_name);
+                checked.push(dev.clone());
+                if dev.exists() {
+                    return Some(dev);
+                }
+
+                // Check for release path (typically in bundled resources)
+                let rel = dir.join("bin").join(os_folder).join(exe_name);
+                checked.push(rel.clone());
+                if rel.exists() {
+                    return Some(rel);
+                }
+
+                // Check for resources directory structure
+                let res = dir.join("resources/bin").join(os_folder).join(exe_name);
+                checked.push(res.clone());
+                if res.exists() {
+                    return Some(res);
                 }
             }
-
-            // Check for resources directory structure
-            let res = dir.join("resources/bin/llama").join(exe_name);
-            checked.push(res.clone());
-            if res.exists() { return Some(res); }
-
             None
         })
         .unwrap_or_else(|| {
@@ -84,8 +105,7 @@ fn resolve_llama_exe() -> PathBuf {
                 .collect::<Vec<_>>()
                 .join("\n");
             panic!(
-                "{} not found. Checked the following paths:\n{checked_list}",
-                exe_name
+                "llama-server not found. Checked the following paths:\n{checked_list}",
             );
         })
 }
