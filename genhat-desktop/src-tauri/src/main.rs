@@ -41,6 +41,15 @@ fn get_models_dir() -> PathBuf {
 
 
 fn resolve_llama_exe() -> PathBuf {
+    // Determine OS-specific folder name
+    let os_folder = if cfg!(windows) {
+        "llama-win"
+    } else if cfg!(target_os = "macos") {
+        "llama-mac"
+    } else {
+        "llama-lin"
+    };
+
     // Build a list of candidate executable names depending on platform.
     let exe_names: Vec<&str> = if cfg!(windows) {
         vec!["llama-server.exe"]
@@ -63,25 +72,25 @@ fn resolve_llama_exe() -> PathBuf {
 
     exe_path
         .ancestors()
-        // Walk upward to find src-tauri/bin/llama in dev builds or bin/llama in release.
+        // Walk upward to find src-tauri/bin/{os_folder} in dev builds or bin/{os_folder} in release.
         .find_map(|dir| {
             for &exe_name in &exe_names {
                 // Check for dev path
-                let dev = dir.join("src-tauri/bin/llama").join(exe_name);
+                let dev = dir.join("src-tauri/bin").join(os_folder).join(exe_name);
                 checked.push(dev.clone());
                 if dev.exists() {
                     return Some(dev);
                 }
 
                 // Check for release path (typically in bundled resources)
-                let rel = dir.join("bin/llama").join(exe_name);
+                let rel = dir.join("bin").join(os_folder).join(exe_name);
                 checked.push(rel.clone());
                 if rel.exists() {
                     return Some(rel);
                 }
 
                 // Check for resources directory structure
-                let res = dir.join("resources/bin/llama").join(exe_name);
+                let res = dir.join("resources/bin").join(os_folder).join(exe_name);
                 checked.push(res.clone());
                 if res.exists() {
                     return Some(res);
