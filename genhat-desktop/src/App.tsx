@@ -23,13 +23,7 @@ function App() {
           // but we should sync frontend state.
           // Ideally we ask backend "what is running?", but for now just picking the first 
           // matches the fallback logic fairly well.
-          const defaultModel = list[0].path;
-          setSelectedModel(defaultModel);
-
-          // Force ensure the backend is running this model
-          invoke("switch_model", { modelPath: defaultModel })
-            .then(() => console.log("Model initialized/confirmed:", defaultModel))
-            .catch((err) => console.error("Failed to init model:", err));
+          setSelectedModel(list[0].path);
         }
       })
       .catch(console.error);
@@ -102,7 +96,7 @@ function App() {
       }
     } catch (err) {
       console.error(err);
-      setResponse("Error: Could not connect to local AI server. Please wait a moment or try re-selecting the model.");
+      setResponse("Streaming error");
     }
   };
 
