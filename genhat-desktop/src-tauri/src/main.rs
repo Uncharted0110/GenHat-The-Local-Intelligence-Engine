@@ -110,6 +110,48 @@ fn resolve_llama_exe() -> PathBuf {
         })
 }
 
+fn resolve_tts_exe() -> PathBuf {
+    let os_folder = if cfg!(windows) {
+        "tts-win"
+    } else if cfg!(target_os = "macos") {
+        "tts-mac"
+    } else {
+        "tts-lin"
+    };
+
+    let exe_name = if cfg!(windows) { "tts-inference.exe" } else { "tts-inference" };
+    let exe_path = std::env::current_exe().unwrap();
+
+    // Since we switched to --onedir, the executable is inside a folder of the same name
+    // e.g. bin/tts-lin/tts-inference/tts-inference
+    // logic: bin -> os_folder -> folder_name -> exe_name
+    // folder_name is usually "tts-inference" provided by --name in pyinstaller
+
+    let relative_path = PathBuf::from("tts-inference").join(exe_name);
+
+    exe_path.ancestors().find_map(|dir| {
+         // Dev path (src-tauri/bin/tts-lin/tts-inference/tts-inference)
+         let dev = dir.join("src-tauri/bin").join(os_folder).join(&relative_path);
+         if dev.exists() { return Some(dev); }
+         
+         // Release path
+         let rel = dir.join("bin").join(os_folder).join(&relative_path);
+         if rel.exists() { return Some(rel); }
+         
+         // Resources path
+         let res = dir.join("resources/bin").join(os_folder).join(&relative_path);
+         if res.exists() { return Some(res); }
+
+         // Fallback for older --onefile structure (just in case)
+         let old_onefile = dir.join("src-tauri/bin").join(os_folder).join(exe_name);
+         if old_onefile.exists() && old_onefile.parent().unwrap().file_name().unwrap() != "tts-inference" {
+            return Some(old_onefile);
+         }
+
+         None
+    }).expect("TTS executable not found")
+}
+
 fn spawn_llama_process(model_path: PathBuf) -> Child {
     let exe = resolve_llama_exe();
     
@@ -199,10 +241,42 @@ fn list_models() -> Vec<ModelFile> {
             // Check for .gguf extension
             if path.extension().and_then(|s| s.to_str()) == Some("gguf") {
                 if let Some(name) = path.file_name().and_then(|s| s.to_str()) {
+                    // Exclude TTS models
+                    if name.starts_with("t3_") || name.starts_with("s3gen") || name.starts_with("ve_") {
+                        continue;
+                    }
                     models.push(ModelFile {
                         name: name.to_string(),
                         path: path.to_string_lossy().to_string(),
                     });
+                }
+            }
+        }
+    }
+    models
+}
+
+#[tauri::command]
+fn list_audio_models() -> Vec<ModelFile> {
+    let dir = get_models_dir();
+    // Check main dir and specific subdir
+    let search_dirs = vec![dir.clone(), dir.join("tts-chatterbox-q4-k-m")];
+    let mut models = Vec::new();
+
+    for d in search_dirs {
+        if let Ok(entries) = std::fs::read_dir(d) {
+            for entry in entries.flatten() {
+                let path = entry.path();
+                if path.extension().and_then(|s| s.to_str()) == Some("gguf") {
+                     if let Some(name) = path.file_name().and_then(|s| s.to_str()) {
+                         // We treat 's3gen' files as the selectable "Model" for TTS
+                         if name.starts_with("s3gen") {
+                             models.push(ModelFile {
+                                 name: name.to_string(),
+                                 path: path.to_string_lossy().to_string(),
+                             });
+                         }
+                     }
                 }
             }
         }
@@ -239,6 +313,67 @@ fn stop_llama(state: State<AppState>) {
     }
 }
 
+#[tauri::command]
+async fn generate_speech(
+    model_path: String,
+    input: String,
+) -> Result<String, String> {
+    // Resolve Exe
+    let exe = resolve_tts_exe();
+
+    // Resolve model files
+    let s3_path = PathBuf::from(&model_path);
+    if !s3_path.exists() {
+        return Err(format!("Model path not found: {:?}", s3_path));
+    }
+    let parent = s3_path.parent().unwrap_or(Path::new(""));
+    
+    // We expect siblings: ve_fp32-f16.gguf and t3_cfg-q4_k_m.gguf
+    let vae_path = parent.join("ve_fp32-f16.gguf");
+    let clip_path = parent.join("t3_cfg-q4_k_m.gguf");
+    
+    if !vae_path.exists() {
+        return Err(format!("Sibling VAE model (ve_fp32-f16.gguf) not found in {:?}", parent));
+    }
+    if !clip_path.exists() {
+         return Err(format!("Sibling CLIP model (t3_cfg-q4_k_m.gguf) not found in {:?}", parent));
+    }
+
+    // Prepare Output Path
+    let mut temp = std::env::temp_dir();
+    let timestamp = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_millis();
+    let filename = format!("genhat_tts_{}.wav", timestamp);
+    temp.push(&filename);
+    let output_str = temp.to_string_lossy().to_string();
+
+    // Run Exe
+    // work dir should be the exe's dir so it finds its internal libs (it's a one-dir bundle)
+    let cwd = exe.parent().unwrap_or(&std::path::Path::new("."));
+
+    let output = Command::new(&exe)
+        .current_dir(cwd)
+        .arg("--text")
+        .arg(&input)
+        .arg("--output")
+        .arg(&output_str)
+        .arg("--model_gguf")
+        .arg(&s3_path)
+        .arg("--vae_gguf")
+        .arg(&vae_path)
+        .arg("--clip_gguf")
+        .arg(&clip_path)
+        .output()
+        .map_err(|e| format!("Failed to spawn tts executable '{}': {}", exe.display(), e))?;
+
+    if !output.status.success() {
+         let stderr = String::from_utf8_lossy(&output.stderr);
+         let stdout = String::from_utf8_lossy(&output.stdout);
+         return Err(format!("TTS process failed: {}\nStdout: {}", stderr, stdout));
+    }
+
+    Ok(output_str) // Return the absolute path to the wav file
+}
+
 
 fn main() {
     tauri::Builder::default()
@@ -253,11 +388,15 @@ fn main() {
             let model_to_load = if default_path.exists() {
                 Some(default_path)
             } else {
-                // Find first available
+                // Find first available that isn't a TTS model
                 std::fs::read_dir(&dir).ok().and_then(|mut entries| {
                     entries.find_map(|e| {
                          e.ok().map(|ent| ent.path())
-                          .filter(|p| p.extension().map(|s| s == "gguf").unwrap_or(false))
+                          .filter(|p| {
+                            let is_gguf = p.extension().map(|s| s == "gguf").unwrap_or(false);
+                            let name = p.file_name().and_then(|s| s.to_str()).unwrap_or("");
+                            is_gguf && !name.starts_with("t3_") && !name.starts_with("s3gen") && !name.starts_with("ve_")
+                          })
                     })
                 })
             };
@@ -266,12 +405,12 @@ fn main() {
                 let child = spawn_llama_process(p);
                 app.state::<AppState>().llama.lock().unwrap().replace(child);
             } else {
-                println!("No models found in {}, server not started automatically.", dir.display());
+                println!("No valid LLM models found in {}, server not started automatically.", dir.display());
             }
 
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![stop_llama, list_models, switch_model])
+        .invoke_handler(tauri::generate_handler![stop_llama, list_models, list_audio_models, switch_model, generate_speech])
         .build(tauri::generate_context!())
         .expect("error building tauri app")
         .run(|app_handle, event| match event {

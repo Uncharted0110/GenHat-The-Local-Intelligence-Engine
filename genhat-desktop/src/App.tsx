@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { invoke } from "@tauri-apps/api/core";
+import { invoke, convertFileSrc } from "@tauri-apps/api/core";
 
 interface ModelFile {
   name: string;
@@ -9,6 +9,11 @@ interface ModelFile {
 function App() {
   const [models, setModels] = useState<ModelFile[]>([]);
   const [selectedModel, setSelectedModel] = useState("");
+  
+  const [audioModels, setAudioModels] = useState<ModelFile[]>([]);
+  const [selectedAudioModel, setSelectedAudioModel] = useState("None");
+  const [audioOutput, setAudioOutput] = useState("");
+
   const [prompt, setPrompt] = useState("");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,13 +23,14 @@ function App() {
       .then((list) => {
         setModels(list);
         if (list.length > 0) {
-          // Default to first found
-          // Note: Backend auto-starts the default hardcoded one or first found, 
-          // but we should sync frontend state.
-          // Ideally we ask backend "what is running?", but for now just picking the first 
-          // matches the fallback logic fairly well.
           setSelectedModel(list[0].path);
         }
+      })
+      .catch(console.error);
+
+    invoke<ModelFile[]>("list_audio_models")
+      .then((list) => {
+        setAudioModels(list);
       })
       .catch(console.error);
   }, []);
@@ -43,9 +49,27 @@ function App() {
 
   const sendPrompt = async () => {
     setResponse("");
+    setAudioOutput("");
+    setLoading(true);
 
     try {
-      // Use the chat completions endpoint instead of raw completions
+      // Audio Mode Check
+      if (selectedAudioModel && selectedAudioModel !== "None") {
+         try {
+           const path = await invoke<string>("generate_speech", {
+             modelPath: selectedAudioModel,
+             input: prompt,
+           });
+           setAudioOutput(convertFileSrc(path));
+         } catch (e) {
+           console.error(e);
+           setResponse(`Error generating audio: ${e}`);
+         }
+         setLoading(false);
+         return;
+      }
+
+      // Normal LLM Mode
       const res = await fetch("http://127.0.0.1:8081/v1/chat/completions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -80,7 +104,10 @@ function App() {
           if (!line.startsWith("data:")) continue;
 
           const payload = line.replace("data:", "").trim();
-          if (payload === "[DONE]") return;
+          if (payload === "[DONE]") {
+            setLoading(false);
+            return;
+          }
 
           try {
             const json = JSON.parse(payload);
@@ -94,48 +121,81 @@ function App() {
           }
         }
       }
+      setLoading(false);
     } catch (err) {
       console.error(err);
       setResponse("Streaming error");
+      setLoading(false);
     }
   };
 
 
   return (
     <div style={{ padding: 20 }}>
-      <h1>GenHat LLM</h1>
+      <h1>GenHat Local Intelligence</h1>
 
-      <div style={{ marginBottom: 20 }}>
-        <label htmlFor="model-select">Model: </label>
-        <select
-          id="model-select"
-          value={selectedModel}
-          onChange={(e) => handleModelChange(e.target.value)}
-          disabled={loading || models.length === 0}
-        >
-          {models.map((m) => (
-            <option key={m.path} value={m.path}>
-              {m.name}
-            </option>
-          ))}
-        </select>
+      <div style={{ display: 'flex', gap: '20px', marginBottom: 20 }}>
+        <div>
+          <label htmlFor="model-select" style={{ display: 'block', marginBottom: '5px' }}>LLM Model:</label>
+          <select
+            id="model-select"
+            value={selectedModel}
+            onChange={(e) => handleModelChange(e.target.value)}
+            disabled={loading || models.length === 0}
+            style={{ width: '200px' }}
+          >
+            {models.map((m) => (
+              <option key={m.path} value={m.path}>
+                {m.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="audio-select" style={{ display: 'block', marginBottom: '5px' }}>Audio Model:</label>
+          <select
+            id="audio-select"
+            value={selectedAudioModel}
+            onChange={(e) => setSelectedAudioModel(e.target.value)}
+            disabled={loading}
+            style={{ width: '200px' }}
+          >
+            <option value="None">None (Text Chat)</option>
+            {audioModels.map((m) => (
+              <option key={m.path} value={m.path}>
+                {m.name}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <textarea
         rows={4}
-        cols={50}
+        style={{ width: '100%', marginBottom: '10px' }}
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Type your prompt here..."
+        placeholder={selectedAudioModel && selectedAudioModel !== "None" ? "Type text to generate speech..." : "Type your prompt for the LLM..."}
       />
 
       <br />
 
-      <button onClick={sendPrompt} disabled={loading}>
-        {loading ? "Generating..." : "Send"}
+      <button onClick={sendPrompt} disabled={loading} style={{ padding: '8px 16px', cursor: 'pointer' }}>
+        {loading ? "Processing..." : (selectedAudioModel && selectedAudioModel !== "None" ? "Generate Audio" : "Send to LLM")}
       </button>
 
-      <pre style={{ whiteSpace: "pre-wrap" }}>{response}</pre>
+      <div style={{ marginTop: 20 }}>
+        {audioOutput && (
+          <div style={{ marginBottom: 20, padding: 10, border: '1px solid #ccc', borderRadius: 4 }}>
+            <p><strong>Generated Audio:</strong></p>
+            <audio controls src={audioOutput} autoPlay style={{ width: '100%' }} />
+          </div>
+        )}
+        <pre style={{ whiteSpace: "pre-wrap", background: '#f5f5f5', padding: 10, borderRadius: 4, minHeight: 50 }}>
+          {response}
+        </pre>
+      </div>
     </div>
   );
 }

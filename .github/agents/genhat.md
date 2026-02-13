@@ -4,7 +4,7 @@
 
 ---
 
-IMPORTANT NOTE: This file has to be updated my the agents on every change to the repo. It serves as the single source of truth for how the application works, how it's structured, and how to develop on it. Always keep it up to date with the latest architectural decisions, file structure, and development guidelines.
+IMPORTANT NOTE: This file has to be updated by the agents on every change to the repo. It serves as the single source of truth for how the application works, how it's structured, and how to develop on it. Always keep it up to date with the latest architectural decisions, file structure, and development guidelines. If anything is removed mention it here, if anything is added mention it here. A new agent must be able to get the complete picture of the current state of the project by just reading this MD file.
 
 ## 1. Project Overview
 
@@ -32,12 +32,19 @@ GenHat-The-Local-Intelligence-Engine/
 │
 ├── models/                    ← GGUF model files (gitignored)
 │   └── LFM-1.2B-INT8.gguf    ← Default model (Liquid Foundation Model 1.2B INT8)
+│   └── tts-chatterbox-q4-k-m/ ← TTS model files (gitignored)
+│       ├── s3gen-bf16.gguf
+│       ├── t3_cfg-q4_k_m.gguf
+│       └── ve_fp32-f16.gguf
 │
 ├── The-Bare/                  ← Standalone Python inference scripts (prototyping)
 │   ├── ASR-Inference/         ← (empty) Automatic Speech Recognition placeholder
 │   ├── LLM-Inference/
 │   │   └── Liquid-infer-INT8.py  ← CLI chat loop using llama-cpp-python
-│   └── TTS-inference/         ← (empty) Text-to-Speech placeholder
+│   └── TTS-inference/         ← Text-to-Speech generation script & build tools
+│       ├── aud_test.py        ← Inference script
+│       ├── requirements.txt   ← Python deps
+│       └── BUILD_INSTRUCTIONS.md ← How to build the TTS binary
 │
 └── genhat-desktop/            ← THE MAIN APPLICATION (Tauri + React)
     ├── package.json           ← npm deps (React 19, Tauri API, Vite 7)
@@ -66,10 +73,13 @@ GenHat-The-Local-Intelligence-Engine/
         ├── src/
         │   ├── main.rs        ← MAIN RUST CODE (279 lines) — all backend logic
         │   └── lib.rs         ← Library entry (mobile support stub)
-        └── bin/               ← Pre-built llama.cpp binaries (per-OS)
-            ├── llama-lin/     ← Linux x86_64 binaries + shared libs (.so)
-            ├── llama-mac/     ← macOS ARM64 binaries + dylibs
-            └── llama-win/     ← Windows x64 binaries + DLLs (.exe, .dll)
+        └── bin/               ← Pre-built binaries (per-OS)
+            ├── llama-lin/     ← Linux x86_64: llama-server + shared libs
+            ├── llama-mac/     ← macOS ARM64: llama-server + dylibs
+            ├── llama-win/     ← Windows x64: llama-server.exe + DLLs
+            ├── tts-lin/       ← Linux x86_64: tts-inference (folder)
+            ├── tts-mac/       ← macOS ARM64: tts-inference (folder)
+            └── tts-win/       ← Windows x64: tts-inference.exe (folder)
 ```
 
 ---
@@ -104,9 +114,11 @@ GenHat-The-Local-Intelligence-Engine/
 └─────────────────┘
 ```
 
-**Two communication channels exist:**
-1. **Tauri IPC** (`invoke()`): Frontend ↔ Rust for model management (`list_models`, `switch_model`, `stop_llama`)
-2. **HTTP** (`fetch()`): Frontend → `llama-server` for inference (`/v1/chat/completions` with SSE streaming)
+**Communication channels:**
+1. **Tauri IPC** (`invoke()`): Frontend ↔ Rust for model management
+   - LLM: `list_models`, `switch_model`, `stop_llama`
+   - TTS: `list_audio_models`, `generate_speech`
+2. **HTTP** (`fetch()`): Frontend → `llama-server` for inference (`/v1/chat/completions`)
 
 ---
 
@@ -114,30 +126,32 @@ GenHat-The-Local-Intelligence-Engine/
 
 ### 4.1 State Management
 - `AppState` holds a `Mutex<Option<Child>>` — the `llama-server` child process handle
-- Managed via `tauri::Builder::default().manage()`
+- TTS processes are spawned ephemerally and not stored in state.
 
 ### 4.2 Key Functions
 
 | Function | Purpose |
 |---|---|
-| `get_models_dir()` | Resolves models directory. Checks `GENHAT_MODEL_PATH` env var first, then falls back to `<repo>/models/` (resolved relative to `CARGO_MANIFEST_DIR`) |
-| `resolve_llama_exe()` | Finds `llama-server` binary. Selects OS folder (`llama-lin`, `llama-mac`, `llama-win`). Walks ancestors of the current exe looking in `src-tauri/bin/`, `bin/`, and `resources/bin/` |
-| `spawn_llama_process(model_path)` | Spawns `llama-server` as a child process with inference params. Sets `current_dir` to binary folder for shared lib resolution. Logs to `/tmp/genhat-llama-server.log` |
+| `get_models_dir()` | Resolves models directory. Filters out TTS models (s3gen, t3*, ve*) for `list_models()` |
+| `resolve_llama_exe()` | Finds `llama-server` binary. |
+| `resolve_tts_exe()` | Finds `tts-inference` binary inside `bin/<os>/tts-inference/`. |
+| `spawn_llama_process(model_path)` | Spawns `llama-server`. |
 
 ### 4.3 Tauri Commands (IPC)
 
 | Command | Signature | Notes |
 |---|---|---|
-| `list_models` | `() -> Vec<ModelFile>` | Scans models dir for `*.gguf` files |
-| `switch_model` | `(state, model_path: String) -> Result<String, String>` | Kills current server, spawns new one with selected model |
-| `stop_llama` | `(state)` | Kills the running `llama-server` process |
+| `list_models` | `() -> Vec<ModelFile>` | Returns LLM GGUF models only (filters out TTS files) |
+| `list_audio_models` | `() -> Vec<ModelFile>` | Returns available audio models (looks for `s3gen*.gguf`) |
+| `switch_model` | `(state, model_path: String) -> Result` | Restarts `llama-server` |
+| `stop_llama` | `(state)` | Kills `llama-server` |
+| `generate_speech` | `(model_path, input) -> Result<String>` | Spawns `tts-inference` binary. Returns path to generated .wav file |
 
 ### 4.4 Startup Behavior
 On app launch (`setup` hook):
-1. Looks for `LFM-1.2B-INT8.gguf` in models dir
-2. If not found, picks the first available `.gguf` file
-3. Auto-spawns `llama-server` with that model
-4. On `RunEvent::Exit`, kills the child process
+1. Looks for `LFM-1.2B-INT8.gguf`.
+2. Explicitly ignores TTS models (starting with `s3gen`, `t3_`, `ve_`) when auto-selecting a default model.
+3. Auto-spawns `llama-server`.
 
 ### 4.5 llama-server Parameters
 ```
@@ -162,10 +176,10 @@ The vanilla UI in `index.html` is the complete application layout (sidebars, cha
 
 | File | Lines | Purpose |
 |---|---|---|
+| `App.tsx` | ~200 | React UI: **Now includes Audio Generation**. Model selection + Audio Model selection + Chat + Audio Player. |
 | `index.html` | 1519 | Full HTML shell with inline CSS for the main app UI (sidebar, chat, modals, landing page) |
 | `renderer.ts` | 2940 | Main UI orchestrator — chat messaging, tab management, file uploads, project save/load, PDF viewing, mindmap generation, podcast UI, message editing/branching |
-| `api.ts` | 459 | API abstraction layer. `callLocalLlama()` calls `localhost:8081`. Many functions are **mocked** (PDF caching, RAG queries, mindmaps) — these are stubs awaiting local implementations |
-| `App.tsx` | ~145 | React component: model dropdown + streaming chat (also calls `localhost:8081`) |
+| `api.ts` | 459 | API abstraction layer. `callLocalLlama()` calls `localhost:8081`. |
 | `pdfViewer.ts` | 342 | PDF.js wrapper — loads PDFs, renders pages, toolbar with zoom/navigation, text selection |
 | `mindmapVisualization.ts` | 630 | Generates standalone mindmap HTML with React Flow rendered in a popup window with particle background |
 | `mindmap/index.html` | 810 | Standalone mindmap page template |
@@ -242,10 +256,10 @@ npx tauri build
 Output will be in `src-tauri/target/release/bundle/`.
 
 ### Run The-Bare Python Script (standalone testing)
+_Deprecated: The app now uses the compiled binary in `bin/`._
 ```bash
-cd The-Bare/LLM-Inference
-pip install llama-cpp-python
-python Liquid-infer-INT8.py
+cd The-Bare/TTS-inference
+# See BUILD_INSTRUCTIONS.md for how to build tts-inference binary
 ```
 
 ---
@@ -286,7 +300,11 @@ python Liquid-infer-INT8.py
 
 7. **Port conflict**: `llama-server` binds to port `8081`. If another process uses this port, the server will fail silently. Check the log file.
 
-8. **lib.rs is unused**: The `lib.rs` has a mobile entry point stub (`run()`) but `main.rs` has its own `main()` which is the actual entry point. The two are not connected.
+9. **TTS Architecture**:
+    - The TTS engine uses PyInstaller (`--onedir`) to bundle Python + Torch dependencies.
+    - Located in `src-tauri/bin/tts-<os>/tts-inference/`.
+    - Executable is spawned directly by Rust via `Command::new()`.
+    - Requires sibling GGUF models (`s3gen`, `ve`, `t3_cfg`) to be present in `models/` or `models/tts-chatterbox-q4-k-m/`.
 
 ---
 

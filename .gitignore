@@ -1,1 +1,11 @@
 models/
+genhat-desktop/src-tauri/bin/tts*
+genhat-desktop/src-tauri/bin/tts*/tts-inference
+build/
+dist/
+The-Bare/build/
+The-Bare/dist/
+The-Bare/models/
+The-Bare/**/__pycache__/
+genhat-desktop/node_modules/
+genhat-desktop/src-tauri/node_modules/
