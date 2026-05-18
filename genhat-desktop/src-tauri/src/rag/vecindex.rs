@@ -112,7 +112,9 @@ impl QuantizedVector {
 const IVF_NUM_CELLS: usize = 32;
 
 /// Number of partitions to probe during search (higher = better recall, slower).
-const IVF_NUM_PROBES: usize = 4;
+/// Rule of thumb: ~50% of IVF_NUM_CELLS for good recall on homogeneous corpora.
+/// At 4 probes/32 cells only 12.5% of vectors are scanned, collapsing recall to near-random.
+const IVF_NUM_PROBES: usize = 16;
 
 /// Minimum vector count before IVF partitioning is used.
 const MIN_VECTORS_FOR_IVF: usize = 128;
@@ -241,6 +243,17 @@ impl VectorIndex {
     /// Number of indexed vectors.
     pub fn len(&self) -> usize {
         self.vectors.read().unwrap().len()
+    }
+
+    /// Dimension of stored embeddings (from the first vector), or 0 if empty.
+    pub fn embedding_dim(&self) -> usize {
+        self.vectors
+            .read()
+            .unwrap()
+            .values()
+            .next()
+            .map(|v| v.data.len())
+            .unwrap_or(0)
     }
 
     /// Approximate memory used by in-memory vector payloads (quantized vectors + IVF metadata).

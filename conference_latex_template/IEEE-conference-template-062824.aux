@@ -1,0 +1,121 @@
+\relax 
+\citation{b1}
+\citation{b2}
+\citation{b3}
+\citation{b4}
+\citation{b5}
+\citation{b6}
+\citation{b7}
+\citation{b8,b9}
+\citation{b10}
+\citation{b1}
+\citation{b2}
+\citation{b11,b12}
+\citation{b13,b14}
+\citation{b15,b16}
+\citation{b8,b9}
+\citation{b3}
+\citation{b4}
+\citation{b5}
+\citation{b10}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
+\citation{b6}
+\citation{b2}
+\citation{b17}
+\citation{b18}
+\citation{b19}
+\citation{b20}
+\citation{b3}
+\citation{b21}
+\citation{b4}
+\citation{b22}
+\citation{b21}
+\citation{b23}
+\citation{b5}
+\citation{b6}
+\citation{b7}
+\citation{b8}
+\citation{b24}
+\citation{b25}
+\citation{b9}
+\citation{b26}
+\citation{b27}
+\citation{b28}
+\@writefile{toc}{\contentsline {section}{\numberline {II}Related Work}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Retrieval-Augmented Generation}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Sparse and Dense Retrieval}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Hybrid Retrieval and Rank Fusion}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-D}}Hierarchical Document Retrieval}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-E}}Efficient Vector Search}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-F}}Quantized On-Device Inference}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {III}System Architecture}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Overview}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Document Ingestion Pipeline}{2}{}\protected@file@percent }
+\citation{b5}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces NELA system architecture. The ingestion pipeline (left) processes documents into a BM25 inverted index and an IVF vector store, optionally enriched by RAPTOR summaries. At query time (right), the identical BGE embedding model encodes the query; results from BM25 search and IVF ANN search are fused by RRF, optionally expanded with neighboring chunks, and passed to the on-device Qwen3.5-0.8B LLM for answer generation. Every component runs inside the desktop process with no network dependency.}}{3}{}\protected@file@percent }
+\newlabel{fig:arch}{{1}{3}{}{}{}}
+\newlabel{eq:bm25}{{1}{3}{}{}{}}
+\newlabel{eq:cosine}{{2}{3}{}{}{}}
+\newlabel{eq:ivf}{{3}{3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Query Processing Pipeline}{3}{}\protected@file@percent }
+\newlabel{eq:rrf}{{4}{3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Memory and Resource Management}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Experiments}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Hardware and Environment}{3}{}\protected@file@percent }
+\citation{b10}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Dataset}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Models}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Retrieval Configurations}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-E}}Evaluation Protocol}{4}{}\protected@file@percent }
+\newlabel{eq:recall}{{5}{4}{}{}{}}
+\newlabel{eq:mrr}{{6}{4}{}{}{}}
+\newlabel{eq:f1}{{7}{4}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Retrieval Performance on SQuAD~1.1 (10{,}570 QA Pairs, 2{,}067 Documents)}}{4}{}\protected@file@percent }
+\newlabel{tab:retrieval}{{I}{4}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Retrieval metrics (Recall@5, Recall@10, MRR) for all four retrieval configurations on the full 10{,}570-pair SQuAD~1.1 evaluation set. Hybrid RRF achieves the highest scores on all three metrics.}}{4}{}\protected@file@percent }
+\newlabel{fig:retrieval}{{2}{4}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Results and Discussion}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Retrieval Performance}{4}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Query latency breakdown for the Hybrid+Expand configuration. Embedding dominates at 55.4~ms (95.7\%) of the 57.9~ms total; BM25, ANN, RRF, and expand together contribute 2.5~ms.}}{5}{}\protected@file@percent }
+\newlabel{fig:latency}{{3}{5}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces End-to-End Answer Quality (SQuAD~1.1, $n{=}50$)}}{5}{}\protected@file@percent }
+\newlabel{tab:e2e}{{II}{5}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Query Latency Breakdown}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}End-to-End Answer Quality}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Scale Degradation}{5}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces End-to-end answer quality: NELA Hybrid RAG vs.\ no-retrieval baseline (Qwen3.5-0.8B, $n{=}50$). Hybrid RAG delivers +68.0~pp EM and +64.3~pp Token~F1 gain over the baseline.}}{5}{}\protected@file@percent }
+\newlabel{fig:e2e}{{4}{5}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}Index Memory Efficiency}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion}{5}{}\protected@file@percent }
+\bibcite{b1}{1}
+\bibcite{b2}{2}
+\bibcite{b3}{3}
+\bibcite{b4}{4}
+\bibcite{b5}{5}
+\bibcite{b6}{6}
+\bibcite{b7}{7}
+\bibcite{b8}{8}
+\bibcite{b9}{9}
+\bibcite{b10}{10}
+\bibcite{b11}{11}
+\bibcite{b12}{12}
+\bibcite{b13}{13}
+\bibcite{b14}{14}
+\bibcite{b15}{15}
+\bibcite{b16}{16}
+\bibcite{b17}{17}
+\bibcite{b18}{18}
+\bibcite{b19}{19}
+\bibcite{b20}{20}
+\bibcite{b21}{21}
+\bibcite{b22}{22}
+\bibcite{b23}{23}
+\bibcite{b24}{24}
+\bibcite{b25}{25}
+\bibcite{b26}{26}
+\bibcite{b27}{27}
+\bibcite{b28}{28}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Scale degradation from 100 to 2{,}000 documents. Top: Recall@5 per retrieval configuration. Bottom: Hybrid query latency (ms) and IVF index memory (MB).}}{6}{}\protected@file@percent }
+\newlabel{fig:scale}{{5}{6}{}{}{}}
+\@writefile{toc}{\contentsline {section}{References}{6}{}\protected@file@percent }
+\gdef \@abspage@last{6}

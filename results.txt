@@ -1,0 +1,153 @@
+Normal bench:
+
+[bench] Embedding server ready (0.0s warm-up)
+
+[bench] ── Running recall + latency benchmarks ──
+[bench]        bm25_only  recall@5=0.916  recall@10=0.943  mrr=0.830  latency=175.2ms
+[bench]      vector_only  recall@5=0.906  recall@10=0.947  mrr=0.787  latency=205.1ms
+[bench]           hybrid  recall@5=0.952  recall@10=0.979  mrr=0.853  latency=81.7ms
+[bench]    hybrid_expand  recall@5=0.953  recall@10=0.979  mrr=0.854  latency=84.6ms
+
+[bench] ── Running RAPTOR ablation ──
+[bench] No RAPTOR trees found in workspace — skipping RAPTOR ablation.
+(Hint: ingest documents via NELA first, wait for background enrichment to finish.)
+
+╔══ NELA RAG Benchmark Results ══╗
+║ Corpus : 2067 docs, 2138 vectors
+║ Index  : 1.68 MB quantized  (6.26 MB raw est., 3.7× compression, IVF=ON)
+╚══════════════════════════════════╝
+
+── Recall@k ──────────────────────────────────────────────────
+Config                  Recall@5   Recall@10       MRR  Avg Latency(ms)
+──────────────────────────────────────────────────────────────────────
+bm25_only                  0.916       0.943     0.830           175.2
+vector_only                0.906       0.947     0.787           205.1
+hybrid                     0.952       0.979     0.853            81.7
+hybrid_expand              0.953       0.979     0.854            84.6
+
+── Latency breakdown (hybrid+expand, per query) ──────────────
+  Embed query :   81.5 ms
+  BM25 search :    0.9 ms
+  Vec search  :    1.6 ms
+  RRF fusion  :    0.0 ms
+  Ctx expand  :    0.6 ms
+  ─────────────────────────
+  Total       :   84.6 ms
+
+
+E2E bench:
+
+./target/release/rag-bench eval   --workspace-dir /tmp/nela-bench   --qa-file ../../benchmark/squad_bench_answers/qa_pairs.json   --embed-model ../../models/embedding/bge-base-en-v1.5-q8_0/bge-base-en-v1.5-q8_0.gguf   --llm-model ../../models/LLM/unsloth/Qwen3.5-0.8B-GGUF/Qwen3.5-0.8B-UD-Q4_K_XL.gguf   --count 50
+[eval] Workspace: 2067 docs, 2138 vectors in index
+[eval] Loaded 10570 QA pairs
+[bench] Starting embedding server (port 12345, model ../../models/embedding/bge-base-en-v1.5-q8_0/bge-base-en-v1.5-q8_0.gguf) …
+[bench] Embedding server ready (0.0s warm-up)
+[bench] Starting LLM server (port 12346, model ../../models/LLM/unsloth/Qwen3.5-0.8B-GGUF/Qwen3.5-0.8B-UD-Q4_K_XL.gguf) …
+[bench] LLM server ready
+
+[eval] Running E2E answer quality eval ──
+[bench] E2E eval: 50 QA pairs with gold answers
+[bench]   e2e_hybrid  EM=0.740  F1=0.756  latency=27047.8ms  n=50
+
+── E2E Answer Quality (hybrid retrieval) ─────────────────────────────────────
+  Exact Match : 74.0%  (37/50 answered)
+  Token F1    : 75.6%
+  Avg Latency : 27047.8 ms
+
+Scale degradation:
+
+[scale] ── Checkpoint: 100 docs ──
+[scale] Ingested: 100 docs, 103 vectors
+[scale]   Evaluating 200 eligible QA pairs
+[bench]        bm25_only  recall@5=0.985  recall@10=0.995  mrr=0.930  latency=89.1ms
+[bench]      vector_only  recall@5=0.985  recall@10=0.995  mrr=0.897  latency=90.1ms
+[bench]           hybrid  recall@5=0.995  recall@10=1.000  mrr=0.948  latency=82.1ms
+[bench]    hybrid_expand  recall@5=0.995  recall@10=1.000  mrr=0.946  latency=97.0ms
+
+[scale] ── Checkpoint: 500 docs ──
+[scale] Ingested: 500 docs, 511 vectors
+[scale]   Evaluating 200 eligible QA pairs
+[bench]        bm25_only  recall@5=0.970  recall@10=0.985  mrr=0.843  latency=98.3ms
+[bench]      vector_only  recall@5=0.965  recall@10=0.990  mrr=0.818  latency=101.8ms
+[bench]           hybrid  recall@5=0.985  recall@10=1.000  mrr=0.902  latency=103.7ms
+[bench]    hybrid_expand  recall@5=0.985  recall@10=1.000  mrr=0.895  latency=103.2ms
+
+[scale] ── Checkpoint: 1000 docs ──
+[scale] Ingested: 1000 docs, 1961 vectors
+[scale]   Evaluating 200 eligible QA pairs
+[bench]        bm25_only  recall@5=0.895  recall@10=0.965  mrr=0.423  latency=115.5ms
+[bench]      vector_only  recall@5=0.890  recall@10=0.965  mrr=0.614  latency=178.5ms
+[bench]           hybrid  recall@5=0.925  recall@10=0.995  mrr=0.558  latency=148.7ms
+[bench]    hybrid_expand  recall@5=0.925  recall@10=0.995  mrr=0.553  latency=105.4ms
+
+[scale] ── Checkpoint: 2000 docs ──
+[scale] Ingested: 2000 docs, 2067 vectors
+[scale]   Evaluating 200 eligible QA pairs
+[bench]        bm25_only  recall@5=0.845  recall@10=0.920  mrr=0.650  latency=176.7ms
+[bench]      vector_only  recall@5=0.885  recall@10=0.955  mrr=0.667  latency=174.9ms
+[bench]           hybrid  recall@5=0.895  recall@10=0.960  mrr=0.718  latency=178.2ms
+[bench]    hybrid_expand  recall@5=0.895  recall@10=0.955  mrr=0.719  latency=204.4ms
+
+── Scale Degradation Results ──────────────────────────────────────────────────
+    Docs   Vectors      BM25 R@5    Vector R@5      Hybrid R@5     Lat(ms)    Mem(MB)
+──────────────────────────────────────────────────────────────────────────────────
+     100       103         0.985         0.985           0.995        82.1       0.08
+     500       511         0.970         0.965           0.985       103.7       0.47
+    1000      1961         0.895         0.890           0.925       148.7       1.55
+    2000      2067         0.845         0.885           0.895       178.2       1.63
+
+
+
+Comparison with No RAG baseline:
+
+[bench] Workspace: 2067 docs, 2138 vectors in index
+[bench] Loaded 10570 QA pairs
+[bench] Starting embedding server (port 12345, model ../../models/embedding/bge-base-en-v1.5-q8_0/bge-base-en-v1.5-q8_0.gguf) …
+[bench] Embedding server ready (0.0s warm-up)
+
+[bench] ── Running recall + latency benchmarks ──
+[bench]        bm25_only  recall@5=0.916  recall@10=0.943  mrr=0.830  latency=73.3ms
+[bench]      vector_only  recall@5=0.906  recall@10=0.947  mrr=0.787  latency=57.0ms
+[bench]           hybrid  recall@5=0.953  recall@10=0.979  mrr=0.853  latency=57.5ms
+[bench]    hybrid_expand  recall@5=0.952  recall@10=0.979  mrr=0.853  latency=57.9ms
+[bench] Starting LLM server (port 12346, model ../../models/LLM/unsloth/Qwen3.5-0.8B-GGUF/Qwen3.5-0.8B-UD-Q4_K_XL.gguf) …
+[bench] LLM server ready
+
+[bench] ── Running E2E answer quality eval (with RAG) ──
+[bench] E2E eval: 50 QA pairs with gold answers
+[bench]   e2e_hybrid  EM=0.720  F1=0.736  latency=14786.7ms  n=50
+
+[bench] ── Running no-RAG baseline eval ──
+[bench] No-RAG baseline: 50 QA pairs (no context)
+[bench]   no_rag_baseline  EM=0.040  F1=0.093  latency=3127.6ms  n=50
+
+╔══ NELA RAG Benchmark Results ══╗
+║ Corpus : 2067 docs, 2138 vectors
+║ Index  : 1.68 MB quantized  (6.26 MB raw est., 3.7× compression, IVF=ON)
+╚══════════════════════════════════╝
+
+── Recall@k ──────────────────────────────────────────────────
+Config                  Recall@5   Recall@10       MRR  Avg Latency(ms)
+──────────────────────────────────────────────────────────────────────
+bm25_only                  0.916       0.943     0.830            73.3
+vector_only                0.906       0.947     0.787            57.0
+hybrid                     0.953       0.979     0.853            57.5
+hybrid_expand              0.952       0.979     0.853            57.9
+
+── Latency breakdown (hybrid+expand, per query) ──────────────
+  Embed query :   55.4 ms
+  BM25 search :    0.7 ms
+  Vec search  :    1.3 ms
+  RRF fusion  :    0.0 ms
+  Ctx expand  :    0.5 ms
+  ─────────────────────────
+  Total       :   57.9 ms
+
+── E2E Answer Quality ────────────────────────────────────────────────────────
+  Config                  Exact Match    Token F1    Avg Lat (ms)         n
+────────────────────────────────────────────────────────────────────────────────────
+  hybrid_rag                   72.0%       73.6%         14786.7        50
+  no_rag_baseline               4.0%        9.3%          3127.6        50
+────────────────────────────────────────────────────────────────────────
+  RAG gain:  EM +68.0pp   F1 +64.3pp
+

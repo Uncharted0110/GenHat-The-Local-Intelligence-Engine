@@ -1,0 +1,105 @@
+# NELA RAG Benchmark — Command Reference
+# All commands run from: genhat-desktop/src-tauri/
+# Binary: ./target/release/rag-bench
+# Build:  cargo build --release --bin rag-bench
+
+# ─────────────────────────────────────────────
+# 0. Build the binary
+# ─────────────────────────────────────────────
+cd genhat-desktop/src-tauri
+cargo build --release --bin rag-bench
+
+
+# ─────────────────────────────────────────────
+# 1. Ingest corpus into a fresh workspace
+# ─────────────────────────────────────────────
+./target/release/rag-bench ingest \
+  --workspace-dir /tmp/nela-bench \
+  --corpus-dir ../../benchmark/squad_bench_large/docs \
+  --embed-model ../../models/embedding/bge-base-en-v1.5-q8_0/bge-base-en-v1.5-q8_0.gguf
+
+
+# ─────────────────────────────────────────────
+# 2. Recall@k + MRR benchmark (no LLM needed)
+# ─────────────────────────────────────────────
+./target/release/rag-bench bench \
+  --workspace-dir /tmp/nela-bench \
+  --qa-file ../../benchmark/squad_bench_large/qa_pairs.json \
+  --embed-model ../../models/embedding/bge-base-en-v1.5-q8_0/bge-base-en-v1.5-q8_0.gguf
+
+
+# ─────────────────────────────────────────────
+# 3. E2E answer quality + no-RAG baseline
+#    Prints EM%, F1%, RAG gain (pp) in the summary
+# ─────────────────────────────────────────────
+./target/release/rag-bench bench \
+  --workspace-dir /tmp/nela-bench \
+  --qa-file ../../benchmark/squad_bench_large/qa_pairs.json \
+  --embed-model ../../models/embedding/bge-base-en-v1.5-q8_0/bge-base-en-v1.5-q8_0.gguf \
+  --llm-model ../../models/LLM/unsloth/Qwen3.5-0.8B-GGUF/Qwen3.5-0.8B-UD-Q4_K_XL.gguf \
+  --e2e-count 50 \
+  --no-rag-baseline
+
+
+# ─────────────────────────────────────────────
+# 4. RAPTOR ablation
+#    Requires RAPTOR trees already in the workspace.
+#    Run after step 1 (ingest) with --raptor flag.
+# ─────────────────────────────────────────────
+./target/release/rag-bench bench \
+  --workspace-dir /tmp/nela-bench \
+  --qa-file ../../benchmark/squad_bench_large/qa_pairs.json \
+  --embed-model ../../models/embedding/bge-base-en-v1.5-q8_0/bge-base-en-v1.5-q8_0.gguf \
+  --raptor
+
+
+# ─────────────────────────────────────────────
+# 5. Scale degradation benchmark
+#    Uses a CLEAN workspace (/tmp/nela-scale).
+#    Each checkpoint gets its own isolated subdirectory.
+#    Previous results in /tmp/nela-bench do NOT affect this.
+# ─────────────────────────────────────────────
+./target/release/rag-bench scale \
+  --workspace-dir /tmp/nela-scale \
+  --corpus-dir ../../benchmark/squad_bench_large/docs \
+  --qa-file ../../benchmark/squad_bench_large/qa_pairs.json \
+  --embed-model ../../models/embedding/bge-base-en-v1.5-q8_0/bge-base-en-v1.5-q8_0.gguf \
+  --sizes 100,500,1000,2000 \
+  --qa-sample 200
+
+
+# ─────────────────────────────────────────────
+# 6. Standalone E2E eval (no recall benchmarking)
+# ─────────────────────────────────────────────
+./target/release/rag-bench eval \
+  --workspace-dir /tmp/nela-bench \
+  --qa-file ../../benchmark/squad_bench_large/qa_pairs.json \
+  --embed-model ../../models/embedding/bge-base-en-v1.5-q8_0/bge-base-en-v1.5-q8_0.gguf \
+  --llm-model ../../models/LLM/unsloth/Qwen3.5-0.8B-GGUF/Qwen3.5-0.8B-UD-Q4_K_XL.gguf \
+  --count 50
+
+
+# ─────────────────────────────────────────────
+# 7. Embedding model comparison (bge-small)
+#    Use a separate workspace so indexes don't collide.
+# ─────────────────────────────────────────────
+./target/release/rag-bench ingest \
+  --workspace-dir /tmp/nela-bench-small \
+  --corpus-dir ../../benchmark/squad_bench_large/docs \
+  --embed-model ../../models/embedding/bge-small-en-v1.5-q8_0/bge-small-en-v1.5-q8_0.gguf
+
+./target/release/rag-bench bench \
+  --workspace-dir /tmp/nela-bench-small \
+  --qa-file ../../benchmark/squad_bench_large/qa_pairs.json \
+  --embed-model ../../models/embedding/bge-small-en-v1.5-q8_0/bge-small-en-v1.5-q8_0.gguf
+
+
+# ─────────────────────────────────────────────
+# Notes
+# ─────────────────────────────────────────────
+# - llama-server binary is auto-detected from bin/llama-lin/llama-server
+#   relative to the workspace. Override with --llama-server <path>.
+# - Default embed port: 12345. Default LLM port: 12346.
+# - bench_results.json is written to the CWD unless --output is specified.
+# - Scale benchmark: do NOT reuse an existing /tmp/nela-bench workspace;
+#   use a dedicated directory (e.g., /tmp/nela-scale) to avoid stale data.

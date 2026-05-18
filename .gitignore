@@ -24,6 +24,18 @@ The-Bare/TTS-inference/--hidden-import
 
 benchmark/results/
 benchmark/__pycache__/
+benchmark/.squad_cache/
+benchmark/squad_bench/
+benchmark/squad_bench_answers/
+benchmark/squad_bench_large/
+benchmark/trivia_qa/
+benchmark/beir/
+
+# Ingest workspaces (large SQLite + index files)
+workspace/
+
+# Script results
+results/
 RESEARCH_PAPER_PLAN.md
 
 # Added by Spec Kitty CLI (auto-managed)

@@ -1,0 +1,534 @@
+{
+  "exact_match": 0.74,
+  "f1": 0.7559999999999999,
+  "avg_latency_ms": 27047.75535908,
+  "sample_count": 50,
+  "per_question": [
+    {
+      "question": "Which NFL team represented the AFC at Super Bowl 50?",
+      "gold_answers": [
+        "Denver Broncos"
+      ],
+      "predicted": "Denver Broncos",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 28796.036797
+    },
+    {
+      "question": "Which NFL team represented the NFC at Super Bowl 50?",
+      "gold_answers": [
+        "Carolina Panthers"
+      ],
+      "predicted": "NFC champion",
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 15602.369328
+    },
+    {
+      "question": "Where did Super Bowl 50 take place?",
+      "gold_answers": [
+        "Santa Clara, California",
+        "Levi's Stadium",
+        "Levi's Stadium in the San Francisco Bay Area at Santa Clara, California."
+      ],
+      "predicted": "Levi's Stadium",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 19858.754719
+    },
+    {
+      "question": "Which NFL team won Super Bowl 50?",
+      "gold_answers": [
+        "Denver Broncos"
+      ],
+      "predicted": "Denver Broncos",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 29591.41679
+    },
+    {
+      "question": "What color was used to emphasize the 50th anniversary of the Super Bowl?",
+      "gold_answers": [
+        "gold"
+      ],
+      "predicted": "gold",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 32407.234559000004
+    },
+    {
+      "question": "What was the theme of Super Bowl 50?",
+      "gold_answers": [
+        "\"golden anniversary\"",
+        "gold-themed",
+        "\"golden anniversary"
+      ],
+      "predicted": "Golden anniversary",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 26318.567912
+    },
+    {
+      "question": "What day was the game played on?",
+      "gold_answers": [
+        "February 7, 2016",
+        "February 7"
+      ],
+      "predicted": "February 7, 2016",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 34951.667581
+    },
+    {
+      "question": "What is the AFC short for?",
+      "gold_answers": [
+        "American Football Conference"
+      ],
+      "predicted": "AFC",
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 43742.233423000005
+    },
+    {
+      "question": "What was the theme of Super Bowl 50?",
+      "gold_answers": [
+        "\"golden anniversary\"",
+        "gold-themed",
+        "gold"
+      ],
+      "predicted": "Golden anniversary",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 23780.055692
+    },
+    {
+      "question": "What does AFC stand for?",
+      "gold_answers": [
+        "American Football Conference"
+      ],
+      "predicted": "AFC",
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 38815.271412
+    },
+    {
+      "question": "What day was the Super Bowl played on?",
+      "gold_answers": [
+        "February 7, 2016",
+        "February 7"
+      ],
+      "predicted": "February 7",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 26075.77743
+    },
+    {
+      "question": "Who won Super Bowl 50?",
+      "gold_answers": [
+        "Denver Broncos"
+      ],
+      "predicted": "Denver Broncos",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 18553.396162999998
+    },
+    {
+      "question": "What venue did Super Bowl 50 take place in?",
+      "gold_answers": [
+        "Levi's Stadium",
+        "Levi's Stadium in the San Francisco Bay Area at Santa Clara"
+      ],
+      "predicted": "Levi's Stadium",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 17897.249633
+    },
+    {
+      "question": "What city did Super Bowl 50 take place in?",
+      "gold_answers": [
+        "Santa Clara"
+      ],
+      "predicted": "California",
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 17350.082773000002
+    },
+    {
+      "question": "If Roman numerals were used, what would Super Bowl 50 have been called?",
+      "gold_answers": [
+        "Super Bowl L",
+        "L"
+      ],
+      "predicted": "Super Bowl L",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 44203.247109
+    },
+    {
+      "question": "Super Bowl 50 decided the NFL champion for what season?",
+      "gold_answers": [
+        "2015",
+        "the 2015 season"
+      ],
+      "predicted": "2015",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 28870.096150999998
+    },
+    {
+      "question": "What year did the Denver Broncos secure a Super Bowl title for the third time?",
+      "gold_answers": [
+        "2015",
+        "2016"
+      ],
+      "predicted": "2015",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 34080.522182
+    },
+    {
+      "question": "What city did Super Bowl 50 take place in?",
+      "gold_answers": [
+        "Santa Clara"
+      ],
+      "predicted": "San Francisco Bay Area",
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 18270.668081
+    },
+    {
+      "question": "What stadium did Super Bowl 50 take place in?",
+      "gold_answers": [
+        "Levi's Stadium"
+      ],
+      "predicted": "Levi's Stadium",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 19987.284176999998
+    },
+    {
+      "question": "What was the final score of Super Bowl 50?",
+      "gold_answers": [
+        "24–10"
+      ],
+      "predicted": "24-10",
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 22249.428341000003
+    },
+    {
+      "question": "What month, day and year did Super Bowl 50 take place?",
+      "gold_answers": [
+        "February 7, 2016"
+      ],
+      "predicted": "February 7, 2016",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 14192.348799
+    },
+    {
+      "question": "What year was Super Bowl 50?",
+      "gold_answers": [
+        "2015",
+        "2016"
+      ],
+      "predicted": "2015",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 19599.782596
+    },
+    {
+      "question": "What team was the AFC champion?",
+      "gold_answers": [
+        "Denver Broncos"
+      ],
+      "predicted": "Denver Broncos",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 19692.337399
+    },
+    {
+      "question": "What team was the NFC champion?",
+      "gold_answers": [
+        "Carolina Panthers"
+      ],
+      "predicted": "Carolina Panthers",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 18943.166696
+    },
+    {
+      "question": "Who won Super Bowl 50?",
+      "gold_answers": [
+        "Denver Broncos"
+      ],
+      "predicted": "Denver Broncos",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 934.7614400000001
+    },
+    {
+      "question": "Super Bowl 50 determined the NFL champion for what season?",
+      "gold_answers": [
+        "2015",
+        "the 2015 season"
+      ],
+      "predicted": "2015",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 14607.031004
+    },
+    {
+      "question": "Which team won Super Bowl 50.",
+      "gold_answers": [
+        "Denver Broncos"
+      ],
+      "predicted": "Denver Broncos",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 17126.88861
+    },
+    {
+      "question": "Where was Super Bowl 50 held?",
+      "gold_answers": [
+        "Santa Clara, California.",
+        "Levi's Stadium"
+      ],
+      "predicted": "Levi's Stadium",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 15014.508511
+    },
+    {
+      "question": "The name of the NFL championship game is?",
+      "gold_answers": [
+        "Super Bowl"
+      ],
+      "predicted": "Super Bowl 50",
+      "exact_match": false,
+      "f1": 0.8,
+      "latency_ms": 18997.579471
+    },
+    {
+      "question": "What 2015 NFL team one the AFC playoff?",
+      "gold_answers": [
+        "Denver Broncos"
+      ],
+      "predicted": "Denver Broncos",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 23501.126946
+    },
+    {
+      "question": "Which Carolina Panthers player was named Most Valuable Player?",
+      "gold_answers": [
+        "Cam Newton"
+      ],
+      "predicted": "Cam Newton",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 39766.012288
+    },
+    {
+      "question": "How many appearances have the Denver Broncos made in the Super Bowl?",
+      "gold_answers": [
+        "8",
+        "eight"
+      ],
+      "predicted": "8",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 30401.965591
+    },
+    {
+      "question": "What year was the Carolina Panthers franchise founded?",
+      "gold_answers": [
+        "1995"
+      ],
+      "predicted": "1995",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 31488.901863
+    },
+    {
+      "question": "What team did the Panthers defeat?",
+      "gold_answers": [
+        "Arizona Cardinals",
+        "the Arizona Cardinals"
+      ],
+      "predicted": "Arizona Cardinals",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 38138.746938
+    },
+    {
+      "question": "Who did the Broncos prevent from going to the Super Bowl?",
+      "gold_answers": [
+        "New England Patriots",
+        "the New England Patriots"
+      ],
+      "predicted": "New England Patriots",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 17687.597784
+    },
+    {
+      "question": "Who did the Panthers beat in the NFC Championship Game?",
+      "gold_answers": [
+        "Arizona Cardinals",
+        "the Arizona Cardinals"
+      ],
+      "predicted": "Arizona Cardinals",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 37809.010091
+    },
+    {
+      "question": "Who lost to the Broncos in the AFC Championship?",
+      "gold_answers": [
+        "New England Patriots",
+        "the New England Patriots"
+      ],
+      "predicted": "New England Patriots",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 45884.391835
+    },
+    {
+      "question": "Who were the defending Super Bowl champions?",
+      "gold_answers": [
+        "New England Patriots",
+        "the New England Patriots"
+      ],
+      "predicted": "Pittsburgh Steelers",
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 24049.030252
+    },
+    {
+      "question": "How many teams have been in the Super Bowl eight times?",
+      "gold_answers": [
+        "four"
+      ],
+      "predicted": "four",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 39490.023114
+    },
+    {
+      "question": "Who was this season's NFL MVP?",
+      "gold_answers": [
+        "Cam Newton"
+      ],
+      "predicted": "Peyton Manning",
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 40301.443517
+    },
+    {
+      "question": "What was the win/loss ratio in 2015 for the Carolina Panthers during their regular season?",
+      "gold_answers": [
+        "15–1"
+      ],
+      "predicted": "15-1",
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 33783.629388999994
+    },
+    {
+      "question": "Which Carolina Panthers team member was picked as the team's MVP in 2015?",
+      "gold_answers": [
+        "Cam Newton"
+      ],
+      "predicted": "None",
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 39933.386558000006
+    },
+    {
+      "question": "What were the win/loss game stats for the Denver Bronco's regular season in 2015?",
+      "gold_answers": [
+        "12–4"
+      ],
+      "predicted": "7-0",
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 40168.907324
+    },
+    {
+      "question": "How many teams have played in the Super Bowl eight times?",
+      "gold_answers": [
+        "4",
+        "four"
+      ],
+      "predicted": "four",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 27022.67285
+    },
+    {
+      "question": "Which team did not get a chance to defend their Super Bowl XLIX win in Super Bowl 50?",
+      "gold_answers": [
+        "New England Patriots",
+        "the New England Patriots"
+      ],
+      "predicted": "New England Patriots",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 34644.619879
+    },
+    {
+      "question": "Who is the quarterback for the Panthers?",
+      "gold_answers": [
+        "Cam Newton"
+      ],
+      "predicted": "Cam Newton",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 32723.881081000003
+    },
+    {
+      "question": "Who did Carolina beat in the NFC championship game?",
+      "gold_answers": [
+        "Arizona Cardinals",
+        "the Arizona Cardinals"
+      ],
+      "predicted": "Arizona Cardinals",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 21033.223708
+    },
+    {
+      "question": "How many times have the Panthers been in the Super Bowl?",
+      "gold_answers": [
+        "2",
+        "second"
+      ],
+      "predicted": "1",
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 27546.41601
+    },
+    {
+      "question": "Who did Denver beat in the AFC championship?",
+      "gold_answers": [
+        "New England Patriots",
+        "the New England Patriots"
+      ],
+      "predicted": "New England Patriots",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 20317.636938
+    },
+    {
+      "question": "Who was the Most Valuable Player for the 2015 NFL season?",
+      "gold_answers": [
+        "Cam Newton"
+      ],
+      "predicted": "Cam Newton",
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 26185.379219000002
+    }
+  ]
+}
