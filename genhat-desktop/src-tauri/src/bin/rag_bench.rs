@@ -2653,6 +2653,13 @@ async fn cmd_beir_bench(args: BeirBenchArgs) -> Result<()> {
     // Embed requests to llama-server are fired in parallel batches of
     // EMBED_CONCURRENCY; DB/BM25/vector writes remain sequential since
     // those stores are not concurrency-safe.
+    //
+    // BM25 note: add_chunks_batch() commits (flushes Tantivy segment) on every
+    // call. Tantivy segment merging is O(total_docs) per commit, so committing
+    // per batch causes O(N²) slowdown on large corpora (fiqa: ~170k chunks).
+    // Instead, accumulate the BM25 data here and issue a single commit at the
+    // end of ingest — O(N log N) total vs O(N²).
+    let mut bm25_pending: Vec<(i64, String, String)> = Vec::new();
     const EMBED_CONCURRENCY: usize = 8;
 
     // Pre-compute chunking for every pending doc so the embed futures only do I/O.
@@ -2703,10 +2710,11 @@ async fn cmd_beir_bench(args: BeirBenchArgs) -> Result<()> {
                 .map(|c| (c.index, c.text.clone(), c.metadata.clone())).collect();
             let chunk_ids = db.insert_chunks(db_doc_id, &chunk_data)
                 .map_err(|e| anyhow::anyhow!("insert_chunks: {}", e))?;
-            let bm25_batch: Vec<(i64, String, String)> = chunk_ids.iter().zip(pd.chunks.iter())
+            // Accumulate BM25 data — commit deferred until after all ingest to
+            // avoid O(N²) Tantivy segment merges.
+            let bm25_for_doc: Vec<(i64, String, String)> = chunk_ids.iter().zip(pd.chunks.iter())
                 .map(|(&id, c)| (id, c.text.clone(), pd.doc.id.clone())).collect();
-            bm25.add_chunks_batch(&bm25_batch)
-                .map_err(|e| anyhow::anyhow!("BM25: {}", e))?;
+            bm25_pending.extend(bm25_for_doc);
             for (i, emb) in embeddings.iter().enumerate() {
                 if i < chunk_ids.len() && !emb.is_empty() {
                     let _ = db.set_chunk_embedding(chunk_ids[i], emb, None);
@@ -2727,6 +2735,15 @@ async fn cmd_beir_bench(args: BeirBenchArgs) -> Result<()> {
         }
     }
     vec_index.rebuild_if_needed();
+
+    // Single BM25 commit for all newly ingested docs — one Tantivy segment
+    // merge instead of one per batch.
+    if !bm25_pending.is_empty() {
+        println!("[beir] Committing BM25 index ({} chunks)…", bm25_pending.len());
+        bm25.add_chunks_batch(&bm25_pending)
+            .map_err(|e| anyhow::anyhow!("BM25 final commit: {}", e))?;
+    }
+
     let total_elapsed = ingest_t0.elapsed().as_secs_f64();
     if skipped_embed > 0 {
         eprintln!("[beir] WARN: {} doc(s) skipped due to embed failure (too large for model context)", skipped_embed);
