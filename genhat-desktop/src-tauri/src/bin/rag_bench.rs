@@ -2070,6 +2070,10 @@ async fn cmd_scale(args: ScaleArgs) -> Result<()> {
             .collect();
 
         const SCALE_EMBED_CONCURRENCY: usize = 8;
+        // Accumulate BM25 data for a single end-of-checkpoint commit (same
+        // rationale as ingest_corpus_with_config: avoids per-document Tantivy
+        // segment flushes stalling the CPU between embed batches).
+        let mut scale_bm25_pending: Vec<(i64, String, String)> = Vec::new();
         for batch in scale_pending.chunks(SCALE_EMBED_CONCURRENCY) {
             let embed_futs: Vec<_> = batch.iter()
                 .map(|pe| {
@@ -2092,14 +2096,9 @@ async fn cmd_scale(args: ScaleArgs) -> Result<()> {
                 let chunk_ids = cp_db
                     .insert_chunks(doc_id, &chunk_data)
                     .map_err(|e| anyhow::anyhow!("insert_chunks: {}", e))?;
-                let bm25_batch: Vec<(i64, String, String)> = chunk_ids
-                    .iter()
-                    .zip(pe.chunks.iter())
-                    .map(|(&id, c)| (id, c.text.clone(), pe.title.clone()))
-                    .collect();
-                cp_bm25
-                    .add_chunks_batch(&bm25_batch)
-                    .map_err(|e| anyhow::anyhow!("BM25 batch: {}", e))?;
+                for (&id, c) in chunk_ids.iter().zip(pe.chunks.iter()) {
+                    scale_bm25_pending.push((id, c.text.clone(), pe.title.clone()));
+                }
                 for (i, emb) in embeddings.iter().enumerate() {
                     if i < chunk_ids.len() && !emb.is_empty() {
                         let _ = cp_db.set_chunk_embedding(chunk_ids[i], emb, None);
@@ -2108,7 +2107,12 @@ async fn cmd_scale(args: ScaleArgs) -> Result<()> {
                 }
             }
         }
-
+        // Single Tantivy commit for this scale checkpoint.
+        if !scale_bm25_pending.is_empty() {
+            cp_bm25
+                .add_chunks_batch(&scale_bm25_pending)
+                .map_err(|e| anyhow::anyhow!("BM25 final commit: {}", e))?;
+        }
         cp_vec.rebuild_if_needed();
         let doc_count = cp_db.document_count().unwrap_or(0) as usize;
         let vec_count = cp_vec.len();
@@ -2922,6 +2926,11 @@ async fn ingest_corpus_with_config(
     const EMBED_CONCURRENCY: usize = 8;
     let t0 = Instant::now();
     let mut total_chunks = 0usize;
+    // Accumulate BM25 data for a single end-of-corpus commit.
+    // add_chunks_batch() flushes a Tantivy segment on every call; committing
+    // per-document causes N segment flushes (e.g. 4800 for 12 ablation configs
+    // × 400 SQuAD docs), each stalling the CPU while the GPU is idle.
+    let mut bm25_pending: Vec<(i64, String, String)> = Vec::new();
 
     for batch in pending.chunks(EMBED_CONCURRENCY) {
         let embed_futs: Vec<_> = batch.iter()
@@ -2941,9 +2950,9 @@ async fn ingest_corpus_with_config(
                 .map(|c| (c.index, c.text.clone(), c.metadata.clone())).collect();
             let chunk_ids = db.insert_chunks(doc_id, &chunk_data)
                 .map_err(|e| anyhow::anyhow!("insert_chunks: {}", e))?;
-            bm25.add_chunks_batch(&chunk_ids.iter().zip(pe.chunks.iter())
-                .map(|(&id, c)| (id, c.text.clone(), pe.title.clone())).collect::<Vec<_>>())
-                .map_err(|e| anyhow::anyhow!("BM25: {}", e))?;
+            for (&id, c) in chunk_ids.iter().zip(pe.chunks.iter()) {
+                bm25_pending.push((id, c.text.clone(), pe.title.clone()));
+            }
             for (i, emb) in embeddings.iter().enumerate() {
                 if i < chunk_ids.len() && !emb.is_empty() {
                     let _ = db.set_chunk_embedding(chunk_ids[i], emb, None);
@@ -2952,6 +2961,11 @@ async fn ingest_corpus_with_config(
             }
             total_chunks += pe.chunks.len();
         }
+    }
+    // Single Tantivy commit for the entire corpus ingest.
+    if !bm25_pending.is_empty() {
+        bm25.add_chunks_batch(&bm25_pending)
+            .map_err(|e| anyhow::anyhow!("BM25 final commit: {}", e))?;
     }
     vec_index.rebuild_if_needed();
     Ok((total_chunks, t0.elapsed().as_millis() as u64))
