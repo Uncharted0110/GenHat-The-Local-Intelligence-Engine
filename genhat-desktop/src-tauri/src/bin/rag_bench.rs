@@ -831,16 +831,17 @@ impl EmbedServer {
             for line in &gpu_lines {
                 println!("[bench] GPU: {}", line.trim());
             }
-            // Warn explicitly when CUDA was detected but no layers were offloaded —
-            // the common cause is the llama-server binary lacking SM offload support
-            // for this model arch, or the model not being recognised as GPU-capable.
-            let has_offload = log_lower.contains("offload");
+            // Warn when CUDA was detected but there is no evidence of GPU use.
+            // Newer llama.cpp uses "fitting params to device memory" instead of
+            // "offloaded N layers" — accept either as a GPU-active signal.
+            let has_offload = log_lower.contains("offload")
+                || log_lower.contains("fitting params to device");
             if !has_offload {
                 println!(
-                    "[bench] GPU: WARNING — CUDA detected but no 'offload' message found."
+                    "[bench] GPU: WARNING — CUDA detected but no GPU-offload signal found."
                 );
                 println!(
-                    "[bench]      Layers are NOT on GPU despite --n-gpu-layers 99."
+                    "[bench]      Model may be running on CPU despite --n-gpu-layers 99."
                 );
                 println!(
                     "[bench]      Full server log: {}",
