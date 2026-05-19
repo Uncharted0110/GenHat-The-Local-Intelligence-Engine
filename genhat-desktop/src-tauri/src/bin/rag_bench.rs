@@ -2654,11 +2654,19 @@ async fn cmd_beir_bench(args: BeirBenchArgs) -> Result<()> {
     // EMBED_CONCURRENCY; DB/BM25/vector writes remain sequential since
     // those stores are not concurrency-safe.
     //
-    // BM25 note: add_chunks_batch() commits (flushes Tantivy segment) on every
-    // call. Tantivy segment merging is O(total_docs) per commit, so committing
-    // per batch causes O(N²) slowdown on large corpora (fiqa: ~170k chunks).
-    // Instead, accumulate the BM25 data here and issue a single commit at the
-    // end of ingest — O(N log N) total vs O(N²).
+    // BM25 checkpointing: add_chunks_batch() commits (flushes Tantivy segment)
+    // on every call. Tantivy segment merging is O(total_docs) per commit, so
+    // committing per batch (~8 docs) causes O(N²) slowdown on large corpora
+    // (fiqa: ~170k chunks → 7k commits → 1 doc/s at the end).
+    //
+    // Fix: accumulate BM25 data into bm25_pending and flush every
+    // BM25_CHECKPOINT_DOCS docs. For fiqa this is ~114 commits instead of 7000
+    // (60× fewer), while still checkpointing to disk so a crash only loses at
+    // most BM25_CHECKPOINT_DOCS worth of BM25 data (SQLite + embeddings are
+    // safe — written per-doc). On re-run, SQLite-cached docs would be skipped,
+    // so without checkpointing BM25 would be permanently empty for that
+    // workspace after any crash.
+    const BM25_CHECKPOINT_DOCS: usize = 500;
     let mut bm25_pending: Vec<(i64, String, String)> = Vec::new();
     const EMBED_CONCURRENCY: usize = 8;
 
@@ -2710,8 +2718,6 @@ async fn cmd_beir_bench(args: BeirBenchArgs) -> Result<()> {
                 .map(|c| (c.index, c.text.clone(), c.metadata.clone())).collect();
             let chunk_ids = db.insert_chunks(db_doc_id, &chunk_data)
                 .map_err(|e| anyhow::anyhow!("insert_chunks: {}", e))?;
-            // Accumulate BM25 data — commit deferred until after all ingest to
-            // avoid O(N²) Tantivy segment merges.
             let bm25_for_doc: Vec<(i64, String, String)> = chunk_ids.iter().zip(pd.chunks.iter())
                 .map(|(&id, c)| (id, c.text.clone(), pd.doc.id.clone())).collect();
             bm25_pending.extend(bm25_for_doc);
@@ -2723,6 +2729,14 @@ async fn cmd_beir_bench(args: BeirBenchArgs) -> Result<()> {
             }
 
             ingested_count += 1;
+            // Periodic BM25 checkpoint — flush accumulated chunks to Tantivy
+            // every BM25_CHECKPOINT_DOCS docs so a crash loses at most one
+            // checkpoint window of BM25 data.
+            if ingested_count % BM25_CHECKPOINT_DOCS == 0 && !bm25_pending.is_empty() {
+                bm25.add_chunks_batch(&bm25_pending)
+                    .map_err(|e| anyhow::anyhow!("BM25 checkpoint: {}", e))?;
+                bm25_pending.clear();
+            }
             if progress_step == 0 || ingested_count % progress_step == 0 || ingested_count == to_ingest {
                 let elapsed = ingest_t0.elapsed().as_secs_f64();
                 let rate = ingested_count as f64 / elapsed.max(0.001);
@@ -2736,12 +2750,11 @@ async fn cmd_beir_bench(args: BeirBenchArgs) -> Result<()> {
     }
     vec_index.rebuild_if_needed();
 
-    // Single BM25 commit for all newly ingested docs — one Tantivy segment
-    // merge instead of one per batch.
+    // Tail flush — commit any BM25 docs accumulated since the last checkpoint.
     if !bm25_pending.is_empty() {
-        println!("[beir] Committing BM25 index ({} chunks)…", bm25_pending.len());
+        println!("[beir] Committing BM25 tail ({} chunks)…", bm25_pending.len());
         bm25.add_chunks_batch(&bm25_pending)
-            .map_err(|e| anyhow::anyhow!("BM25 final commit: {}", e))?;
+            .map_err(|e| anyhow::anyhow!("BM25 tail commit: {}", e))?;
     }
 
     let total_elapsed = ingest_t0.elapsed().as_secs_f64();
