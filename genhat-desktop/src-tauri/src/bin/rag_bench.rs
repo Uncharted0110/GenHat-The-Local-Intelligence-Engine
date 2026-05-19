@@ -34,7 +34,10 @@
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
+use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
+
+use futures_util::stream::{self, StreamExt};
 
 use anyhow::{bail, Context, Result};
 use clap::{Args, Parser, Subcommand};
@@ -688,7 +691,7 @@ struct BeirDoc {
 // ── Embedding server management ───────────────────────────────────────────────
 
 struct EmbedServer {
-    process: Child,
+    process: Mutex<Child>,
     port: u16,
     client: Client,
 }
@@ -776,7 +779,7 @@ impl EmbedServer {
         );
 
         Ok(Self {
-            process,
+            process: Mutex::new(process),
             port,
             client,
         })
@@ -786,6 +789,23 @@ impl EmbedServer {
         if texts.is_empty() {
             return Ok(vec![]);
         }
+        // BGE models are BERT-based with a hard 512-token architectural limit.
+        // Default chunks are 1536 chars; Wikipedia sport/number-heavy text tokenises
+        // at ~2.5 chars/token, yielding 600+ tokens. Cap at 1200 chars (~480 tokens
+        // at 2.5 chars/token) to stay safely under the 512-token model limit.
+        const BGE_MAX_CHARS: usize = 1200;
+        let texts: Vec<String> = texts
+            .into_iter()
+            .map(|t| {
+                if t.len() <= BGE_MAX_CHARS {
+                    t
+                } else {
+                    let boundary = t.floor_char_boundary(BGE_MAX_CHARS);
+                    t[..boundary].to_string()
+                }
+            })
+            .collect();
+
         // Use the OpenAI-compatible /v1/embeddings endpoint (same as the main app backend).
         let url = format!("http://127.0.0.1:{}/v1/embeddings", self.port);
         let body = serde_json::json!({ "input": texts });
@@ -855,8 +875,10 @@ impl EmbedServer {
         bail!("Embedding failed after 3 attempts: {}", last_err)
     }
 
-    fn stop(&mut self) {
-        let _ = self.process.kill();
+    fn stop(&self) {
+        if let Ok(mut child) = self.process.lock() {
+            let _ = child.kill();
+        }
     }
 }
 
@@ -869,7 +891,7 @@ impl Drop for EmbedServer {
 // ── LLM generation server (for E2E answer quality eval) ─────────────────────────
 
 struct ChatServer {
-    process: Child,
+    process: Mutex<Child>,
     port: u16,
     client: Client,
 }
@@ -898,6 +920,9 @@ impl ChatServer {
                 "4096",
                 "--n-gpu-layers",
                 "99",
+                // Allow 4 concurrent in-flight requests for parallel RAPTOR summarisation.
+                "--parallel",
+                "8",
                 "--no-warmup",
                 "--log-disable",
             ])
@@ -922,7 +947,7 @@ impl ChatServer {
             }
         }
         println!("[bench] LLM server ready");
-        Ok(Self { process, port, client })
+        Ok(Self { process: Mutex::new(process), port, client })
     }
 
     async fn chat_complete(&self, system: &str, user: &str) -> Result<String> {
@@ -934,11 +959,10 @@ impl ChatServer {
             ],
             "temperature": 0.0,
             "max_tokens": 64,
-            // Disable Qwen3/DeepSeek thinking mode — must set all three.
-            // budget=0 stops generation, format=none skips tag parsing,
-            // chat_template_kwargs disables it at the template level.
-            "reasoning_budget": 0,
-            "reasoning_format": "none",
+            // Disable Qwen3 thinking mode at the chat-template level.
+            // Do NOT set reasoning_budget:0 — it causes the model to emit an
+            // unclosed <think> tag on long RAG contexts, which strip_think_tags
+            // then discards entirely, giving EM=0 F1=0 for all RAG queries.
             "chat_template_kwargs": {"enable_thinking": false}
         });
         let resp: serde_json::Value = self
@@ -959,8 +983,10 @@ impl ChatServer {
         Ok(strip_think_tags(&raw))
     }
 
-    fn stop(&mut self) {
-        let _ = self.process.kill();
+    fn stop(&self) {
+        if let Ok(mut child) = self.process.lock() {
+            let _ = child.kill();
+        }
     }
 }
 
@@ -1566,11 +1592,14 @@ fn strip_think_tags(s: &str) -> String {
     let mut rest = s;
     while let Some(start) = rest.find("<think>") {
         out.push_str(&rest[..start]);
-        if let Some(end) = rest.find("</think>") {
-            rest = &rest[end + "</think>".len()..];
+        if let Some(end) = rest[start..].find("</think>") {
+            // Normal case: closed tag — skip the entire <think>…</think> block.
+            rest = &rest[start + end + "</think>".len()..];
         } else {
-            // Unclosed tag — drop everything from <think> onward
-            rest = "";
+            // Unclosed tag (e.g. truncated by reasoning_budget) — skip the
+            // <think> opener and keep whatever came after it as the answer.
+            rest = &rest[start + "<think>".len()..];
+            break;
         }
     }
     out.push_str(rest);
@@ -2380,7 +2409,12 @@ async fn build_raptor_tree_cli(
             let mut combined = String::new();
             for (i, t) in child_texts.iter().enumerate() {
                 combined.push_str(&format!("Passage {}:\n{}\n\n", i + 1, t));
-                if combined.len() > max_len { combined.truncate(max_len); break; }
+                if combined.len() > max_len {
+                    // Truncate at a valid UTF-8 char boundary to avoid panic on multibyte chars
+                    let boundary = combined.floor_char_boundary(max_len);
+                    combined.truncate(boundary);
+                    break;
+                }
             }
             let prompt = format!(
                 "Summarize the following passages into one concise paragraph:\n\n{}\nSummary:",
@@ -2952,17 +2986,30 @@ async fn cmd_ingest(args: IngestArgs) -> Result<()> {
         if let Some(ref llm_path) = args.llm_model {
             db.create_raptor_tables().map_err(|e| anyhow::anyhow!("create_raptor_tables: {}", e))?;
             match ChatServer::start(&server_bin, llm_path, args.llm_port).await {
-                Ok(mut chat_server) => {
+                Ok(chat_server) => {
                     let docs = db.list_documents().unwrap_or_default();
                     println!("[ingest] Building RAPTOR trees for {} documents...", docs.len());
-                    let mut total_nodes = 0usize;
-                    for doc in &docs {
-                        match build_raptor_tree_cli(&db, doc.id, &server, &chat_server).await {
-                            Ok(n) => total_nodes += n,
-                            Err(e) => eprintln!("[ingest] RAPTOR skipped doc {}: {:#}", doc.id, e),
-                        }
-                    }
-                    chat_server.stop();
+                    // Wrap servers in Arc so they can be shared across 4 concurrent futures.
+                    // EmbedServer and ChatServer are Sync (process wrapped in Mutex).
+                    let db_arc = Arc::new(&db);
+                    let embed_arc = Arc::new(&server);
+                    let chat_arc = Arc::new(chat_server);
+                    let total_nodes: usize = stream::iter(docs)
+                        .map(|doc| {
+                            let db_ref = Arc::clone(&db_arc);
+                            let embed_ref = Arc::clone(&embed_arc);
+                            let chat_ref = Arc::clone(&chat_arc);
+                            async move {
+                                match build_raptor_tree_cli(*db_ref, doc.id, *embed_ref, &chat_ref).await {
+                                    Ok(n) => n,
+                                    Err(e) => { eprintln!("[ingest] RAPTOR skipped doc {}: {:#}", doc.id, e); 0 }
+                                }
+                            }
+                        })
+                        .buffer_unordered(8)
+                        .fold(0usize, |acc, n| async move { acc + n })
+                        .await;
+                    chat_arc.stop();
                     println!("[ingest] RAPTOR complete: {} nodes created", total_nodes);
                 }
                 Err(e) => eprintln!("[ingest] WARNING: Could not start LLM server for RAPTOR: {:#}", e),
@@ -3017,13 +3064,29 @@ async fn cmd_bench(args: BenchArgs) -> Result<()> {
     let mut server =
         EmbedServer::start(&server_bin, &args.embed_model, args.embed_port).await?;
 
+    // Subsample QA pairs for the recall + RAPTOR benchmarks to match --e2e-count.
+    // Running the full corpus (87k pairs) takes many hours; 500 representative pairs
+    // produce publication-quality Recall@k and latency numbers.
+    let recall_n = args.e2e_count.min(qa_pairs.len());
+    let step = if recall_n == 0 { 1 } else { qa_pairs.len().max(1) / recall_n };
+    let qa_bench: Vec<QAPair> = qa_pairs
+        .iter()
+        .step_by(step.max(1))
+        .take(recall_n)
+        .cloned()
+        .collect();
+    println!(
+        "[bench] Recall benchmark sample: {} / {} QA pairs (step {})",
+        qa_bench.len(), qa_pairs.len(), step
+    );
+
     println!("\n[bench] ── Running recall + latency benchmarks ──");
     let (recall_results, latency) =
-        run_recall_bench(&qa_pairs, &top_ks, &db, &bm25, &vec_index, &server).await?;
+        run_recall_bench(&qa_bench, &top_ks, &db, &bm25, &vec_index, &server).await?;
 
     let raptor_results = if args.raptor {
         println!("\n[bench] ── Running RAPTOR ablation ──");
-        let r = run_raptor_bench(&qa_pairs, &top_ks, &db, &server).await?;
+        let r = run_raptor_bench(&qa_bench, &top_ks, &db, &server).await?;
         if r.is_empty() { None } else { Some(r) }
     } else {
         None

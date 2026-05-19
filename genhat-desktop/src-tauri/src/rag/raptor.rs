@@ -534,7 +534,8 @@ async fn summarize_cluster_with_confidence(
     for (i, text) in texts.iter().enumerate() {
         combined.push_str(&format!("Document {}:\n{}\n\n", i + 1, text));
         if combined.len() > max_len {
-            combined.truncate(max_len);
+            let boundary = combined.floor_char_boundary(max_len);
+            combined.truncate(boundary);
             combined.push_str("\n[truncated...]");
             break;
         }

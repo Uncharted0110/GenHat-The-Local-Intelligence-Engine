@@ -14,7 +14,10 @@
 #      (optional — baselines skipped with warning if unavailable)
 #
 # Usage:
-#   bash scripts/run_all_benchmarks.sh [--skip-ingest] [--skip-baselines]
+#   bash scripts/run_all_benchmarks.sh [--skip-ingest] [--skip-baselines] [--server <path>]
+#
+# --server <path>  Override the llama-server binary (use a CUDA build on GPU machines).
+#   Example: bash scripts/run_all_benchmarks.sh --server /usr/local/bin/llama-server
 #
 # Each run writes to results/<RUN_ID>/  (timestamped, never overwritten).
 # A symlink results/latest → current run is maintained for convenience.
@@ -41,6 +44,7 @@ RUN_ID="$(date +%Y%m%d_%H%M%S)"
 RESULTS="$ROOT/results/$RUN_ID"
 SKIP_INGEST=0
 SKIP_BASELINES=0
+SERVER_OVERRIDE=""
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 die()  { echo "[ERROR] $*" >&2; exit 1; }
@@ -51,17 +55,29 @@ tick() { local s=$((SECONDS - _TICK_T)); _TICK_T=$SECONDS
          printf "[%s] [timing] %-38s %ds\n" "$(date +%H:%M:%S)" "$1" "$s" \
            | tee -a "$RESULTS/timing.txt"; }
 
-for arg in "$@"; do
-  case "$arg" in
-    --skip-ingest)    SKIP_INGEST=1 ;;
-    --skip-baselines) SKIP_BASELINES=1 ;;
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --skip-ingest)    SKIP_INGEST=1 ; shift ;;
+    --skip-baselines) SKIP_BASELINES=1 ; shift ;;
+    --server)         SERVER_OVERRIDE="$2" ; shift 2 ;;
+    *) shift ;;
   esac
 done
+
+[[ -n "$SERVER_OVERRIDE" ]] && SERVER="$SERVER_OVERRIDE"
 
 # ── preflight: hard fails ─────────────────────────────────────────────────────
 # These components are required for every stage; abort immediately if missing.
 [[ -f "$SERVER" && -x "$SERVER" ]] \
   || die "llama-server not found or not executable: $SERVER"
+
+# Warn if the binary appears to be CPU-only (no CUDA/Vulkan in its shared-lib deps)
+if command -v ldd &>/dev/null; then
+  if ! ldd "$SERVER" 2>/dev/null | grep -qiE 'cuda|libcuda|vulkan|libvulkan'; then
+    warn "llama-server has no CUDA/Vulkan deps — it will run on CPU only."
+    warn "For GPU acceleration pass a CUDA build: --server /path/to/cuda/llama-server"
+  fi
+fi
 [[ -f "$EMBED" ]] \
   || die "Base embedding model not found: $EMBED"
 [[ -f "$LLM" ]] \
