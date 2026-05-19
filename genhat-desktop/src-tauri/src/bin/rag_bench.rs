@@ -729,9 +729,12 @@ impl EmbedServer {
                 "--ctx-size",
                 "2048",
                 "--batch-size",
-                "512",
+                "2048",
+                // ubatch-size (physical micro-batch) must be >= the longest single input in
+                // tokens.  SciFact / BEIR documents can exceed 512 tokens per chunk, so match
+                // this to ctx-size to avoid "input too large" errors.
                 "--ubatch-size",
-                "512",
+                "2048",
                 // Offload all layers to GPU if available (falls back to CPU silently)
                 "--n-gpu-layers",
                 "99",
@@ -2563,7 +2566,14 @@ async fn cmd_beir_bench(args: BeirBenchArgs) -> Result<()> {
     let mut server = EmbedServer::start(&server_bin, &args.embed_model, args.embed_port).await?;
 
     // Ingest corpus (BEIR _id used as document title for deduplication & oracle lookup)
-    println!("[beir] Ingesting corpus...");
+    let already_cached = corpus.iter()
+        .filter(|d| db.document_exists(&format!("beir:{}", d.id)).unwrap_or(false))
+        .count();
+    let to_ingest = corpus.len() - already_cached;
+    println!("[beir] Ingesting corpus ({} docs, {} already cached)...", corpus.len(), already_cached);
+    let mut ingested_count = 0usize;
+    let progress_step = (to_ingest / 10).max(50); // ~10 progress lines regardless of corpus size
+    let ingest_t0 = Instant::now();
     for doc in &corpus {
         let path_key = format!("beir:{}", doc.id);
         if db.document_exists(&path_key).unwrap_or(false) { continue; }
@@ -2596,9 +2606,24 @@ async fn cmd_beir_bench(args: BeirBenchArgs) -> Result<()> {
                 vec_index.insert(chunk_ids[i], emb.clone());
             }
         }
+
+        ingested_count += 1;
+        if progress_step == 0 || ingested_count % progress_step == 0 || ingested_count == to_ingest {
+            let elapsed = ingest_t0.elapsed().as_secs_f64();
+            let rate = ingested_count as f64 / elapsed.max(0.001);
+            let eta_s = if rate > 0.0 { (to_ingest - ingested_count) as f64 / rate } else { 0.0 };
+            println!(
+                "[beir] ingest {}/{} docs  ({:.0} docs/s  ETA {:.0}s)",
+                ingested_count, to_ingest, rate, eta_s
+            );
+        }
     }
     vec_index.rebuild_if_needed();
-    println!("[beir] Corpus ready: {} docs total", db.document_count().unwrap_or(0));
+    let total_elapsed = ingest_t0.elapsed().as_secs_f64();
+    println!(
+        "[beir] Corpus ready: {} docs total  ({} newly ingested in {:.1}s)",
+        db.document_count().unwrap_or(0), ingested_count, total_elapsed
+    );
 
     // Build db_doc_id → BEIR id map for retrieval oracle
     let db_docs = db.list_documents().unwrap_or_default();
