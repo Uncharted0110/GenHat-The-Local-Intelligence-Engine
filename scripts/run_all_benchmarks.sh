@@ -48,6 +48,10 @@ WS_TRIVIA="$ROOT/workspace/trivia_ws"
 # BEIR workspaces are expensive to re-ingest (~5k-40k docs each), so they live
 # in a stable path that persists across runs and is reused when already populated.
 WS_BEIR="$ROOT/workspace/beir_ws"
+# Ablation workspaces also persist: each grid-point sub-dir is reused on resume
+# so interrupted runs continue from the last completed config point.
+WS_ABLATE_CHUNK="$ROOT/workspace/ablate_chunking_ws"
+WS_ABLATE_QUANT="$ROOT/workspace/ablate_quant_ws"
 # Per-run outputs land in a timestamped subdirectory — never overwritten.
 RUN_ID="$(date +%Y%m%d_%H%M%S)"
 RESULTS="$ROOT/results/$RUN_ID"
@@ -56,7 +60,7 @@ SKIP_BASELINES=0
 SERVER_OVERRIDE=""
 # Limit ablation stages (6, 8) to first N corpus documents.
 # Leave empty to use the full corpus. Example: --ablate-max-docs 100
-ABLATE_MAX_DOCS=""
+ABLATE_MAX_DOCS="100"
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 die()  { echo "[ERROR] $*" >&2; exit 1; }
@@ -258,7 +262,7 @@ tick "5: BEIR bench"
 # ── 6. Chunking ablation ──────────────────────────────────────────────────────
 echo "[6/10] Chunking ablation …"
 "$BENCH" ablate-chunking \
-  --workspace-dir "$RESULTS/ablate_chunking_ws" \
+  --workspace-dir "$WS_ABLATE_CHUNK" \
   --corpus-dir "$CORPUS" \
   --qa-file "$QA" \
   --embed-model "$EMBED" \
@@ -289,7 +293,7 @@ else
   QUANT_MODELS="$EMBED,$EMBED_SMALL"
 fi
 "$BENCH" ablate-quant \
-  --workspace-dir "$RESULTS/ablate_quant_ws" \
+  --workspace-dir "$WS_ABLATE_QUANT" \
   --corpus-dir "$CORPUS" \
   --qa-file "$QA" \
   --embed-models "$QUANT_MODELS" \

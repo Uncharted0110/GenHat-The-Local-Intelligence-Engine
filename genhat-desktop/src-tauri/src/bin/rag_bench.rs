@@ -3031,7 +3031,12 @@ async fn cmd_ablate_chunking(args: AblateChunkingArgs) -> Result<()> {
             if ov >= cs { continue; }
             idx += 1;
             println!("[ablate-chunk] [{}/{}] chunk_size={}  overlap={}", idx, total, cs, ov);
-            let cp_dir = args.workspace_dir.join(format!("cs{}ov{}", cs, ov));
+            // Encode max_docs in dir name so changing --max-docs never reuses stale data.
+            let dir_name = match args.max_docs {
+                Some(n) => format!("cs{}ov{}_n{}", cs, ov, n),
+                None    => format!("cs{}ov{}", cs, ov),
+            };
+            let cp_dir = args.workspace_dir.join(&dir_name);
             std::fs::create_dir_all(&cp_dir)?;
             let cp_db = RagDb::open(&cp_dir.join("rag.db"))
                 .map_err(|e| anyhow::anyhow!("RagDb: {}", e))?;
@@ -3041,9 +3046,17 @@ async fn cmd_ablate_chunking(args: AblateChunkingArgs) -> Result<()> {
                 .map_err(|e| anyhow::anyhow!("VecIndex: {}", e))?;
 
             let config = ChunkerConfig { chunk_size: cs, overlap: ov, ..Default::default() };
-            let (n_chunks, ingest_ms) = ingest_corpus_with_config(
-                &args.corpus_dir, &server, &cp_db, &cp_bm25, &cp_vec, &config, args.max_docs,
-            ).await?;
+            // Skip ingest if this workspace was already populated (resumable runs).
+            let already_ingested = cp_db.list_documents()
+                .map_or(false, |d| !d.is_empty());
+            let (n_chunks, ingest_ms) = if already_ingested {
+                println!("[ablate-chunk]   ↩ workspace cached — skipping ingest");
+                (0usize, 0u64)
+            } else {
+                ingest_corpus_with_config(
+                    &args.corpus_dir, &server, &cp_db, &cp_bm25, &cp_vec, &config, args.max_docs,
+                ).await?
+            };
 
             let (recall_results, _) =
                 run_recall_bench(&qa_pairs, &top_ks, &cp_db, &cp_bm25, &cp_vec, &server).await?;
@@ -3060,7 +3073,7 @@ async fn cmd_ablate_chunking(args: AblateChunkingArgs) -> Result<()> {
                 recall_5: r5, recall_10: r10, mrr, avg_query_ms: lat,
                 ingest_total_ms: ingest_ms,
             });
-            let _ = std::fs::remove_dir_all(&cp_dir);
+            // Workspace is kept for resumability; do NOT remove.
         }
     }
 
@@ -3254,7 +3267,12 @@ async fn cmd_ablate_quant(args: AblateQuantArgs) -> Result<()> {
             .unwrap_or("?").to_string();
         println!("[ablate-quant] Model: {}", model_name);
 
-        let cp_dir = args.workspace_dir.join(format!("quant_{}", model_name));
+        // Encode max_docs in dir name so changing --max-docs never reuses stale data.
+        let dir_name = match args.max_docs {
+            Some(n) => format!("quant_{}_n{}", model_name, n),
+            None    => format!("quant_{}", model_name),
+        };
+        let cp_dir = args.workspace_dir.join(&dir_name);
         std::fs::create_dir_all(&cp_dir)?;
         let cp_db = RagDb::open(&cp_dir.join("rag.db"))
             .map_err(|e| anyhow::anyhow!("RagDb: {}", e))?;
@@ -3263,11 +3281,18 @@ async fn cmd_ablate_quant(args: AblateQuantArgs) -> Result<()> {
         let cp_vec = VectorIndex::load_from_db(&cp_db)
             .map_err(|e| anyhow::anyhow!("VecIndex: {}", e))?;
 
+        // Skip ingest if this workspace was already populated (resumable runs).
+        let already_ingested = cp_db.list_documents()
+            .map_or(false, |d| !d.is_empty());
         let server = EmbedServer::start(&server_bin, model_path, args.embed_port).await?;
         let config = ChunkerConfig::default();
-        let _ = ingest_corpus_with_config(
-            &args.corpus_dir, &server, &cp_db, &cp_bm25, &cp_vec, &config, args.max_docs,
-        ).await?;
+        if already_ingested {
+            println!("[ablate-quant]   ↩ workspace cached — skipping ingest");
+        } else {
+            let _ = ingest_corpus_with_config(
+                &args.corpus_dir, &server, &cp_db, &cp_bm25, &cp_vec, &config, args.max_docs,
+            ).await?;
+        }
 
         // Sample embed latency per query
         let sample: Vec<String> = qa_pairs.iter().take(50).map(|q| q.question.clone()).collect();
@@ -3290,7 +3315,7 @@ async fn cmd_ablate_quant(args: AblateQuantArgs) -> Result<()> {
             model_name, recall_5: r5, recall_10: r10, mrr,
             avg_embed_ms, avg_query_ms: lat,
         });
-        let _ = std::fs::remove_dir_all(&cp_dir);
+        // Workspace is kept for resumability; do NOT remove.
     }
 
     std::fs::write(&args.output, serde_json::to_string_pretty(&points)?)
