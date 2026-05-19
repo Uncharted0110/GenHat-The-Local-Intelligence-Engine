@@ -45,7 +45,7 @@ use reqwest::Client;
 use serde::{Deserialize, Serialize};
 
 use app_lib::rag::{
-    chunker::{chunk_text, chunk_text_default, Chunk, ChunkerConfig},
+    chunker::{chunk_text, chunk_text_default, ChunkerConfig},
     db::{dot_product, RagDb},
     fusion::{rrf_fuse, rrf_fuse_with_k},
     raptor::RaptorNode,
@@ -1355,18 +1355,33 @@ async fn run_recall_bench(
 
     let mut recall_results = Vec::new();
 
+    // Pre-embed all queries once (parallel batches) — avoids re-embedding once per
+    // retrieval config (4× redundancy) and saturates the GPU across queries.
+    const EMBED_CONCURRENCY: usize = 8;
+    let pre_embed_t0 = Instant::now();
+    let mut pre_embeddings: Vec<Vec<f32>> = Vec::with_capacity(qa_pairs.len());
+    for batch in qa_pairs.chunks(EMBED_CONCURRENCY) {
+        let futs: Vec<_> = batch.iter()
+            .map(|qa| server.embed(vec![qa.question.clone()]))
+            .collect();
+        let results = futures_util::future::join_all(futs).await;
+        for r in results {
+            pre_embeddings.push(r.unwrap_or_default().into_iter().next().unwrap_or_default());
+        }
+    }
+    let per_query_embed_ms = pre_embed_t0.elapsed().as_secs_f64() * 1000.0
+        / qa_pairs.len().max(1) as f64;
+
     for cfg in &configs {
         let mut per_question = Vec::new();
         let mut total_latency = 0.0;
 
-        for qa in qa_pairs {
+        for (qa_idx, qa) in qa_pairs.iter().enumerate() {
             let t_total = Instant::now();
 
-            // ── Stage 1: embed query ──────────────────────────────────────
-            let t = Instant::now();
-            let emb_resp = server.embed(vec![qa.question.clone()]).await?;
-            let query_emb = emb_resp.into_iter().next().unwrap_or_default();
-            let d_embed = t.elapsed().as_secs_f64() * 1000.0;
+            // ── Stage 1: use pre-computed query embedding ─────────────────
+            let query_emb = pre_embeddings.get(qa_idx).cloned().unwrap_or_default();
+            let d_embed = per_query_embed_ms;
 
             // ── Stage 2: BM25 ─────────────────────────────────────────────
             let t = Instant::now();
@@ -2006,7 +2021,7 @@ async fn cmd_scale(args: ScaleArgs) -> Result<()> {
     }
 
     let top_ks = vec![5usize, 10];
-    let mut server = EmbedServer::start(&server_bin, &args.embed_model, args.embed_port).await?;
+    let server = EmbedServer::start(&server_bin, &args.embed_model, args.embed_port).await?;
     let mut points: Vec<ScalePoint> = Vec::new();
 
     for &target_size in &sizes {
@@ -2220,7 +2235,7 @@ fn print_summary(r: &BenchResults) {
 
     println!("\n── Recall@k ──────────────────────────────────────────────────");
     // Collect all k values from data and display them all
-    let mut all_ks: Vec<usize> = r.recall.first()
+    let all_ks: Vec<usize> = r.recall.first()
         .map(|rr| {
             let mut ks: Vec<usize> = rr.recall.keys()
                 .filter_map(|k| k.strip_prefix("recall@").and_then(|n| n.parse().ok()))
@@ -2649,7 +2664,7 @@ async fn cmd_beir_bench(args: BeirBenchArgs) -> Result<()> {
         .map_err(|e| anyhow::anyhow!("BM25: {}", e))?;
     let vec_index = VectorIndex::load_from_db(&db)
         .map_err(|e| anyhow::anyhow!("VecIndex: {}", e))?;
-    let mut server = EmbedServer::start(&server_bin, &args.embed_model, args.embed_port).await?;
+    let server = EmbedServer::start(&server_bin, &args.embed_model, args.embed_port).await?;
 
     // Ingest corpus (BEIR _id used as document title for deduplication & oracle lookup)
     let already_cached = corpus.iter()
@@ -2956,7 +2971,7 @@ async fn cmd_ablate_chunking(args: AblateChunkingArgs) -> Result<()> {
         .with_context(|| format!("Cannot read QA file: {}", args.qa_file.display()))?;
     let qa_pairs: Vec<QAPair> = serde_json::from_str(&qa_json).context("Invalid QA file")?;
     let top_ks = vec![5usize, 10];
-    let mut server = EmbedServer::start(&server_bin, &args.embed_model, args.embed_port).await?;
+    let server = EmbedServer::start(&server_bin, &args.embed_model, args.embed_port).await?;
     let mut points: Vec<ChunkAblationPoint> = Vec::new();
     let total = chunk_sizes.len() * overlaps.len();
     let mut idx = 0usize;
@@ -3018,11 +3033,11 @@ async fn cmd_ablate_chunking(args: AblateChunkingArgs) -> Result<()> {
 /// Hybrid recall benchmark with a specific RRF k constant.
 async fn run_recall_hybrid_rrf_k(
     qa_pairs: &[QAPair],
+    query_embeddings: &[Vec<f32>],
     top_ks: &[usize],
     db: &RagDb,
     bm25: &BM25Index,
     vec_index: &VectorIndex,
-    server: &EmbedServer,
     rrf_k: f64,
 ) -> Result<RecallResult> {
     let docs = db.list_documents().map_err(|e| anyhow::anyhow!("{}", e))?;
@@ -3032,10 +3047,9 @@ async fn run_recall_hybrid_rrf_k(
     let mut per_question: Vec<PerQuestionResult> = Vec::new();
     let mut total_lat = 0.0_f64;
 
-    for qa in qa_pairs {
+    for (qa_idx, qa) in qa_pairs.iter().enumerate() {
         let t0 = Instant::now();
-        let query_emb = server.embed(vec![qa.question.clone()]).await?
-            .into_iter().next().unwrap_or_default();
+        let query_emb = query_embeddings.get(qa_idx).cloned().unwrap_or_default();
         let bm25_res = bm25.search(&qa.question, max_k).unwrap_or_default();
         let vec_res  = if !query_emb.is_empty() { vec_index.search(&query_emb, max_k) } else { vec![] };
         let fused = rrf_fuse_with_k(&[bm25_res, vec_res], rrf_k);
@@ -3104,12 +3118,25 @@ async fn cmd_ablate_rrf_k(args: AblateRrfKArgs) -> Result<()> {
         .with_context(|| format!("Cannot read QA file: {}", args.qa_file.display()))?;
     let qa_pairs: Vec<QAPair> = serde_json::from_str(&qa_json).context("Invalid QA file")?;
     let top_ks = vec![5usize, 10];
-    let mut server = EmbedServer::start(&server_bin, &args.embed_model, args.embed_port).await?;
+    let server = EmbedServer::start(&server_bin, &args.embed_model, args.embed_port).await?;
     let mut points: Vec<RrfKPoint> = Vec::new();
+
+    // Pre-embed all queries once before sweeping k values — avoids 5× re-embedding.
+    const EMBED_CONCURRENCY: usize = 8;
+    let mut query_embeddings: Vec<Vec<f32>> = Vec::with_capacity(qa_pairs.len());
+    for batch in qa_pairs.chunks(EMBED_CONCURRENCY) {
+        let futs: Vec<_> = batch.iter()
+            .map(|qa| server.embed(vec![qa.question.clone()]))
+            .collect();
+        let results = futures_util::future::join_all(futs).await;
+        for r in results {
+            query_embeddings.push(r.unwrap_or_default().into_iter().next().unwrap_or_default());
+        }
+    }
 
     for &k in &rrf_k_vals {
         println!("[ablate-rrf-k] k={}", k);
-        let res = run_recall_hybrid_rrf_k(&qa_pairs, &top_ks, &db, &bm25, &vec_index, &server, k).await?;
+        let res = run_recall_hybrid_rrf_k(&qa_pairs, &query_embeddings, &top_ks, &db, &bm25, &vec_index, k).await?;
         let r5  = res.recall.get("recall@5").copied().unwrap_or(0.0);
         let r10 = res.recall.get("recall@10").copied().unwrap_or(0.0);
         println!("[ablate-rrf-k]   R@5={:.3}  R@10={:.3}  MRR={:.3}  lat={:.1}ms",
@@ -3163,7 +3190,7 @@ async fn cmd_ablate_quant(args: AblateQuantArgs) -> Result<()> {
         let cp_vec = VectorIndex::load_from_db(&cp_db)
             .map_err(|e| anyhow::anyhow!("VecIndex: {}", e))?;
 
-        let mut server = EmbedServer::start(&server_bin, model_path, args.embed_port).await?;
+        let server = EmbedServer::start(&server_bin, model_path, args.embed_port).await?;
         let config = ChunkerConfig::default();
         let _ = ingest_corpus_with_config(
             &args.corpus_dir, &server, &cp_db, &cp_bm25, &cp_vec, &config,
@@ -3221,7 +3248,7 @@ async fn cmd_ingest(args: IngestArgs) -> Result<()> {
     let bm25 = BM25Index::open(&index_dir).map_err(|e| anyhow::anyhow!("Failed to open BM25 index: {}", e))?;
     let vec_index = VectorIndex::load_from_db(&db).map_err(|e| anyhow::anyhow!("Failed to load VectorIndex: {}", e))?;
 
-    let mut server =
+    let server =
         EmbedServer::start(&server_bin, &args.embed_model, args.embed_port).await?;
 
     let timings = ingest_corpus(&args, &server, &db, &bm25, &vec_index).await?;
@@ -3306,7 +3333,7 @@ async fn cmd_bench(args: BenchArgs) -> Result<()> {
         bail!("--top-k must contain at least one valid integer, e.g. '5,10'");
     }
 
-    let mut server =
+    let server =
         EmbedServer::start(&server_bin, &args.embed_model, args.embed_port).await?;
 
     // Subsample QA pairs for the recall + RAPTOR benchmarks to match --e2e-count.
@@ -3340,7 +3367,7 @@ async fn cmd_bench(args: BenchArgs) -> Result<()> {
     // E2E + no-RAG baseline (both share one ChatServer instance to avoid double startup cost)
     let (e2e_result, no_rag_result) = if let Some(ref llm_model) = args.llm_model {
         match ChatServer::start(&server_bin, llm_model, args.llm_port, 1).await {
-            Ok(mut chat_server) => {
+            Ok(chat_server) => {
                 // RAG-augmented E2E
                 println!("\n[bench] ── Running E2E answer quality eval (with RAG) ──");
                 let e2e = match run_e2e_bench(
@@ -3457,9 +3484,9 @@ async fn cmd_eval(args: EvalArgs) -> Result<()> {
         serde_json::from_str(&qa_json).context("Invalid QA file — expected JSON array")?;
     println!("[eval] Loaded {} QA pairs", qa_pairs.len());
 
-    let mut embed_server =
+    let embed_server =
         EmbedServer::start(&server_bin, &args.embed_model, args.embed_port).await?;
-    let mut chat_server =
+    let chat_server =
         ChatServer::start(&server_bin, &args.llm_model, args.llm_port, 1).await?;
 
     println!("\n[eval] Running E2E answer quality eval ──");
