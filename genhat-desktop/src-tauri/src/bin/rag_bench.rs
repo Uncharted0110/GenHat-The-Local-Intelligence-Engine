@@ -690,6 +690,17 @@ struct BeirDoc {
 
 // ── Embedding server management ───────────────────────────────────────────────
 
+/// Return the last `max_lines` lines of a file as a string, for error diagnostics.
+fn read_file_tail(path: &std::path::Path, max_lines: usize) -> String {
+    std::fs::read_to_string(path)
+        .map(|s| {
+            let lines: Vec<&str> = s.lines().collect();
+            let start = lines.len().saturating_sub(max_lines);
+            lines[start..].join("\n")
+        })
+        .unwrap_or_else(|_| "(no output captured)".to_string())
+}
+
 struct EmbedServer {
     process: Mutex<Child>,
     port: u16,
@@ -717,7 +728,14 @@ impl EmbedServer {
             format!("{}:{}", lib_dir.display(), existing_ld)
         };
 
-        let process = Command::new(server_bin)
+        // Capture stderr to a temp file so failure messages include the actual error.
+        let stderr_log = std::env::temp_dir()
+            .join(format!("rag_bench_embed_{}.log", port));
+        let stderr_file = std::fs::File::create(&stderr_log)
+            .unwrap_or_else(|_| std::fs::OpenOptions::new()
+                .write(true).open("/dev/null").unwrap());
+
+        let mut process = Command::new(server_bin)
             .args([
                 "--model",
                 model.to_str().context("Invalid model path encoding")?,
@@ -743,7 +761,7 @@ impl EmbedServer {
             ])
             .env("LD_LIBRARY_PATH", &new_ld)
             .stdout(Stdio::null())
-            .stderr(Stdio::null())
+            .stderr(Stdio::from(stderr_file))
             .spawn()
             .with_context(|| {
                 format!(
@@ -758,12 +776,24 @@ impl EmbedServer {
 
         let health_url = format!("http://127.0.0.1:{}/health", port);
         let deadline = Instant::now() + Duration::from_secs(90);
+        let start_t = Instant::now();
         loop {
-            if Instant::now() >= deadline {
+            // Detect instant crash (missing library, unsupported flag, OOM, etc.)
+            if let Ok(Some(status)) = process.try_wait() {
+                let tail = read_file_tail(&stderr_log, 40);
                 bail!(
-                    "Embedding server did not become healthy within 90 s. \
-                     Check that the model file is valid and the port {} is free.",
-                    port
+                    "Embedding server (port {}) exited prematurely after {:.1}s ({}).\n\
+                     llama-server output:\n{}",
+                    port, start_t.elapsed().as_secs_f64(), status, tail
+                );
+            }
+            if Instant::now() >= deadline {
+                let tail = read_file_tail(&stderr_log, 40);
+                bail!(
+                    "Embedding server did not become healthy within 90s (port {}).\n\
+                     Check that the model file is valid and the port is free.\n\
+                     llama-server output:\n{}",
+                    port, tail
                 );
             }
             match client.get(&health_url).send().await {
@@ -774,11 +804,7 @@ impl EmbedServer {
 
         println!(
             "[bench] Embedding server ready ({:.1}s warm-up)",
-            (Instant::now().duration_since(
-                // Approximate: just report elapsed from start of this fn
-                Instant::now() - Duration::from_millis(1)
-            ))
-            .as_secs_f64()
+            start_t.elapsed().as_secs_f64()
         );
 
         Ok(Self {
