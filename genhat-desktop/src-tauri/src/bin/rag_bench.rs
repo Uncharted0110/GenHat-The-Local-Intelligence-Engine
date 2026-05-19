@@ -977,7 +977,15 @@ impl ChatServer {
             .context("Failed to parse chat completion response as JSON")?;
         let raw = resp["choices"][0]["message"]["content"]
             .as_str()
-            .unwrap_or("")
+            .unwrap_or_else(|| {
+                // Surface unexpected response shapes for debugging
+                static DUMPED: std::sync::atomic::AtomicBool =
+                    std::sync::atomic::AtomicBool::new(false);
+                if !DUMPED.swap(true, std::sync::atomic::Ordering::Relaxed) {
+                    eprintln!("[chat-debug] unexpected response JSON: {}", resp);
+                }
+                ""
+            })
             .trim()
             .to_string();
         Ok(strip_think_tags(&raw))
@@ -1412,13 +1420,14 @@ async fn run_recall_bench(
 
         let avg_latency_ms = total_latency / n as f64;
 
+        let recall_str: String = top_ks
+            .iter()
+            .map(|&k| format!("recall@{}={:.3}", k, recall.get(&format!("recall@{}", k)).copied().unwrap_or(0.0)))
+            .collect::<Vec<_>>()
+            .join("  ");
         println!(
-            "[bench] {:>16}  recall@5={:.3}  recall@10={:.3}  mrr={:.3}  latency={:.1}ms",
-            cfg.name,
-            recall.get("recall@5").copied().unwrap_or(0.0),
-            recall.get("recall@10").copied().unwrap_or(0.0),
-            mrr,
-            avg_latency_ms,
+            "[bench] {:>16}  {}  mrr={:.3}  latency={:.1}ms",
+            cfg.name, recall_str, mrr, avg_latency_ms,
         );
 
         recall_results.push(RecallResult {
@@ -1561,13 +1570,14 @@ async fn run_raptor_bench(
         let recall: HashMap<String, f64> =
             hits.iter().map(|(k, v)| (k.clone(), *v as f64 / n as f64)).collect();
 
+        let recall_str: String = top_ks
+            .iter()
+            .map(|&k| format!("recall@{}={:.3}", k, recall.get(&format!("recall@{}", k)).copied().unwrap_or(0.0)))
+            .collect::<Vec<_>>()
+            .join("  ");
         println!(
-            "[bench] {:>20}  recall@5={:.3}  recall@10={:.3}  expanded={}/{}",
-            config_name,
-            recall.get("recall@5").copied().unwrap_or(0.0),
-            recall.get("recall@10").copied().unwrap_or(0.0),
-            total_expanded,
-            total_evaluated,
+            "[bench] {:>20}  {}  expanded={}/{}",
+            config_name, recall_str, total_expanded, total_evaluated,
         );
 
         results.push(RaptorResult {
@@ -1732,16 +1742,36 @@ async fn run_e2e_bench(
             .join("\n\n---\n\n");
 
         let user_msg = format!("Context:\n{}\n\nQuestion: {}\nAnswer:", context, qa.question);
-        let predicted = chat_server
-            .chat_complete(system_prompt, &user_msg)
-            .await
-            .unwrap_or_default();
+        let predicted = match chat_server.chat_complete(system_prompt, &user_msg).await {
+            Ok(s) => s,
+            Err(e) => {
+                if per_question.is_empty() {
+                    // Surface the first failure so we can diagnose it
+                    eprintln!("[e2e-error] chat_complete failed: {:#}", e);
+                }
+                String::new()
+            }
+        };
 
         let gold_answers = qa.answers.clone().unwrap_or_default();
         let em = exact_match_score(&predicted, &gold_answers);
         let f1 = best_f1_over_golds(&predicted, &gold_answers);
         let latency_ms = t0.elapsed().as_secs_f64() * 1000.0;
         total_lat += latency_ms;
+
+        // Debug: print first 5 predictions so we can diagnose model output
+        if per_question.len() < 5 {
+            eprintln!(
+                "[e2e-debug #{:02}] Q: {}\n  gold={:?}\n  pred={:?}  em={}  f1={:.3}  ctx_chars={}",
+                per_question.len() + 1,
+                &qa.question,
+                &gold_answers,
+                &predicted,
+                em,
+                f1,
+                context.len(),
+            );
+        }
 
         per_question.push(E2EPerQuestion {
             question: qa.question.clone(),
@@ -2098,17 +2128,29 @@ fn print_summary(r: &BenchResults) {
     println!("╚══════════════════════════════════╝");
 
     println!("\n── Recall@k ──────────────────────────────────────────────────");
-    println!(
-        "{:<20}  {:>10}  {:>10}  {:>8}  {:>14}",
-        "Config", "Recall@5", "Recall@10", "MRR", "Avg Latency(ms)"
-    );
-    println!("{}", "─".repeat(70));
+    // Collect all k values from data and display them all
+    let mut all_ks: Vec<usize> = r.recall.first()
+        .map(|rr| {
+            let mut ks: Vec<usize> = rr.recall.keys()
+                .filter_map(|k| k.strip_prefix("recall@").and_then(|n| n.parse().ok()))
+                .collect();
+            ks.sort_unstable();
+            ks
+        })
+        .unwrap_or_else(|| vec![5, 10]);
+
+    let k_header: String = all_ks.iter().map(|k| format!("{:>10}", format!("Recall@{}", k))).collect::<Vec<_>>().join("  ");
+    println!("{:<20}  {}  {:>8}  {:>14}", "Config", k_header, "MRR", "Avg Latency(ms)");
+    println!("{}", "─".repeat(44 + all_ks.len() * 12));
     for rr in &r.recall {
+        let k_vals: String = all_ks.iter()
+            .map(|k| format!("{:>10.3}", rr.recall.get(&format!("recall@{}", k)).copied().unwrap_or(0.0)))
+            .collect::<Vec<_>>()
+            .join("  ");
         println!(
-            "{:<20}  {:>10.3}  {:>10.3}  {:>8.3}  {:>14.1}",
+            "{:<20}  {}  {:>8.3}  {:>14.1}",
             rr.config,
-            rr.recall.get("recall@5").copied().unwrap_or(0.0),
-            rr.recall.get("recall@10").copied().unwrap_or(0.0),
+            k_vals,
             rr.mrr,
             rr.avg_latency_ms
         );
