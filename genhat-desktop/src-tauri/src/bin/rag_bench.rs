@@ -45,7 +45,7 @@ use reqwest::Client;
 use serde::{Deserialize, Serialize};
 
 use app_lib::rag::{
-    chunker::{chunk_text, chunk_text_default, ChunkerConfig},
+    chunker::{chunk_text, chunk_text_default, Chunk, ChunkerConfig},
     db::{dot_product, RagDb},
     fusion::{rrf_fuse, rrf_fuse_with_k},
     raptor::RaptorNode,
@@ -2647,56 +2647,83 @@ async fn cmd_beir_bench(args: BeirBenchArgs) -> Result<()> {
     let mut skipped_embed = 0usize;
     let progress_step = (to_ingest / 10).max(50); // ~10 progress lines regardless of corpus size
     let ingest_t0 = Instant::now();
-    for doc in &corpus {
-        let path_key = format!("beir:{}", doc.id);
-        if db.document_exists(&path_key).unwrap_or(false) { continue; }
 
-        let full_text = if doc.title.is_empty() {
-            doc.text.clone()
-        } else {
-            format!("{}\n\n{}", doc.title, doc.text)
-        };
-        let chunks = chunk_text_default(&full_text);
-        if chunks.is_empty() { continue; }
+    // --- Parallel ingestion ---
+    // Collect docs that still need ingesting (skip already-cached ones).
+    // Embed requests to llama-server are fired in parallel batches of
+    // EMBED_CONCURRENCY; DB/BM25/vector writes remain sequential since
+    // those stores are not concurrency-safe.
+    const EMBED_CONCURRENCY: usize = 8;
 
-        // Embed before DB insertion so a failure leaves no partial state and
-        // the doc is retried on the next run.
-        let texts: Vec<String> = chunks.iter().map(|c| c.text.clone()).collect();
-        let embeddings = match server.embed(texts).await {
-            Ok(embs) => embs,
-            Err(e) => {
-                eprintln!("[beir] WARN: skipping doc {} — embed failed: {}", doc.id, e);
-                skipped_embed += 1;
-                continue;
+    // Pre-compute chunking for every pending doc so the embed futures only do I/O.
+    struct PendingDoc<'a> {
+        doc: &'a BeirDoc,
+        path_key: String,
+        chunks: Vec<app_lib::rag::chunker::Chunk>,
+    }
+    let pending: Vec<PendingDoc> = corpus.iter()
+        .filter_map(|doc| {
+            let path_key = format!("beir:{}", doc.id);
+            if db.document_exists(&path_key).unwrap_or(false) { return None; }
+            let full_text = if doc.title.is_empty() {
+                doc.text.clone()
+            } else {
+                format!("{}\n\n{}", doc.title, doc.text)
+            };
+            let chunks = chunk_text_default(&full_text);
+            if chunks.is_empty() { return None; }
+            Some(PendingDoc { doc, path_key, chunks })
+        })
+        .collect();
+
+    for batch in pending.chunks(EMBED_CONCURRENCY) {
+        // Fire all embed requests in this batch concurrently.
+        let embed_futs: Vec<_> = batch.iter()
+            .map(|pd| {
+                let texts: Vec<String> = pd.chunks.iter().map(|c| c.text.clone()).collect();
+                server.embed(texts)
+            })
+            .collect();
+        let embed_results = futures_util::future::join_all(embed_futs).await;
+
+        // Write results sequentially (DB/BM25/vec_index are not thread-safe).
+        for (pd, emb_result) in batch.iter().zip(embed_results) {
+            let embeddings = match emb_result {
+                Ok(embs) => embs,
+                Err(e) => {
+                    eprintln!("[beir] WARN: skipping doc {} — embed failed: {}", pd.doc.id, e);
+                    skipped_embed += 1;
+                    continue;
+                }
+            };
+
+            let db_doc_id = db.insert_document(&pd.path_key, &pd.doc.id, "beir", pd.chunks.len() as i64)
+                .map_err(|e| anyhow::anyhow!("insert_document: {}", e))?;
+            let chunk_data: Vec<(usize, String, String)> = pd.chunks.iter()
+                .map(|c| (c.index, c.text.clone(), c.metadata.clone())).collect();
+            let chunk_ids = db.insert_chunks(db_doc_id, &chunk_data)
+                .map_err(|e| anyhow::anyhow!("insert_chunks: {}", e))?;
+            let bm25_batch: Vec<(i64, String, String)> = chunk_ids.iter().zip(pd.chunks.iter())
+                .map(|(&id, c)| (id, c.text.clone(), pd.doc.id.clone())).collect();
+            bm25.add_chunks_batch(&bm25_batch)
+                .map_err(|e| anyhow::anyhow!("BM25: {}", e))?;
+            for (i, emb) in embeddings.iter().enumerate() {
+                if i < chunk_ids.len() && !emb.is_empty() {
+                    let _ = db.set_chunk_embedding(chunk_ids[i], emb, None);
+                    vec_index.insert(chunk_ids[i], emb.clone());
+                }
             }
-        };
 
-        let db_doc_id = db.insert_document(&path_key, &doc.id, "beir", chunks.len() as i64)
-            .map_err(|e| anyhow::anyhow!("insert_document: {}", e))?;
-        let chunk_data: Vec<(usize, String, String)> = chunks.iter()
-            .map(|c| (c.index, c.text.clone(), c.metadata.clone())).collect();
-        let chunk_ids = db.insert_chunks(db_doc_id, &chunk_data)
-            .map_err(|e| anyhow::anyhow!("insert_chunks: {}", e))?;
-        let bm25_batch: Vec<(i64, String, String)> = chunk_ids.iter().zip(chunks.iter())
-            .map(|(&id, c)| (id, c.text.clone(), doc.id.clone())).collect();
-        bm25.add_chunks_batch(&bm25_batch)
-            .map_err(|e| anyhow::anyhow!("BM25: {}", e))?;
-        for (i, emb) in embeddings.iter().enumerate() {
-            if i < chunk_ids.len() && !emb.is_empty() {
-                let _ = db.set_chunk_embedding(chunk_ids[i], emb, None);
-                vec_index.insert(chunk_ids[i], emb.clone());
+            ingested_count += 1;
+            if progress_step == 0 || ingested_count % progress_step == 0 || ingested_count == to_ingest {
+                let elapsed = ingest_t0.elapsed().as_secs_f64();
+                let rate = ingested_count as f64 / elapsed.max(0.001);
+                let eta_s = if rate > 0.0 { (to_ingest - ingested_count) as f64 / rate } else { 0.0 };
+                println!(
+                    "[beir] ingest {}/{} docs  ({:.0} docs/s  ETA {:.0}s)",
+                    ingested_count, to_ingest, rate, eta_s
+                );
             }
-        }
-
-        ingested_count += 1;
-        if progress_step == 0 || ingested_count % progress_step == 0 || ingested_count == to_ingest {
-            let elapsed = ingest_t0.elapsed().as_secs_f64();
-            let rate = ingested_count as f64 / elapsed.max(0.001);
-            let eta_s = if rate > 0.0 { (to_ingest - ingested_count) as f64 / rate } else { 0.0 };
-            println!(
-                "[beir] ingest {}/{} docs  ({:.0} docs/s  ETA {:.0}s)",
-                ingested_count, to_ingest, rate, eta_s
-            );
         }
     }
     vec_index.rebuild_if_needed();
