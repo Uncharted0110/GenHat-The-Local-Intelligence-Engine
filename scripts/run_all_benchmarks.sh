@@ -39,6 +39,9 @@ EMBED_SMALL="$ROOT/models/embedding/bge-small-en-v1.5-q8_0/bge-small-en-v1.5-q8_
 # Workspaces persist across runs (ingest is expensive); live outside timestamped results.
 WS="$ROOT/workspace/nela_ws"
 WS_TRIVIA="$ROOT/workspace/trivia_ws"
+# BEIR workspaces are expensive to re-ingest (~5k-40k docs each), so they live
+# in a stable path that persists across runs and is reused when already populated.
+WS_BEIR="$ROOT/workspace/beir_ws"
 # Per-run outputs land in a timestamped subdirectory — never overwritten.
 RUN_ID="$(date +%Y%m%d_%H%M%S)"
 RESULTS="$ROOT/results/$RUN_ID"
@@ -229,7 +232,7 @@ else
     if [[ -d "$DS_DIR" ]]; then
       echo "  → $DATASET"
       "$BENCH" beir-bench \
-        --workspace-dir "$RESULTS/beir_${DATASET}_ws" \
+        --workspace-dir "$WS_BEIR/${DATASET}_ws" \
         --beir-dir "$DS_DIR" \
         --embed-model "$EMBED" \
         --llama-server "$SERVER" \

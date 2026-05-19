@@ -2572,6 +2572,7 @@ async fn cmd_beir_bench(args: BeirBenchArgs) -> Result<()> {
     let to_ingest = corpus.len() - already_cached;
     println!("[beir] Ingesting corpus ({} docs, {} already cached)...", corpus.len(), already_cached);
     let mut ingested_count = 0usize;
+    let mut skipped_embed = 0usize;
     let progress_step = (to_ingest / 10).max(50); // ~10 progress lines regardless of corpus size
     let ingest_t0 = Instant::now();
     for doc in &corpus {
@@ -2586,6 +2587,18 @@ async fn cmd_beir_bench(args: BeirBenchArgs) -> Result<()> {
         let chunks = chunk_text_default(&full_text);
         if chunks.is_empty() { continue; }
 
+        // Embed before DB insertion so a failure leaves no partial state and
+        // the doc is retried on the next run.
+        let texts: Vec<String> = chunks.iter().map(|c| c.text.clone()).collect();
+        let embeddings = match server.embed(texts).await {
+            Ok(embs) => embs,
+            Err(e) => {
+                eprintln!("[beir] WARN: skipping doc {} — embed failed: {}", doc.id, e);
+                skipped_embed += 1;
+                continue;
+            }
+        };
+
         let db_doc_id = db.insert_document(&path_key, &doc.id, "beir", chunks.len() as i64)
             .map_err(|e| anyhow::anyhow!("insert_document: {}", e))?;
         let chunk_data: Vec<(usize, String, String)> = chunks.iter()
@@ -2596,10 +2609,6 @@ async fn cmd_beir_bench(args: BeirBenchArgs) -> Result<()> {
             .map(|(&id, c)| (id, c.text.clone(), doc.id.clone())).collect();
         bm25.add_chunks_batch(&bm25_batch)
             .map_err(|e| anyhow::anyhow!("BM25: {}", e))?;
-
-        let texts: Vec<String> = chunks.iter().map(|c| c.text.clone()).collect();
-        let embeddings = server.embed(texts).await
-            .with_context(|| format!("Embedding doc {}", doc.id))?;
         for (i, emb) in embeddings.iter().enumerate() {
             if i < chunk_ids.len() && !emb.is_empty() {
                 let _ = db.set_chunk_embedding(chunk_ids[i], emb, None);
@@ -2620,9 +2629,12 @@ async fn cmd_beir_bench(args: BeirBenchArgs) -> Result<()> {
     }
     vec_index.rebuild_if_needed();
     let total_elapsed = ingest_t0.elapsed().as_secs_f64();
+    if skipped_embed > 0 {
+        eprintln!("[beir] WARN: {} doc(s) skipped due to embed failure (too large for model context)", skipped_embed);
+    }
     println!(
-        "[beir] Corpus ready: {} docs total  ({} newly ingested in {:.1}s)",
-        db.document_count().unwrap_or(0), ingested_count, total_elapsed
+        "[beir] Corpus ready: {} docs total  ({} newly ingested, {} skipped in {:.1}s)",
+        db.document_count().unwrap_or(0), ingested_count, skipped_embed, total_elapsed
     );
 
     // Build db_doc_id → BEIR id map for retrieval oracle
