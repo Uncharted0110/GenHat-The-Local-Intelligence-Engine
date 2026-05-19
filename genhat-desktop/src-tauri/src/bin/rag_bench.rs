@@ -1495,12 +1495,12 @@ async fn run_raptor_bench(
 
     // Three ablation points:
     //   - "gated"      threshold = -1.5 : NELA default — expand only low-confidence summaries
-    //   - "trust_all"  threshold = +∞   : never expand (naive RAPTOR — trust every summary)
-    //   - "expand_all" threshold = -∞   : always expand (defeats RAPTOR, falls back to raw chunks)
+    //   - "trust_all"  threshold = -∞   : never expand (score never < -∞ → trust every summary)
+    //   - "expand_all" threshold = +∞   : always expand (score always < +∞ → fall back to raw chunks)
     let threshold_configs: &[(&str, &str, f64)] = &[
         ("raptor_gated", "-1.5 (NELA default)", -1.5),
-        ("raptor_trust_all", "+inf (naive RAPTOR)", f64::INFINITY),
-        ("raptor_expand_all", "-inf (always expand)", f64::NEG_INFINITY),
+        ("raptor_trust_all", "-inf (trust all summaries)", f64::NEG_INFINITY),
+        ("raptor_expand_all", "+inf (always expand)", f64::INFINITY),
     ];
 
     let max_k = *top_ks.iter().max().unwrap_or(&10);
