@@ -753,11 +753,13 @@ impl EmbedServer {
                 // this to ctx-size to avoid "input too large" errors.
                 "--ubatch-size",
                 "2048",
-                // Offload all layers to GPU if available (falls back to CPU silently)
+                // Offload all layers to GPU if available (falls back to CPU silently).
+                // --log-disable is intentionally omitted so GPU detection messages
+                // ("found X CUDA devices", "offloaded N layers") are captured in the
+                // stderr log and surfaced as a startup diagnostic below.
                 "--n-gpu-layers",
                 "99",
                 "--no-warmup",
-                "--log-disable",
             ])
             .env("LD_LIBRARY_PATH", &new_ld)
             .stdout(Stdio::null())
@@ -806,6 +808,33 @@ impl EmbedServer {
             "[bench] Embedding server ready ({:.1}s warm-up)",
             start_t.elapsed().as_secs_f64()
         );
+
+        // Scan the startup log for GPU/CUDA lines and print a one-line diagnostic
+        // so it is immediately obvious whether the server is running on GPU or CPU.
+        let log_content = std::fs::read_to_string(&stderr_log).unwrap_or_default();
+        let gpu_lines: Vec<&str> = log_content
+            .lines()
+            .filter(|l| {
+                let lo = l.to_ascii_lowercase();
+                lo.contains("cuda") || lo.contains("gpu") || lo.contains("metal")
+                    || lo.contains("offload") || lo.contains("layers to")
+                    || lo.contains("no devices") || lo.contains("vulkan")
+            })
+            .take(6)
+            .collect();
+        if gpu_lines.is_empty() {
+            println!(
+                "[bench] GPU: no CUDA/GPU messages in server log — likely running on CPU."
+            );
+            println!(
+                "[bench]      Verify with: ldd {} | grep -i cuda",
+                server_bin.display()
+            );
+        } else {
+            for line in &gpu_lines {
+                println!("[bench] GPU: {}", line.trim());
+            }
+        }
 
         Ok(Self {
             process: Mutex::new(process),
