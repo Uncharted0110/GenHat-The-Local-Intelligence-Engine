@@ -2030,52 +2030,66 @@ async fn cmd_scale(args: ScaleArgs) -> Result<()> {
         let cp_vec = VectorIndex::load_from_db(&cp_db)
             .map_err(|e| anyhow::anyhow!("VecIndex (cp): {}", e))?;
 
-        // Ingest exactly 'target' corpus files into the fresh workspace
-        for path in all_files.iter().take(target) {
-            let path_str = path.to_string_lossy().to_string();
-            let title = path
-                .file_stem()
-                .and_then(|s| s.to_str())
-                .unwrap_or("?")
-                .to_string();
-            let text = match std::fs::read_to_string(path) {
-                Ok(t) => t,
-                Err(e) => {
-                    eprintln!("[scale]   WARN: cannot read {}: {}", path.display(), e);
-                    continue;
-                }
-            };
-            let chunks = chunk_text_default(&text);
-            if chunks.is_empty() {
-                continue;
-            }
-            let doc_id = cp_db
-                .insert_document(&path_str, &title, "txt", chunks.len() as i64)
-                .map_err(|e| anyhow::anyhow!("insert_document: {}", e))?;
-            let chunk_data: Vec<(usize, String, String)> = chunks
-                .iter()
-                .map(|c| (c.index, c.text.clone(), c.metadata.clone()))
+        // Ingest exactly 'target' corpus files into the fresh workspace.
+        // Pre-read all files then embed in parallel batches for GPU utilisation.
+        struct ScalePendingEntry {
+            path_str: String,
+            title: String,
+            chunks: Vec<app_lib::rag::chunker::Chunk>,
+        }
+        let scale_pending: Vec<ScalePendingEntry> = all_files.iter().take(target)
+            .filter_map(|path| {
+                let text = match std::fs::read_to_string(path) {
+                    Ok(t) => t,
+                    Err(e) => {
+                        eprintln!("[scale]   WARN: cannot read {}: {}", path.display(), e);
+                        return None;
+                    }
+                };
+                let title = path.file_stem()?.to_str()?.to_string();
+                let path_str = path.to_string_lossy().to_string();
+                let chunks = chunk_text_default(&text);
+                if chunks.is_empty() { return None; }
+                Some(ScalePendingEntry { path_str, title, chunks })
+            })
+            .collect();
+
+        const SCALE_EMBED_CONCURRENCY: usize = 8;
+        for batch in scale_pending.chunks(SCALE_EMBED_CONCURRENCY) {
+            let embed_futs: Vec<_> = batch.iter()
+                .map(|pe| {
+                    let texts: Vec<String> = pe.chunks.iter().map(|c| c.text.clone()).collect();
+                    server.embed(texts)
+                })
                 .collect();
-            let chunk_ids = cp_db
-                .insert_chunks(doc_id, &chunk_data)
-                .map_err(|e| anyhow::anyhow!("insert_chunks: {}", e))?;
-            let bm25_batch: Vec<(i64, String, String)> = chunk_ids
-                .iter()
-                .zip(chunks.iter())
-                .map(|(&id, c)| (id, c.text.clone(), title.clone()))
-                .collect();
-            cp_bm25
-                .add_chunks_batch(&bm25_batch)
-                .map_err(|e| anyhow::anyhow!("BM25 batch: {}", e))?;
-            let texts: Vec<String> = chunks.iter().map(|c| c.text.clone()).collect();
-            let embeddings = server
-                .embed(texts)
-                .await
-                .with_context(|| format!("Embedding failed for '{}'", title))?;
-            for (i, emb) in embeddings.iter().enumerate() {
-                if i < chunk_ids.len() && !emb.is_empty() {
-                    let _ = cp_db.set_chunk_embedding(chunk_ids[i], emb, None);
-                    cp_vec.insert(chunk_ids[i], emb.clone());
+            let embed_results = futures_util::future::join_all(embed_futs).await;
+
+            for (pe, emb_result) in batch.iter().zip(embed_results) {
+                let embeddings = emb_result
+                    .with_context(|| format!("Embedding failed for '{}'", pe.title))?;
+                let doc_id = cp_db
+                    .insert_document(&pe.path_str, &pe.title, "txt", pe.chunks.len() as i64)
+                    .map_err(|e| anyhow::anyhow!("insert_document: {}", e))?;
+                let chunk_data: Vec<(usize, String, String)> = pe.chunks
+                    .iter()
+                    .map(|c| (c.index, c.text.clone(), c.metadata.clone()))
+                    .collect();
+                let chunk_ids = cp_db
+                    .insert_chunks(doc_id, &chunk_data)
+                    .map_err(|e| anyhow::anyhow!("insert_chunks: {}", e))?;
+                let bm25_batch: Vec<(i64, String, String)> = chunk_ids
+                    .iter()
+                    .zip(pe.chunks.iter())
+                    .map(|(&id, c)| (id, c.text.clone(), pe.title.clone()))
+                    .collect();
+                cp_bm25
+                    .add_chunks_batch(&bm25_batch)
+                    .map_err(|e| anyhow::anyhow!("BM25 batch: {}", e))?;
+                for (i, emb) in embeddings.iter().enumerate() {
+                    if i < chunk_ids.len() && !emb.is_empty() {
+                        let _ = cp_db.set_chunk_embedding(chunk_ids[i], emb, None);
+                        cp_vec.insert(chunk_ids[i], emb.clone());
+                    }
                 }
             }
         }
@@ -2873,35 +2887,56 @@ async fn ingest_corpus_with_config(
     entries.sort();
     if entries.is_empty() { bail!("No .txt files in {}", corpus_dir.display()); }
 
+    // Pre-read and chunk all files so the embed loop only does I/O.
+    struct PendingEntry {
+        path_str: String,
+        title: String,
+        chunks: Vec<app_lib::rag::chunker::Chunk>,
+    }
+    let pending: Vec<PendingEntry> = entries.iter()
+        .filter_map(|path| {
+            let text = std::fs::read_to_string(path).ok()?;
+            let title = path.file_stem()?.to_str()?.to_string();
+            let path_str = path.to_string_lossy().to_string();
+            let chunks = chunk_text(&text, config);
+            if chunks.is_empty() { return None; }
+            Some(PendingEntry { path_str, title, chunks })
+        })
+        .collect();
+
+    const EMBED_CONCURRENCY: usize = 8;
     let t0 = Instant::now();
     let mut total_chunks = 0usize;
-    for path in &entries {
-        let title = path.file_stem().and_then(|s| s.to_str()).unwrap_or("?").to_string();
-        let text = std::fs::read_to_string(path)
-            .with_context(|| format!("Cannot read: {}", path.display()))?;
-        let path_str = path.to_string_lossy().to_string();
-        let chunks = chunk_text(&text, config);
-        if chunks.is_empty() { continue; }
 
-        let doc_id = db.insert_document(&path_str, &title, "txt", chunks.len() as i64)
-            .map_err(|e| anyhow::anyhow!("insert_document: {}", e))?;
-        let chunk_data: Vec<(usize, String, String)> = chunks.iter()
-            .map(|c| (c.index, c.text.clone(), c.metadata.clone())).collect();
-        let chunk_ids = db.insert_chunks(doc_id, &chunk_data)
-            .map_err(|e| anyhow::anyhow!("insert_chunks: {}", e))?;
-        bm25.add_chunks_batch(&chunk_ids.iter().zip(chunks.iter())
-            .map(|(&id, c)| (id, c.text.clone(), title.clone())).collect::<Vec<_>>())
-            .map_err(|e| anyhow::anyhow!("BM25: {}", e))?;
+    for batch in pending.chunks(EMBED_CONCURRENCY) {
+        let embed_futs: Vec<_> = batch.iter()
+            .map(|pe| {
+                let texts: Vec<String> = pe.chunks.iter().map(|c| c.text.clone()).collect();
+                server.embed(texts)
+            })
+            .collect();
+        let embed_results = futures_util::future::join_all(embed_futs).await;
 
-        let embeddings = server.embed(chunks.iter().map(|c| c.text.clone()).collect()).await
-            .with_context(|| format!("Embedding '{}' failed", title))?;
-        for (i, emb) in embeddings.iter().enumerate() {
-            if i < chunk_ids.len() && !emb.is_empty() {
-                let _ = db.set_chunk_embedding(chunk_ids[i], emb, None);
-                vec_index.insert(chunk_ids[i], emb.clone());
+        for (pe, emb_result) in batch.iter().zip(embed_results) {
+            let embeddings = emb_result
+                .with_context(|| format!("Embedding '{}' failed", pe.title))?;
+            let doc_id = db.insert_document(&pe.path_str, &pe.title, "txt", pe.chunks.len() as i64)
+                .map_err(|e| anyhow::anyhow!("insert_document: {}", e))?;
+            let chunk_data: Vec<(usize, String, String)> = pe.chunks.iter()
+                .map(|c| (c.index, c.text.clone(), c.metadata.clone())).collect();
+            let chunk_ids = db.insert_chunks(doc_id, &chunk_data)
+                .map_err(|e| anyhow::anyhow!("insert_chunks: {}", e))?;
+            bm25.add_chunks_batch(&chunk_ids.iter().zip(pe.chunks.iter())
+                .map(|(&id, c)| (id, c.text.clone(), pe.title.clone())).collect::<Vec<_>>())
+                .map_err(|e| anyhow::anyhow!("BM25: {}", e))?;
+            for (i, emb) in embeddings.iter().enumerate() {
+                if i < chunk_ids.len() && !emb.is_empty() {
+                    let _ = db.set_chunk_embedding(chunk_ids[i], emb, None);
+                    vec_index.insert(chunk_ids[i], emb.clone());
+                }
             }
+            total_chunks += pe.chunks.len();
         }
-        total_chunks += chunks.len();
     }
     vec_index.rebuild_if_needed();
     Ok((total_chunks, t0.elapsed().as_millis() as u64))
