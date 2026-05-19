@@ -15,7 +15,7 @@
 #
 # Usage:
 #   bash scripts/run_all_benchmarks.sh [--skip-ingest] [--skip-baselines] [--server <path>]
-#                                      [--ablate-max-docs <N>]
+#                                      [--ablate-max-docs <N>] [--ablate-max-qa <N>]
 #
 # --server <path>         Override the llama-server binary (use a CUDA build on GPU machines).
 #   Example: bash scripts/run_all_benchmarks.sh --server /usr/local/bin/llama-server
@@ -23,7 +23,11 @@
 # --ablate-max-docs <N>   Cap ablation stages (6, 8) to the first N corpus documents
 #                         (sorted alphabetically). QA pairs are automatically filtered
 #                         to those answerable from the subset. Reduces RAM and runtime.
-#   Example: bash scripts/run_all_benchmarks.sh --ablate-max-docs 100
+#
+# --ablate-max-qa <N>     Further cap QA pairs per grid point (applied after doc-title filter).
+#                         When --ablate-max-docs is set without --ablate-max-qa the script
+#                         defaults to 500 for fast ablations. Use 0 to disable the auto-cap.
+#   Example: bash scripts/run_all_benchmarks.sh --ablate-max-docs 100 --ablate-max-qa 500
 #
 # Each run writes to results/<RUN_ID>/  (timestamped, never overwritten).
 # A symlink results/latest → current run is maintained for convenience.
@@ -61,6 +65,9 @@ SERVER_OVERRIDE=""
 # Limit ablation stages (6, 8) to first N corpus documents.
 # Leave empty to use the full corpus. Example: --ablate-max-docs 100
 ABLATE_MAX_DOCS="100"
+# Further cap QA pairs per ablation grid point (after doc-title filter).
+# When ABLATE_MAX_DOCS is set this defaults to 500 if not overridden (see below).
+ABLATE_MAX_QA="500"
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 die()  { echo "[ERROR] $*" >&2; exit 1; }
@@ -77,9 +84,16 @@ while [[ $# -gt 0 ]]; do
     --skip-baselines)    SKIP_BASELINES=1 ; shift ;;
     --server)            SERVER_OVERRIDE="$2" ; shift 2 ;;
     --ablate-max-docs)   ABLATE_MAX_DOCS="$2" ; shift 2 ;;
+    --ablate-max-qa)     ABLATE_MAX_QA="$2" ; shift 2 ;;
     *) shift ;;
   esac
 done
+
+# When --ablate-max-docs is set without an explicit --ablate-max-qa, default to 500
+# so ablations stay fast (the doc-title filter already keeps pairs correct).
+[[ -n "$ABLATE_MAX_DOCS" && -z "$ABLATE_MAX_QA" ]] && ABLATE_MAX_QA="500"
+# Allow the user to disable the auto-cap by passing --ablate-max-qa 0.
+[[ "$ABLATE_MAX_QA" == "0" ]] && ABLATE_MAX_QA=""
 
 [[ -n "$SERVER_OVERRIDE" ]] && SERVER="$SERVER_OVERRIDE"
 
@@ -270,6 +284,7 @@ echo "[6/10] Chunking ablation …"
   --chunk-sizes "512,1024,1536,2048" \
   --overlaps "64,128,256" \
   ${ABLATE_MAX_DOCS:+--max-docs $ABLATE_MAX_DOCS} \
+  ${ABLATE_MAX_QA:+--max-qa $ABLATE_MAX_QA} \
   --output "$RESULTS/chunking_ablation.json"
 tick "6: chunking ablation"
 
@@ -299,6 +314,7 @@ fi
   --embed-models "$QUANT_MODELS" \
   --llama-server "$SERVER" \
   ${ABLATE_MAX_DOCS:+--max-docs $ABLATE_MAX_DOCS} \
+  ${ABLATE_MAX_QA:+--max-qa $ABLATE_MAX_QA} \
   --output "$RESULTS/quant_ablation.json"
 tick "8: quant ablation"
 

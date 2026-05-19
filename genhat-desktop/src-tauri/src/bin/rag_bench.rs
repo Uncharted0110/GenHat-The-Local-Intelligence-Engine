@@ -394,6 +394,11 @@ struct AblateChunkingArgs {
     #[arg(long)]
     max_docs: Option<usize>,
 
+    /// Maximum QA pairs to evaluate per grid point (applied after doc-title filter).
+    /// A value of 500 gives stable recall@k; see also --max-docs.
+    #[arg(long)]
+    max_qa: Option<usize>,
+
     /// Output JSON file.
     #[arg(long, default_value = "chunking_ablation.json")]
     output: PathBuf,
@@ -460,6 +465,11 @@ struct AblateQuantArgs {
     /// Reduces RAM and runtime for quick ablations.
     #[arg(long)]
     max_docs: Option<usize>,
+
+    /// Maximum QA pairs to evaluate per model (applied after doc-title filter).
+    /// A value of 500 gives stable recall@k; see also --max-docs.
+    #[arg(long)]
+    max_qa: Option<usize>,
 
     /// Output JSON file.
     #[arg(long, default_value = "quant_ablation.json")]
@@ -3018,8 +3028,16 @@ async fn cmd_ablate_chunking(args: AblateChunkingArgs) -> Result<()> {
         qa_all
     };
     if qa_pairs.is_empty() { bail!("No QA pairs match the ingested corpus subset"); }
-    println!("[ablate-chunk] {} QA pairs (corpus capped at {} docs)",
-        qa_pairs.len(), args.max_docs.map_or_else(|| "all".to_string(), |n| n.to_string()));
+    // Optionally cap QA pairs to limit eval time. Applied after the doc-title filter so the
+    // remaining pairs are always answerable from the ingested corpus subset.
+    let qa_pairs: Vec<QAPair> = match args.max_qa {
+        Some(n) => qa_pairs.into_iter().take(n).collect(),
+        None    => qa_pairs,
+    };
+    println!("[ablate-chunk] {} QA pairs  (docs capped={}, qa capped={})",
+        qa_pairs.len(),
+        args.max_docs.map_or_else(|| "all".to_string(), |n| n.to_string()),
+        args.max_qa.map_or_else(|| "all".to_string(), |n| n.to_string()));
     let top_ks = vec![5usize, 10];
     let server = EmbedServer::start(&server_bin, &args.embed_model, args.embed_port).await?;
     let mut points: Vec<ChunkAblationPoint> = Vec::new();
@@ -3031,10 +3049,12 @@ async fn cmd_ablate_chunking(args: AblateChunkingArgs) -> Result<()> {
             if ov >= cs { continue; }
             idx += 1;
             println!("[ablate-chunk] [{}/{}] chunk_size={}  overlap={}", idx, total, cs, ov);
-            // Encode max_docs in dir name so changing --max-docs never reuses stale data.
-            let dir_name = match args.max_docs {
-                Some(n) => format!("cs{}ov{}_n{}", cs, ov, n),
-                None    => format!("cs{}ov{}", cs, ov),
+            // Encode max_docs (and max_qa) in dir name so changing either flag never reuses stale data.
+            let dir_name = {
+                let mut name = format!("cs{}ov{}", cs, ov);
+                if let Some(n) = args.max_docs { name.push_str(&format!("_d{}", n)); }
+                if let Some(n) = args.max_qa   { name.push_str(&format!("_q{}", n)); }
+                name
             };
             let cp_dir = args.workspace_dir.join(&dir_name);
             std::fs::create_dir_all(&cp_dir)?;
@@ -3253,8 +3273,15 @@ async fn cmd_ablate_quant(args: AblateQuantArgs) -> Result<()> {
         qa_all
     };
     if qa_pairs.is_empty() { bail!("No QA pairs match the ingested corpus subset"); }
-    println!("[ablate-quant] {} QA pairs (corpus capped at {} docs)",
-        qa_pairs.len(), args.max_docs.map_or_else(|| "all".to_string(), |n| n.to_string()));
+    // Optionally cap QA pairs to limit eval time.
+    let qa_pairs: Vec<QAPair> = match args.max_qa {
+        Some(n) => qa_pairs.into_iter().take(n).collect(),
+        None    => qa_pairs,
+    };
+    println!("[ablate-quant] {} QA pairs  (docs capped={}, qa capped={})",
+        qa_pairs.len(),
+        args.max_docs.map_or_else(|| "all".to_string(), |n| n.to_string()),
+        args.max_qa.map_or_else(|| "all".to_string(), |n| n.to_string()));
     let top_ks = vec![5usize, 10];
     let mut points: Vec<QuantAblationPoint> = Vec::new();
 
@@ -3267,10 +3294,12 @@ async fn cmd_ablate_quant(args: AblateQuantArgs) -> Result<()> {
             .unwrap_or("?").to_string();
         println!("[ablate-quant] Model: {}", model_name);
 
-        // Encode max_docs in dir name so changing --max-docs never reuses stale data.
-        let dir_name = match args.max_docs {
-            Some(n) => format!("quant_{}_n{}", model_name, n),
-            None    => format!("quant_{}", model_name),
+        // Encode max_docs and max_qa in dir name so changing either flag never reuses stale data.
+        let dir_name = {
+            let mut name = format!("quant_{}", model_name);
+            if let Some(n) = args.max_docs { name.push_str(&format!("_d{}", n)); }
+            if let Some(n) = args.max_qa   { name.push_str(&format!("_q{}", n)); }
+            name
         };
         let cp_dir = args.workspace_dir.join(&dir_name);
         std::fs::create_dir_all(&cp_dir)?;
