@@ -809,9 +809,10 @@ impl EmbedServer {
             start_t.elapsed().as_secs_f64()
         );
 
-        // Scan the startup log for GPU/CUDA lines and print a one-line diagnostic
-        // so it is immediately obvious whether the server is running on GPU or CPU.
+        // Scan the startup log for GPU/CUDA lines and print diagnostics.
         let log_content = std::fs::read_to_string(&stderr_log).unwrap_or_default();
+        let log_lower = log_content.to_ascii_lowercase();
+
         let gpu_lines: Vec<&str> = log_content
             .lines()
             .filter(|l| {
@@ -820,19 +821,34 @@ impl EmbedServer {
                     || lo.contains("offload") || lo.contains("layers to")
                     || lo.contains("no devices") || lo.contains("vulkan")
             })
-            .take(6)
+            .take(20)
             .collect();
+
         if gpu_lines.is_empty() {
-            println!(
-                "[bench] GPU: no CUDA/GPU messages in server log — likely running on CPU."
-            );
-            println!(
-                "[bench]      Verify with: ldd {} | grep -i cuda",
-                server_bin.display()
-            );
+            println!("[bench] GPU: no CUDA/GPU messages in server log — likely running on CPU.");
+            println!("[bench]      Verify: ldd {} | grep -i cuda", server_bin.display());
         } else {
             for line in &gpu_lines {
                 println!("[bench] GPU: {}", line.trim());
+            }
+            // Warn explicitly when CUDA was detected but no layers were offloaded —
+            // the common cause is the llama-server binary lacking SM offload support
+            // for this model arch, or the model not being recognised as GPU-capable.
+            let has_offload = log_lower.contains("offload");
+            if !has_offload {
+                println!(
+                    "[bench] GPU: WARNING — CUDA detected but no 'offload' message found."
+                );
+                println!(
+                    "[bench]      Layers are NOT on GPU despite --n-gpu-layers 99."
+                );
+                println!(
+                    "[bench]      Full server log: {}",
+                    stderr_log.display()
+                );
+                println!(
+                    "[bench]      Monitor live GPU use: nvidia-smi dmon -s u -d 1"
+                );
             }
         }
 
