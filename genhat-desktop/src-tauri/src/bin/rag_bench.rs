@@ -897,7 +897,10 @@ struct ChatServer {
 }
 
 impl ChatServer {
-    async fn start(server_bin: &Path, model: &Path, port: u16) -> Result<Self> {
+    /// `parallel` is the number of concurrent KV-cache slots.  Use 1 for sequential
+    /// E2E eval (avoids dividing ctx_size across unused slots).  Use ≥4 for RAPTOR
+    /// parallel cluster summarisation during ingest.
+    async fn start(server_bin: &Path, model: &Path, port: u16, parallel: usize) -> Result<Self> {
         let lib_dir = server_bin.parent().map(|p| p.to_path_buf()).unwrap_or_default();
         let existing_ld = std::env::var("LD_LIBRARY_PATH").unwrap_or_default();
         let new_ld = if existing_ld.is_empty() {
@@ -920,9 +923,8 @@ impl ChatServer {
                 "4096",
                 "--n-gpu-layers",
                 "99",
-                // Allow 4 concurrent in-flight requests for parallel RAPTOR summarisation.
                 "--parallel",
-                "8",
+                &parallel.to_string(),
                 "--no-warmup",
                 "--log-disable",
             ])
@@ -3027,7 +3029,7 @@ async fn cmd_ingest(args: IngestArgs) -> Result<()> {
     if args.raptor {
         if let Some(ref llm_path) = args.llm_model {
             db.create_raptor_tables().map_err(|e| anyhow::anyhow!("create_raptor_tables: {}", e))?;
-            match ChatServer::start(&server_bin, llm_path, args.llm_port).await {
+            match ChatServer::start(&server_bin, llm_path, args.llm_port, 8).await {
                 Ok(chat_server) => {
                     let docs = db.list_documents().unwrap_or_default();
                     println!("[ingest] Building RAPTOR trees for {} documents...", docs.len());
@@ -3136,7 +3138,7 @@ async fn cmd_bench(args: BenchArgs) -> Result<()> {
 
     // E2E + no-RAG baseline (both share one ChatServer instance to avoid double startup cost)
     let (e2e_result, no_rag_result) = if let Some(ref llm_model) = args.llm_model {
-        match ChatServer::start(&server_bin, llm_model, args.llm_port).await {
+        match ChatServer::start(&server_bin, llm_model, args.llm_port, 1).await {
             Ok(mut chat_server) => {
                 // RAG-augmented E2E
                 println!("\n[bench] ── Running E2E answer quality eval (with RAG) ──");
@@ -3257,7 +3259,7 @@ async fn cmd_eval(args: EvalArgs) -> Result<()> {
     let mut embed_server =
         EmbedServer::start(&server_bin, &args.embed_model, args.embed_port).await?;
     let mut chat_server =
-        ChatServer::start(&server_bin, &args.llm_model, args.llm_port).await?;
+        ChatServer::start(&server_bin, &args.llm_model, args.llm_port, 1).await?;
 
     println!("\n[eval] Running E2E answer quality eval ──");
     let result = run_e2e_bench(
