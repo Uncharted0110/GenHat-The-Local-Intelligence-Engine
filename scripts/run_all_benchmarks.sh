@@ -15,9 +15,15 @@
 #
 # Usage:
 #   bash scripts/run_all_benchmarks.sh [--skip-ingest] [--skip-baselines] [--server <path>]
+#                                      [--ablate-max-docs <N>]
 #
-# --server <path>  Override the llama-server binary (use a CUDA build on GPU machines).
+# --server <path>         Override the llama-server binary (use a CUDA build on GPU machines).
 #   Example: bash scripts/run_all_benchmarks.sh --server /usr/local/bin/llama-server
+#
+# --ablate-max-docs <N>   Cap ablation stages (6, 8) to the first N corpus documents
+#                         (sorted alphabetically). QA pairs are automatically filtered
+#                         to those answerable from the subset. Reduces RAM and runtime.
+#   Example: bash scripts/run_all_benchmarks.sh --ablate-max-docs 100
 #
 # Each run writes to results/<RUN_ID>/  (timestamped, never overwritten).
 # A symlink results/latest → current run is maintained for convenience.
@@ -48,6 +54,9 @@ RESULTS="$ROOT/results/$RUN_ID"
 SKIP_INGEST=0
 SKIP_BASELINES=0
 SERVER_OVERRIDE=""
+# Limit ablation stages (6, 8) to first N corpus documents.
+# Leave empty to use the full corpus. Example: --ablate-max-docs 100
+ABLATE_MAX_DOCS=""
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 die()  { echo "[ERROR] $*" >&2; exit 1; }
@@ -60,9 +69,10 @@ tick() { local s=$((SECONDS - _TICK_T)); _TICK_T=$SECONDS
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --skip-ingest)    SKIP_INGEST=1 ; shift ;;
-    --skip-baselines) SKIP_BASELINES=1 ; shift ;;
-    --server)         SERVER_OVERRIDE="$2" ; shift 2 ;;
+    --skip-ingest)       SKIP_INGEST=1 ; shift ;;
+    --skip-baselines)    SKIP_BASELINES=1 ; shift ;;
+    --server)            SERVER_OVERRIDE="$2" ; shift 2 ;;
+    --ablate-max-docs)   ABLATE_MAX_DOCS="$2" ; shift 2 ;;
     *) shift ;;
   esac
 done
@@ -255,6 +265,7 @@ echo "[6/10] Chunking ablation …"
   --llama-server "$SERVER" \
   --chunk-sizes "512,1024,1536,2048" \
   --overlaps "64,128,256" \
+  ${ABLATE_MAX_DOCS:+--max-docs $ABLATE_MAX_DOCS} \
   --output "$RESULTS/chunking_ablation.json"
 tick "6: chunking ablation"
 
@@ -283,6 +294,7 @@ fi
   --qa-file "$QA" \
   --embed-models "$QUANT_MODELS" \
   --llama-server "$SERVER" \
+  ${ABLATE_MAX_DOCS:+--max-docs $ABLATE_MAX_DOCS} \
   --output "$RESULTS/quant_ablation.json"
 tick "8: quant ablation"
 

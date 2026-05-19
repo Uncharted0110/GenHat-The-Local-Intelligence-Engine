@@ -389,6 +389,11 @@ struct AblateChunkingArgs {
     #[arg(long, default_value = "64,128,256")]
     overlaps: String,
 
+    /// Limit corpus to the first N documents (alphabetically). Default: all.
+    /// Reduces RAM and runtime for quick ablations.
+    #[arg(long)]
+    max_docs: Option<usize>,
+
     /// Output JSON file.
     #[arg(long, default_value = "chunking_ablation.json")]
     output: PathBuf,
@@ -450,6 +455,11 @@ struct AblateQuantArgs {
     /// Port for the embedding server.
     #[arg(long, default_value_t = 12345)]
     embed_port: u16,
+
+    /// Limit corpus to the first N documents (alphabetically). Default: all.
+    /// Reduces RAM and runtime for quick ablations.
+    #[arg(long)]
+    max_docs: Option<usize>,
 
     /// Output JSON file.
     #[arg(long, default_value = "quant_ablation.json")]
@@ -2897,6 +2907,7 @@ async fn ingest_corpus_with_config(
     bm25: &BM25Index,
     vec_index: &VectorIndex,
     config: &ChunkerConfig,
+    max_docs: Option<usize>,
 ) -> Result<(usize, u64)> {
     let mut entries: Vec<PathBuf> = std::fs::read_dir(corpus_dir)
         .with_context(|| format!("Cannot read corpus: {}", corpus_dir.display()))?
@@ -2904,6 +2915,7 @@ async fn ingest_corpus_with_config(
         .filter(|p| p.extension().and_then(|e| e.to_str()) == Some("txt"))
         .collect();
     entries.sort();
+    if let Some(n) = max_docs { entries.truncate(n); }
     if entries.is_empty() { bail!("No .txt files in {}", corpus_dir.display()); }
 
     // Pre-read and chunk all files so the embed loop only does I/O.
@@ -2983,7 +2995,31 @@ async fn cmd_ablate_chunking(args: AblateChunkingArgs) -> Result<()> {
 
     let qa_json = std::fs::read_to_string(&args.qa_file)
         .with_context(|| format!("Cannot read QA file: {}", args.qa_file.display()))?;
-    let qa_pairs: Vec<QAPair> = serde_json::from_str(&qa_json).context("Invalid QA file")?;
+    let qa_all: Vec<QAPair> = serde_json::from_str(&qa_json).context("Invalid QA file")?;
+    // When corpus is capped, restrict QA pairs to those answerable from the ingested subset
+    // (documents are sorted alphabetically and first max_docs taken — same logic as ingest).
+    let qa_pairs: Vec<QAPair> = if let Some(max_n) = args.max_docs {
+        let mut sub_entries: Vec<PathBuf> = std::fs::read_dir(&args.corpus_dir)
+            .with_context(|| format!("Cannot read corpus: {}", args.corpus_dir.display()))?
+            .filter_map(|e| e.ok()).map(|e| e.path())
+            .filter(|p| p.extension().and_then(|e| e.to_str()) == Some("txt"))
+            .collect();
+        sub_entries.sort();
+        sub_entries.truncate(max_n);
+        let ingested_titles: std::collections::HashSet<String> = sub_entries.iter()
+            .filter_map(|p| p.file_stem()?.to_str().map(|s| s.to_lowercase()))
+            .collect();
+        qa_all.into_iter().filter(|qa| {
+            qa.doc_title.as_ref()
+                .map(|t| ingested_titles.contains(&t.to_lowercase()))
+                .unwrap_or(true)
+        }).collect()
+    } else {
+        qa_all
+    };
+    if qa_pairs.is_empty() { bail!("No QA pairs match the ingested corpus subset"); }
+    println!("[ablate-chunk] {} QA pairs (corpus capped at {} docs)",
+        qa_pairs.len(), args.max_docs.map_or_else(|| "all".to_string(), |n| n.to_string()));
     let top_ks = vec![5usize, 10];
     let server = EmbedServer::start(&server_bin, &args.embed_model, args.embed_port).await?;
     let mut points: Vec<ChunkAblationPoint> = Vec::new();
@@ -3006,7 +3042,7 @@ async fn cmd_ablate_chunking(args: AblateChunkingArgs) -> Result<()> {
 
             let config = ChunkerConfig { chunk_size: cs, overlap: ov, ..Default::default() };
             let (n_chunks, ingest_ms) = ingest_corpus_with_config(
-                &args.corpus_dir, &server, &cp_db, &cp_bm25, &cp_vec, &config,
+                &args.corpus_dir, &server, &cp_db, &cp_bm25, &cp_vec, &config, args.max_docs,
             ).await?;
 
             let (recall_results, _) =
@@ -3182,7 +3218,30 @@ async fn cmd_ablate_quant(args: AblateQuantArgs) -> Result<()> {
 
     let qa_json = std::fs::read_to_string(&args.qa_file)
         .with_context(|| format!("Cannot read QA file: {}", args.qa_file.display()))?;
-    let qa_pairs: Vec<QAPair> = serde_json::from_str(&qa_json).context("Invalid QA file")?;
+    let qa_all: Vec<QAPair> = serde_json::from_str(&qa_json).context("Invalid QA file")?;
+    // When corpus is capped, restrict QA pairs to those answerable from the ingested subset.
+    let qa_pairs: Vec<QAPair> = if let Some(max_n) = args.max_docs {
+        let mut sub_entries: Vec<PathBuf> = std::fs::read_dir(&args.corpus_dir)
+            .with_context(|| format!("Cannot read corpus: {}", args.corpus_dir.display()))?
+            .filter_map(|e| e.ok()).map(|e| e.path())
+            .filter(|p| p.extension().and_then(|e| e.to_str()) == Some("txt"))
+            .collect();
+        sub_entries.sort();
+        sub_entries.truncate(max_n);
+        let ingested_titles: std::collections::HashSet<String> = sub_entries.iter()
+            .filter_map(|p| p.file_stem()?.to_str().map(|s| s.to_lowercase()))
+            .collect();
+        qa_all.into_iter().filter(|qa| {
+            qa.doc_title.as_ref()
+                .map(|t| ingested_titles.contains(&t.to_lowercase()))
+                .unwrap_or(true)
+        }).collect()
+    } else {
+        qa_all
+    };
+    if qa_pairs.is_empty() { bail!("No QA pairs match the ingested corpus subset"); }
+    println!("[ablate-quant] {} QA pairs (corpus capped at {} docs)",
+        qa_pairs.len(), args.max_docs.map_or_else(|| "all".to_string(), |n| n.to_string()));
     let top_ks = vec![5usize, 10];
     let mut points: Vec<QuantAblationPoint> = Vec::new();
 
@@ -3207,7 +3266,7 @@ async fn cmd_ablate_quant(args: AblateQuantArgs) -> Result<()> {
         let server = EmbedServer::start(&server_bin, model_path, args.embed_port).await?;
         let config = ChunkerConfig::default();
         let _ = ingest_corpus_with_config(
-            &args.corpus_dir, &server, &cp_db, &cp_bm25, &cp_vec, &config,
+            &args.corpus_dir, &server, &cp_db, &cp_bm25, &cp_vec, &config, args.max_docs,
         ).await?;
 
         // Sample embed latency per query
