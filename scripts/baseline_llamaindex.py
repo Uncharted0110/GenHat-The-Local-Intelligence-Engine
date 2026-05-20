@@ -68,7 +68,9 @@ def build_index(corpus_dir: pathlib.Path, embed_model_path: str) -> Any:
     print(f"[llamaindex] Loaded {len(docs)} documents. Building index …")
 
     Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-base-en-v1.5")
-    Settings.llm = None
+    # Do NOT set Settings.llm = None here — index building never calls the LLM, and
+    # setting it to None bakes MockLLM into the index's service context before run_eval
+    # can configure it, resulting in empty query responses (EM=F1=0).
 
     t0 = time.time()
     index = VectorStoreIndex.from_documents(docs)
@@ -79,19 +81,18 @@ def build_index(corpus_dir: pathlib.Path, embed_model_path: str) -> Any:
 
 def run_eval(index: Any, qa_file: pathlib.Path, llm_url: str, count: int) -> dict[str, Any]:
     try:
-        from llama_index.core import Settings  # type: ignore
-        from llama_index.llms.openai_like import OpenAILike  # type: ignore
+        import openai  # type: ignore
     except ImportError:
-        sys.exit("ERROR: llama-index OpenAI-like LLM package not installed.")
+        sys.exit("ERROR: openai package not installed.")
 
-    Settings.llm = OpenAILike(
-        model="local",
-        api_base=llm_url,
-        api_key="dummy",
-        is_chat_model=True,
-        max_tokens=256,
-        temperature=0.0,
-    )
+    # Bypass LlamaIndex's LLM integration entirely.
+    # Every attempt to use OpenAILike inside LlamaIndex hits one of two problems:
+    #   1. system_prompt="/no_think" + ChatPromptTemplate → double system message → HTTP 400
+    #   2. No system_prompt → Qwen3 generates unclosed <think> block → exhausts max_tokens → empty pred
+    # Solution: use LlamaIndex only for embedding + retrieval, then call the LLM directly
+    # with extra_body={"chat_template_kwargs": {"enable_thinking": False}} — the same
+    # mechanism used by baseline_chromadb.py and rag_bench.rs.
+    client = openai.OpenAI(base_url=llm_url, api_key="dummy")
 
     with open(qa_file) as f:
         qa_pairs = json.load(f)
@@ -99,16 +100,41 @@ def run_eval(index: Any, qa_file: pathlib.Path, llm_url: str, count: int) -> dic
     qa_pairs = [q for q in qa_pairs if q.get("answers")][:count]
     print(f"[llamaindex] Evaluating {len(qa_pairs)} QA pairs …")
 
-    retriever = index.as_query_engine(similarity_top_k=5)
+    retriever = index.as_retriever(similarity_top_k=5)
     results = []
     latencies = []
 
     for i, qa in enumerate(qa_pairs):
         t0 = time.time()
-        response = retriever.query(qa["question"])
+
+        nodes = retriever.retrieve(qa["question"])
+        context = "\n\n".join(n.text for n in nodes)
+
+        resp = client.chat.completions.create(
+            model="local",
+            messages=[{
+                "role": "user",
+                "content": (
+                    "Context information is below.\n"
+                    "---------------------\n"
+                    f"{context}\n"
+                    "---------------------\n"
+                    "Given the context information and not prior knowledge, answer with a short phrase only — do not explain, do not write full sentences.\n"
+                    f"Query: {qa['question']}\n"
+                    "Answer:"
+                ),
+            }],
+            max_tokens=256,
+            temperature=0.0,
+            extra_body={"chat_template_kwargs": {"enable_thinking": False}},
+        )
         latency_ms = (time.time() - t0) * 1000.0
 
-        pred = str(response).strip()
+        raw = resp.choices[0].message.content or ""
+        if i == 0:
+            print(f"[llamaindex] DEBUG first raw response: {raw[:300]!r}")
+        # Defensive stripping of any residual think blocks
+        pred = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()
         em = exact_match(pred, qa["answers"])
         f1 = token_f1(pred, qa["answers"])
         results.append({"question": qa["question"], "pred": pred, "gold": qa["answers"],

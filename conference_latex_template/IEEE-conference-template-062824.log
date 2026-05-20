@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.5.17)  17 MAY 2026 22:38
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.5.17)  20 MAY 2026 01:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -635,14 +635,14 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Font Info:    Trying to load font information for U+msa on input line 132
-.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 75.
+
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 132
-.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 75.
+
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -651,84 +651,136 @@ f-dist/fonts/enc/dvips/base/8r.enc}
 
 
 ]
-Underfull \hbox (badness 3219) in paragraph at lines 176--182
+Underfull \hbox (badness 3219) in paragraph at lines 182--188
 []\OT1/ptm/m/n/10 Hybrid sparse-dense re-trieval con-sis-tently out-per-forms
  []
 
-[2]
-Overfull \hbox (15.3371pt too wide) detected at line 324
-[][]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 q; C\OT1/cmr/m/n/10 ) = [] [](\OML/cmm/m/
-it/10 t\OT1/cmr/m/n/10 ) \OMS/cmsy/m/n/10 ^^A []
+[2] [3]
+Underfull \hbox (badness 10000) in paragraph at lines 445--448
+\OT1/ptm/m/n/10 the same BGE-base-en-v1.5 sentence-transformers
  []
 
-[3]
-Underfull \hbox (badness 10000) in paragraph at lines 427--429
+
+Underfull \hbox (badness 5022) in paragraph at lines 448--451
+\OT1/ptm/m/n/10 sentence-transformers BGE-base-en-v1.5 em-bed-dings,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 457--459
 []\OT1/ptm/b/n/10 Embedding\OT1/ptm/m/n/10 : BGE-base-en-v1.5-Q8 GGUF (768-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 427--429
+Underfull \hbox (badness 10000) in paragraph at lines 457--459
 \OT1/ptm/m/n/10 dimensional, scalar Q8 quan-ti-za-tion, served via
  []
 
 LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 4
-30.
+60.
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
-Underfull \hbox (badness 10000) in paragraph at lines 429--432
+Underfull \hbox (badness 10000) in paragraph at lines 459--462
 []\OT1/ptm/b/n/10 Generation\OT1/ptm/m/n/10 : Qwen3.5-0.8B UD-Q4[]K[]XL GGUF.
  []
 
 
-Underfull \hbox (badness 2042) in paragraph at lines 429--432
+Underfull \hbox (badness 2042) in paragraph at lines 459--462
 \OT1/ptm/m/n/10 Thinking-mode to-kens (\OT1/pcr/m/n/10 <think>...<think>\OT1/pt
 m/m/n/10 ) are
  []
 
 
-Underfull \hbox (badness 1406) in paragraph at lines 435--439
+Underfull \hbox (badness 1406) in paragraph at lines 465--469
 []\OT1/ptm/m/n/10 Four con-fig-u-ra-tions are eval-u-ated: \OT1/ptm/b/n/10 BM25
 -only \OT1/ptm/m/n/10 (lex-i-cal
  []
 
 
-Underfull \hbox (badness 2698) in paragraph at lines 515--520
-[]\OT1/ptm/m/n/10 Hybrid la-tency (57.5 ms) is lower than BM25-only
+Underfull \hbox (badness 5022) in paragraph at lines 471--473
+[]\OT1/ptm/m/n/10 Retrieval qual-ity is mea-sured by Recall@$\OML/cmm/m/it/10 k
+$ \OT1/ptm/m/n/10 ($\OML/cmm/m/it/10 k \OMS/cmsy/m/n/10 2
  []
 
-<figures/fig_retrieval.png, id=30, 496.85625pt x 295.94565pt>
+[4]
+<figures/fig_retrieval.png, id=37, 239.2137pt x 188.6247pt>
 File: figures/fig_retrieval.png Graphic file (type png)
 <use figures/fig_retrieval.png>
-Package pdftex.def Info: figures/fig_retrieval.png  used on input line 525.
-(pdftex.def)             Requested size: 252.0pt x 150.09938pt.
-[4 <./figures/fig_retrieval.png>]
-<figures/fig_latency.png, id=37, 494.3268pt x 179.9523pt>
+Package pdftex.def Info: figures/fig_retrieval.png  used on input line 554.
+(pdftex.def)             Requested size: 252.0pt x 198.7151pt.
+<figures/fig_latency.png, id=39, 259.4493pt x 170.91855pt>
 File: figures/fig_latency.png Graphic file (type png)
 <use figures/fig_latency.png>
-Package pdftex.def Info: figures/fig_latency.png  used on input line 544.
-(pdftex.def)             Requested size: 252.0pt x 91.73875pt.
-<figures/fig_e2e.png, id=38, 388.45125pt x 317.988pt>
-File: figures/fig_e2e.png Graphic file (type png)
-<use figures/fig_e2e.png>
-Package pdftex.def Info: figures/fig_e2e.png  used on input line 593.
-(pdftex.def)             Requested size: 252.0pt x 206.29187pt.
-<figures/fig_scale.png, id=39, 454.5783pt x 478.06606pt>
-File: figures/fig_scale.png Graphic file (type png)
-<use figures/fig_scale.png>
-Package pdftex.def Info: figures/fig_scale.png  used on input line 621.
-(pdftex.def)             Requested size: 252.0pt x 265.02342pt.
+Package pdftex.def Info: figures/fig_latency.png  used on input line 574.
+(pdftex.def)             Requested size: 252.0pt x 166.01765pt.
 
-Underfull \hbox (badness 7397) in paragraph at lines 630--635
-[]\OT1/ptm/m/n/10 The IVF scalar-quantized in-dex stores 2,138 768-
+Overfull \hbox (36.01541pt too wide) in paragraph at lines 592--602
+ [][] 
  []
 
-[5 <./figures/fig_latency.png> <./figures/fig_e2e.png>]
-Underfull \hbox (badness 1694) in paragraph at lines 735--739
+<figures/fig_e2e.png, id=40, 264.86955pt x 188.6247pt>
+File: figures/fig_e2e.png Graphic file (type png)
+<use figures/fig_e2e.png>
+Package pdftex.def Info: figures/fig_e2e.png  used on input line 624.
+(pdftex.def)             Requested size: 252.0pt x 179.46585pt.
+<figures/fig_e2e_latency_dist.png, id=41, 243.91125pt x 173.80936pt>
+File: figures/fig_e2e_latency_dist.png Graphic file (type png)
+<use figures/fig_e2e_latency_dist.png>
+Package pdftex.def Info: figures/fig_e2e_latency_dist.png  used on input line 6
+32.
+(pdftex.def)             Requested size: 252.0pt x 179.5746pt.
+[5 <./figures/fig_retrieval.png> <./figures/fig_latency.png>]
+<figures/fig_trivia.png, id=49, 241.3818pt x 202.356pt>
+File: figures/fig_trivia.png Graphic file (type png)
+<use figures/fig_trivia.png>
+Package pdftex.def Info: figures/fig_trivia.png  used on input line 672.
+(pdftex.def)             Requested size: 252.0pt x 211.26042pt.
+
+Overfull \hbox (119.30403pt too wide) in paragraph at lines 687--696
+ [] 
+ []
+
+<figures/fig_beir.png, id=50, 271.0125pt x 187.54065pt>
+File: figures/fig_beir.png Graphic file (type png)
+<use figures/fig_beir.png>
+Package pdftex.def Info: figures/fig_beir.png  used on input line 709.
+(pdftex.def)             Requested size: 252.0pt x 174.39095pt.
+<figures/fig_chunking.png, id=51, 258.0039pt x 180.31364pt>
+File: figures/fig_chunking.png Graphic file (type png)
+<use figures/fig_chunking.png>
+Package pdftex.def Info: figures/fig_chunking.png  used on input line 757.
+(pdftex.def)             Requested size: 252.0pt x 176.11737pt.
+<figures/fig_rrf_k.png, id=52, 212.11246pt x 159.7167pt>
+File: figures/fig_rrf_k.png Graphic file (type png)
+<use figures/fig_rrf_k.png>
+Package pdftex.def Info: figures/fig_rrf_k.png  used on input line 794.
+(pdftex.def)             Requested size: 252.0pt x 189.75328pt.
+[6 <./figures/fig_e2e.png> <./figures/fig_e2e_latency_dist.png> <./figures/fig_
+trivia.png>]
+<figures/fig_quant.png, id=60, 242.46585pt x 180.31364pt>
+File: figures/fig_quant.png Graphic file (type png)
+<use figures/fig_quant.png>
+Package pdftex.def Info: figures/fig_quant.png  used on input line 829.
+(pdftex.def)             Requested size: 252.0pt x 187.41171pt.
+ [7 <./figures/fig_beir.png> <./figures/fig_chunking.png> <./figures/fig_rrf_k.
+png>]
+<figures/fig_raptor.png, id=68, 272.4579pt x 202.356pt>
+File: figures/fig_raptor.png Graphic file (type png)
+<use figures/fig_raptor.png>
+Package pdftex.def Info: figures/fig_raptor.png  used on input line 879.
+(pdftex.def)             Requested size: 252.0pt x 187.164pt.
+<figures/fig_scale.png, id=69, 239.2137pt x 274.98735pt>
+File: figures/fig_scale.png Graphic file (type png)
+<use figures/fig_scale.png>
+Package pdftex.def Info: figures/fig_scale.png  used on input line 926.
+(pdftex.def)             Requested size: 252.0pt x 289.69772pt.
+ [8 <./figures/fig_quant.png> <./figures/fig_raptor.png>]
+Underfull \hbox (badness 1694) in paragraph at lines 1053--1057
 []\OT1/ptm/m/n/8 Y. Le-Cun, ``A Path To-wards Au-tonomous Ma-chine In-tel-li-ge
 nce,''
  []
 
+[9 <./figures/fig_scale.png>]
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -740,20 +792,22 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[6 <./figures/fig_scale.png>] (./IEEE-conference-template-062824.aux)
+[10
+
+] (./IEEE-conference-template-062824.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 15749 strings out of 476106
- 320525 string characters out of 5793933
- 1952975 words of memory out of 5000000
- 37473 multiletter control sequences out of 15000+600000
- 602606 words of font info for 119 fonts, out of 8000000 for 9000
+ 15827 strings out of 476106
+ 322362 string characters out of 5793933
+ 1953975 words of memory out of 5000000
+ 37547 multiletter control sequences out of 15000+600000
+ 604151 words of font info for 125 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 84i,9n,87p,657b,982s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,21n,87p,657b,982s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/share
 /texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texli
@@ -761,20 +815,24 @@ ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist
 /fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/
 type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy1
-0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><
-/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></
-usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/u
-rw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8
-a.pfb>
-Output written on IEEE-conference-template-062824.pdf (6 pages, 577559 bytes).
+ublic/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></u
+sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texl
+ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/u
+rw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8
+a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on IEEE-conference-template-062824.pdf (10 pages, 831335 bytes).
+
 PDF statistics:
- 126 PDF objects out of 1000 (max. 8388607)
- 73 compressed objects within 1 object stream
+ 174 PDF objects out of 1000 (max. 8388607)
+ 95 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 33 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 68 words of extra memory for PDF output out of 10000 (max. 10000000)
 

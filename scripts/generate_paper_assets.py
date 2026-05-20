@@ -128,28 +128,47 @@ def table_e2e(results_dir: pathlib.Path) -> None:
     write_tex("table_e2e.tex", "\n".join(lines))
 
 
+# ── BEIR helpers ─────────────────────────────────────────────────────────────
+
+def load_beir_datasets(results_dir: pathlib.Path) -> dict:
+    """Load all beir_<dataset>.json files and return {dataset: {config: metrics}}."""
+    data: dict = {}
+    for path in sorted(results_dir.glob("beir_*.json")):
+        d = load_json(path)
+        if not d or not d.get("results"):
+            continue
+        # Derive a clean dataset name from the file name (beir_scifact.json → scifact)
+        name = path.stem[len("beir_"):]
+        data[name] = {row["config"]: row for row in d["results"]}
+    return data
+
+
 # ── BEIR table ────────────────────────────────────────────────────────────────
 
 def table_beir(results_dir: pathlib.Path) -> None:
-    d = load_json(results_dir / "beir_results.json")
-    if not d:
+    datasets = load_beir_datasets(results_dir)
+    if not datasets:
         print("  [table_beir] No data, skipping.")
         return
+    configs = sorted({cfg for rows in datasets.values() for cfg in rows})
+    col_spec = "l" + "c" * len(configs)
+    header = "Dataset & " + " & ".join(c.capitalize() for c in configs) + r" \\"
     lines = [
         r"\begin{table}[t]",
         r"\centering",
-        r"\caption{BEIR NDCG@10 per retrieval configuration}",
+        r"\caption{BEIR NDCG@10 per dataset and retrieval configuration}",
         r"\label{tab:beir}",
-        r"\begin{tabular}{lcccc}",
+        f"\\begin{{tabular}}{{{col_spec}}}",
         r"\toprule",
-        r"Config & NDCG@10 & MAP & Recall@100 & MRR \\",
+        header,
         r"\midrule",
     ]
-    for row in d.get("results", []):
-        lines.append(
-            f"{row['config']} & {row['ndcg_at_10']:.3f} & {row['map']:.3f} "
-            f"& {row['recall_at_100']:.3f} & {row['mrr']:.3f} \\\\"
+    for ds, rows in sorted(datasets.items()):
+        cells = " & ".join(
+            f"{rows[c]['ndcg_at_10']:.3f}" if c in rows else "--"
+            for c in configs
         )
+        lines.append(f"{ds} & {cells} \\\\")
     lines += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
     write_tex("table_beir.tex", "\n".join(lines))
 
@@ -317,10 +336,10 @@ def fig_scale(results_dir: pathlib.Path) -> None:
     if not d:
         print("  [fig_scale] No scale data, skipping.")
         return
-    pts = d.get("checkpoints", d) if isinstance(d, dict) else d
+    pts = d.get("points", d.get("checkpoints", d)) if isinstance(d, dict) else d
     sizes = [p["doc_count"] for p in pts]
-    r5 = [p.get("recall_5", p.get("recall", {}).get("recall@5", 0)) for p in pts]
-    lats = [p.get("avg_latency_ms", 0) for p in pts]
+    r5 = [p.get("recall_5_hybrid", p.get("recall_5", p.get("recall", {}).get("recall@5", 0))) for p in pts]
+    lats = [p.get("avg_latency_ms_hybrid", p.get("avg_latency_ms", 0)) for p in pts]
 
     fig, ax1 = plt.subplots(figsize=(5, 3.5))
     ax2 = ax1.twinx()
@@ -336,22 +355,22 @@ def fig_scale(results_dir: pathlib.Path) -> None:
 
 
 def fig_beir(results_dir: pathlib.Path) -> None:
-    d = load_json(results_dir / "beir_results.json")
-    if not d:
+    datasets = load_beir_datasets(results_dir)
+    if not datasets:
         print("  [fig_beir] No BEIR data, skipping.")
         return
-    configs = [r["config"] for r in d["results"]]
-    ndcg = [r["ndcg_at_10"] for r in d["results"]]
-    mrr = [r["mrr"] for r in d["results"]]
+    configs = sorted({cfg for rows in datasets.values() for cfg in rows})
+    ds_names = sorted(datasets.keys())
 
-    x = np.arange(len(configs))
-    width = 0.35
-    fig, ax = plt.subplots(figsize=(6, 3.5))
-    ax.bar(x - width/2, ndcg, width, label="NDCG@10")
-    ax.bar(x + width/2, mrr, width, label="MRR")
+    x = np.arange(len(ds_names))
+    width = 0.8 / max(len(configs), 1)
+    fig, ax = plt.subplots(figsize=(max(5, len(ds_names) * 1.8), 3.5))
+    for i, cfg in enumerate(configs):
+        ndcg = [datasets[ds].get(cfg, {}).get("ndcg_at_10", 0.0) for ds in ds_names]
+        ax.bar(x + (i - len(configs) / 2 + 0.5) * width, ndcg, width, label=cfg.capitalize())
     ax.set_xticks(x)
-    ax.set_xticklabels(configs, rotation=15, ha="right")
-    ax.set_ylabel("Score")
+    ax.set_xticklabels(ds_names, rotation=15, ha="right")
+    ax.set_ylabel("NDCG@10")
     ax.set_title("BEIR Retrieval Quality")
     ax.legend()
     ax.grid(axis="y", linestyle="--", alpha=0.4)

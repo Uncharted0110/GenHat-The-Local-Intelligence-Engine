@@ -35,7 +35,7 @@ benchmark/beir/
 workspace/
 
 # Script results
-results/
+results.zip
 RESEARCH_PAPER_PLAN.md
 
 # Added by Spec Kitty CLI (auto-managed)

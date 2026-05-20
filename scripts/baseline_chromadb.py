@@ -116,10 +116,17 @@ def run_eval(col: Any, model: Any, qa_file: pathlib.Path, llm_url: str, count: i
         chat = client.chat.completions.create(
             model="local",
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=128,
+            max_tokens=512,
             temperature=0.0,
+            # Disable Qwen3 thinking at the chat-template level.
+            # Do NOT use budget_tokens=0 alone — on long RAG contexts it leaves an
+            # unclosed <think> tag that strips the entire response (EM=F1=0).
+            # chat_template_kwargs is the llama.cpp-native way to fully suppress thinking.
+            extra_body={"chat_template_kwargs": {"enable_thinking": False}},
         )
-        pred = chat.choices[0].message.content.strip() if chat.choices else ""
+        raw = chat.choices[0].message.content if chat.choices else ""
+        # Strip any residual <think>...</think> blocks as a defensive post-processing step.
+        pred = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()
         latency_ms = (time.time() - t0) * 1000.0
 
         em = exact_match(pred, qa["answers"])

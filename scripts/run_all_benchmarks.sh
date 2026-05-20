@@ -296,6 +296,7 @@ echo "[7/10] RRF-k ablation …"
   --embed-model "$EMBED" \
   --llama-server "$SERVER" \
   --rrf-k-values "10,30,60,100,200" \
+  ${ABLATE_MAX_QA:+--max-qa $ABLATE_MAX_QA} \
   --output "$RESULTS/rrf_k_ablation.json"
 tick "7: RRF-k ablation"
 
@@ -335,23 +336,58 @@ tick "9: scale degradation"
 if [[ "$SKIP_BASELINES" -eq 1 || "$SKIP_PYTHON" -eq 1 ]]; then
   echo "[10/10] Skipping Python baselines"
 else
-  echo "[10/10] Python baselines …"
+  echo "[10/10] Python baselines — starting LLM server on port 12346 …"
 
-  echo "  → LlamaIndex baseline"
-  python3 "$ROOT/scripts/baseline_llamaindex.py" \
-    --corpus-dir "$CORPUS" \
-    --qa-file "$QA" \
-    --count 500 \
-    --output "$RESULTS/llamaindex_baseline.json" \
-    || warn "LlamaIndex baseline failed; continuing"
+  # rag-bench manages its own server lifecycle and stops it after each stage.
+  # The baselines need their own server instance for the duration of stage 10.
+  BASELINE_PORT=12346
+  LIB_DIR="$(dirname "$SERVER")"
+  LD_LIBRARY_PATH="${LIB_DIR}:${LD_LIBRARY_PATH:-}" "$SERVER" \
+    --model "$LLM" \
+    --port "$BASELINE_PORT" \
+    --ctx-size 4096 \
+    --n-gpu-layers 99 \
+    --no-warmup \
+    --log-disable &
+  BASELINE_LLM_PID=$!
 
-  echo "  → ChromaDB baseline"
-  python3 "$ROOT/scripts/baseline_chromadb.py" \
-    --corpus-dir "$CORPUS" \
-    --qa-file "$QA" \
-    --count 500 \
-    --output "$RESULTS/chromadb_baseline.json" \
-    || warn "ChromaDB baseline failed; continuing"
+  echo "  Waiting for LLM server (up to 90s) …"
+  BASELINE_HEALTHY=0
+  for _i in $(seq 1 90); do
+    if curl -sf "http://localhost:${BASELINE_PORT}/health" > /dev/null 2>&1; then
+      BASELINE_HEALTHY=1; break
+    fi
+    sleep 1
+  done
+
+  if [[ "$BASELINE_HEALTHY" -eq 0 ]]; then
+    warn "LLM server did not become healthy in 90s — skipping Python baselines"
+    kill "$BASELINE_LLM_PID" 2>/dev/null || true
+  else
+    LLM_URL="http://localhost:${BASELINE_PORT}/v1"
+    echo "  LLM server ready at $LLM_URL"
+
+    echo "  → LlamaIndex baseline"
+    python3 "$ROOT/scripts/baseline_llamaindex.py" \
+      --corpus-dir "$CORPUS" \
+      --qa-file "$QA" \
+      --llm-url "$LLM_URL" \
+      --count 500 \
+      --output "$RESULTS/llamaindex_baseline.json" \
+      || warn "LlamaIndex baseline failed; continuing"
+
+    echo "  → ChromaDB baseline"
+    python3 "$ROOT/scripts/baseline_chromadb.py" \
+      --corpus-dir "$CORPUS" \
+      --qa-file "$QA" \
+      --llm-url "$LLM_URL" \
+      --count 500 \
+      --output "$RESULTS/chromadb_baseline.json" \
+      || warn "ChromaDB baseline failed; continuing"
+
+    kill "$BASELINE_LLM_PID" 2>/dev/null || true
+    wait "$BASELINE_LLM_PID" 2>/dev/null || true
+  fi
 fi
 tick "10: Python baselines"
 

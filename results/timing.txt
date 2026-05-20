@@ -1,0 +1,12 @@
+[19:12:04] [timing] 0: build                               2s
+[19:12:11] [timing] 1: SQuAD ingest                        7s
+[19:12:50] [timing] 2: TriviaQA ingest                     39s
+[19:14:07] [timing] 3: SQuAD bench                         77s
+[19:17:40] [timing] 4: TriviaQA bench                      213s
+[19:19:02] [timing] 5: BEIR bench                          82s
+[19:19:46] [timing] 6: chunking ablation                   44s
+[19:20:00] [timing] 7: RRF-k ablation                      14s
+[19:20:06] [timing] 8: quant ablation                      6s
+[19:22:24] [timing] 9: scale degradation                   138s
+[19:27:15] [timing] 10: Python baselines                   291s
+[19:27:16] [timing] assets                                 1s

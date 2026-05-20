@@ -6,7 +6,6 @@
 \citation{b5}
 \citation{b6}
 \citation{b7}
-\citation{b8,b9}
 \citation{b10}
 \citation{b1}
 \citation{b2}
@@ -17,9 +16,9 @@
 \citation{b3}
 \citation{b4}
 \citation{b5}
-\citation{b10}
 \@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
 \citation{b6}
+\citation{b23}
 \citation{b2}
 \citation{b17}
 \citation{b18}
@@ -60,33 +59,70 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Query Processing Pipeline}{3}{}\protected@file@percent }
 \newlabel{eq:rrf}{{4}{3}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Memory and Resource Management}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {IV}Experiments}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Hardware and Environment}{3}{}\protected@file@percent }
 \citation{b10}
+\citation{b29}
+\citation{b23}
+\citation{b23}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Experiments}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Hardware and Environment}{4}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Dataset}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Models}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Retrieval Configurations}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-E}}Evaluation Protocol}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Baselines}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Models}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-E}}Retrieval Configurations}{4}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Retrieval Performance on SQuAD~1.1 (442 Documents, 14{,}027 Chunks)}}{4}{}\protected@file@percent }
+\newlabel{tab:retrieval}{{I}{4}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-F}}Evaluation Protocol}{4}{}\protected@file@percent }
 \newlabel{eq:recall}{{5}{4}{}{}{}}
 \newlabel{eq:mrr}{{6}{4}{}{}{}}
 \newlabel{eq:f1}{{7}{4}{}{}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Retrieval Performance on SQuAD~1.1 (10{,}570 QA Pairs, 2{,}067 Documents)}}{4}{}\protected@file@percent }
-\newlabel{tab:retrieval}{{I}{4}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Retrieval metrics (Recall@5, Recall@10, MRR) for all four retrieval configurations on the full 10{,}570-pair SQuAD~1.1 evaluation set. Hybrid RRF achieves the highest scores on all three metrics.}}{4}{}\protected@file@percent }
-\newlabel{fig:retrieval}{{2}{4}{}{}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {V}Results and Discussion}{4}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Retrieval Performance}{4}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Query latency breakdown for the Hybrid+Expand configuration. Embedding dominates at 55.4~ms (95.7\%) of the 57.9~ms total; BM25, ANN, RRF, and expand together contribute 2.5~ms.}}{5}{}\protected@file@percent }
-\newlabel{fig:latency}{{3}{5}{}{}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces End-to-End Answer Quality (SQuAD~1.1, $n{=}50$)}}{5}{}\protected@file@percent }
-\newlabel{tab:e2e}{{II}{5}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Retrieval metrics (Recall@5, Recall@10, MRR) for all four retrieval configurations on SQuAD~1.1. Hybrid RRF achieves the highest scores on all three metrics.}}{5}{}\protected@file@percent }
+\newlabel{fig:retrieval}{{2}{5}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Query Latency Breakdown}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}End-to-End Answer Quality}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Scale Degradation}{5}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces End-to-end answer quality: NELA Hybrid RAG vs.\ no-retrieval baseline (Qwen3.5-0.8B, $n{=}50$). Hybrid RAG delivers +68.0~pp EM and +64.3~pp Token~F1 gain over the baseline.}}{5}{}\protected@file@percent }
-\newlabel{fig:e2e}{{4}{5}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}Index Memory Efficiency}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}End-to-End Answer Quality and Baseline Comparison}{5}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Query latency breakdown for the Hybrid+Expand configuration. IVF ANN (2.35~ms) accounts for 54\% of the 4.34~ms retrieval total; LLM generation dominates the full E2E pipeline (p50=84.75~ms, p95=98.5~ms).}}{5}{}\protected@file@percent }
+\newlabel{fig:latency}{{3}{5}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces End-to-end Answer Quality on SQuAD 1.1 ($n=500$)}}{5}{}\protected@file@percent }
+\newlabel{tab:e2e}{{II}{5}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Cross-Dataset Generalization: TriviaQA-RC Wikipedia ($n{=}500$)}}{5}{}\protected@file@percent }
+\newlabel{tab:trivia}{{III}{5}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Generalization: TriviaQA and BEIR}{5}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces End-to-end answer quality: NELA vs.\ all baselines ($n{=}500$). NELA achieves +55.2~pp EM over no-RAG, +10.8~pp over LlamaIndex, and +38.8~pp over ChromaDB.}}{6}{}\protected@file@percent }
+\newlabel{fig:e2e}{{4}{6}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces E2E latency CDF for NELA (p50=84.75~ms, p95=98.5~ms, p99=105~ms). NELA is 2--3$\times $ faster than Python baselines at all percentiles.}}{6}{}\protected@file@percent }
+\newlabel{fig:e2e_latency}{{5}{6}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Cross-dataset generalization: EM and Token~F1 on SQuAD~1.1 and TriviaQA-RC for NELA RAG vs.\ No-RAG. 95\% bootstrap CIs shown on NELA bars. NELA delivers +39.8~pp EM gain on TriviaQA despite the 10$\times $ larger corpus.}}{6}{}\protected@file@percent }
+\newlabel{fig:trivia}{{6}{6}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces BEIR Zero-Shot Retrieval: NDCG@10 / MAP / Recall@100 / MRR}}{6}{}\protected@file@percent }
+\newlabel{tab:beir}{{IV}{6}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}Ablation Studies}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-E}1}Chunking Strategy}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-E}2}RRF Fusion Constant}{6}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces BEIR zero-shot retrieval: NDCG@10 (left) and Recall@100 (right) for BM25-only, Vector-only, and Hybrid across SciFact, NFCorpus, and FiQA-2018. Hybrid leads on SciFact and NFCorpus; dense retrieval is superior on the paraphrastic FiQA queries.}}{7}{}\protected@file@percent }
+\newlabel{fig:beir}{{7}{7}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Chunking Ablation: Hybrid Recall@5, MRR, Latency (ms)}}{7}{}\protected@file@percent }
+\newlabel{tab:ablate_chunk}{{V}{7}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces RRF Constant Ablation: Hybrid Recall@5 and MRR}}{7}{}\protected@file@percent }
+\newlabel{tab:ablate_rrf}{{VI}{7}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-E}3}Embedding Model Quantization}{7}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Chunking strategy ablation: Recall@5 heatmap (left) across 4 chunk sizes $\times $ 3 overlaps, and MRR vs.\ overlap for each chunk size (right). Recall@5 varies only 0.022 across all 12 configurations, demonstrating NELA's robustness to chunking choice. Default 1{,}024/128 (dashed line) is Pareto-optimal.}}{7}{}\protected@file@percent }
+\newlabel{fig:chunking}{{8}{7}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces RRF fusion constant ablation: Recall@5 (left axis) and MRR (right axis) as $k$ varies from 10 to 200. Recall@5 fluctuates by only 0.4~pp, confirming near-complete insensitivity. Default $k{=}60$ (dotted line) achieves the peak Recall@5.}}{7}{}\protected@file@percent }
+\newlabel{fig:rrf_k}{{9}{7}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Embedding Model Quantization Ablation}}{7}{}\protected@file@percent }
+\newlabel{tab:ablate_quant}{{VII}{7}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-F}}RAPTOR Hierarchical Retrieval}{7}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Embedding model quantization ablation: quality metrics (left) and average embedding latency (right) for BGE-base-Q8 vs.\ BGE-small-Q8. BGE-base-Q8 achieves superior recall and MRR at \emph  {lower} embedding latency, validating NELA's default choice.}}{8}{}\protected@file@percent }
+\newlabel{fig:quant}{{10}{8}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VIII}{\ignorespaces RAPTOR Gating Strategies vs.\ Flat Hybrid Retrieval}}{8}{}\protected@file@percent }
+\newlabel{tab:raptor}{{VIII}{8}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-G}}Scale Degradation}{8}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces RAPTOR gating strategies vs.\ flat retrieval on SQuAD~1.1 (left) and TriviaQA-RC (right) at Recall@5. Flat hybrid consistently outperforms all RAPTOR variants on both corpora; RAPTOR expand-all is the best RAPTOR variant but remains 32~pp below flat hybrid on SQuAD. Results motivate corpus-adaptive gating calibration.}}{8}{}\protected@file@percent }
+\newlabel{fig:raptor}{{11}{8}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {IX}{\ignorespaces Scale Degradation: Hybrid R@5, Latency, Memory vs.\ Corpus Size}}{8}{}\protected@file@percent }
+\newlabel{tab:scale}{{IX}{8}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-H}}Index Memory Efficiency}{8}{}\protected@file@percent }
 \bibcite{b1}{1}
 \bibcite{b2}{2}
 \bibcite{b3}{3}
@@ -107,6 +143,10 @@
 \bibcite{b18}{18}
 \bibcite{b19}{19}
 \bibcite{b20}{20}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Scale degradation: Hybrid Recall@5 (top), query latency and IVF index memory (bottom) as corpus grows from 50 to 442 documents. Recall degrades gracefully; memory and latency grow sub-linearly.}}{9}{}\protected@file@percent }
+\newlabel{fig:scale}{{12}{9}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{9}{}\protected@file@percent }
 \bibcite{b21}{21}
 \bibcite{b22}{22}
 \bibcite{b23}{23}
@@ -115,7 +155,5 @@
 \bibcite{b26}{26}
 \bibcite{b27}{27}
 \bibcite{b28}{28}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Scale degradation from 100 to 2{,}000 documents. Top: Recall@5 per retrieval configuration. Bottom: Hybrid query latency (ms) and IVF index memory (MB).}}{6}{}\protected@file@percent }
-\newlabel{fig:scale}{{5}{6}{}{}{}}
-\@writefile{toc}{\contentsline {section}{References}{6}{}\protected@file@percent }
-\gdef \@abspage@last{6}
+\bibcite{b29}{29}
+\gdef \@abspage@last{10}

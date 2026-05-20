@@ -1,0 +1,15 @@
+\begin{table}[t]
+\centering
+\caption{End-to-end Answer Quality on SQuAD 1.1 ($n=500$)}
+\label{tab:e2e}
+\begin{tabular}{lcccc}
+\toprule
+System & EM (\%) & F1 (\%) & Latency (ms) & $n$ \\
+\midrule
+\textbf{NELA (ours)} & 56.4 [52.2--60.4] & 65.8 [62.0--69.5] & 85 & 500 \\
+No-RAG baseline & 1.2 & 6.3 & 32 & 500 \\
+LlamaIndex + BGE & 45.6 & 57.3 & 280 & 500 \\
+ChromaDB + BGE & 17.6 & 26.9 & 171 & 500 \\
+\bottomrule
+\end{tabular}
+\end{table}

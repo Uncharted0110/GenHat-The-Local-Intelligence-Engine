@@ -1,0 +1,42 @@
+{
+  "timestamp": "2026-05-19T19:22:24.262874930+00:00",
+  "embed_model": "/teamspace/studios/this_studio/nela/models/embedding/bge-base-en-v1.5-q8_0/bge-base-en-v1.5-q8_0.gguf",
+  "points": [
+    {
+      "doc_count": 50,
+      "vector_count": 1702,
+      "recall_5_hybrid": 0.964,
+      "recall_5_bm25": 0.884,
+      "recall_5_vector": 0.896,
+      "avg_latency_ms_hybrid": 0.42381662999999975,
+      "memory_mb": 1.3598098754882812
+    },
+    {
+      "doc_count": 100,
+      "vector_count": 3247,
+      "recall_5_hybrid": 0.956,
+      "recall_5_bm25": 0.872,
+      "recall_5_vector": 0.886,
+      "avg_latency_ms_hybrid": 0.73671994,
+      "memory_mb": 2.509082794189453
+    },
+    {
+      "doc_count": 200,
+      "vector_count": 6267,
+      "recall_5_hybrid": 0.93,
+      "recall_5_bm25": 0.846,
+      "recall_5_vector": 0.874,
+      "avg_latency_ms_hybrid": 1.3193433840000002,
+      "memory_mb": 4.755558013916016
+    },
+    {
+      "doc_count": 442,
+      "vector_count": 14066,
+      "recall_5_hybrid": 0.93,
+      "recall_5_bm25": 0.84,
+      "recall_5_vector": 0.902,
+      "avg_latency_ms_hybrid": 3.162817440000001,
+      "memory_mb": 10.556968688964844
+    }
+  ]
+}

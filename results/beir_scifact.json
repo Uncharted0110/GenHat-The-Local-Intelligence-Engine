@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-05-19T19:17:49.138819277+00:00",
+  "dataset_dir": "/teamspace/studios/this_studio/nela/benchmark/beir/scifact",
+  "query_count": 1109,
+  "doc_count": 5183,
+  "results": [
+    {
+      "config": "bm25_only",
+      "ndcg_at_10": 0.6821949509360806,
+      "map": 0.6420617056252815,
+      "recall_at_100": 0.9033333333333333,
+      "mrr": 0.6525663083134703,
+      "avg_latency_ms": 3.123548906666665
+    },
+    {
+      "config": "vector_only",
+      "ndcg_at_10": 0.7246694591787461,
+      "map": 0.6844416329461541,
+      "recall_at_100": 0.9666666666666667,
+      "mrr": 0.6927553068308899,
+      "avg_latency_ms": 3.559974160000004
+    },
+    {
+      "config": "hybrid",
+      "ndcg_at_10": 0.7404161762672962,
+      "map": 0.7008648628061372,
+      "recall_at_100": 0.9633333333333334,
+      "mrr": 0.7103972283699884,
+      "avg_latency_ms": 4.566314659999998
+    }
+  ]
+}

@@ -430,6 +430,11 @@ struct AblateRrfKArgs {
     #[arg(long, default_value = "10,30,60,100,200")]
     rrf_k_values: String,
 
+    /// Maximum QA pairs to evaluate per k value (applied before pre-embedding).
+    /// Keeps stage 7 fast and RAM-bounded. 500 gives stable recall@k estimates.
+    #[arg(long)]
+    max_qa: Option<usize>,
+
     /// Output JSON file.
     #[arg(long, default_value = "rrf_k_ablation.json")]
     output: PathBuf,
@@ -1375,19 +1380,16 @@ async fn run_recall_bench(
 
     let mut recall_results = Vec::new();
 
-    // Pre-embed all queries once (parallel batches) — avoids re-embedding once per
-    // retrieval config (4× redundancy) and saturates the GPU across queries.
-    const EMBED_CONCURRENCY: usize = 8;
+    // Pre-embed all queries once in true batches of 64 — saturates the GPU and avoids
+    // 4× re-embedding across retrieval configs. Batching 64 strings per HTTP request
+    // is far more efficient than 8 concurrent single-string requests.
+    const EMBED_BATCH: usize = 64;
     let pre_embed_t0 = Instant::now();
     let mut pre_embeddings: Vec<Vec<f32>> = Vec::with_capacity(qa_pairs.len());
-    for batch in qa_pairs.chunks(EMBED_CONCURRENCY) {
-        let futs: Vec<_> = batch.iter()
-            .map(|qa| server.embed(vec![qa.question.clone()]))
-            .collect();
-        let results = futures_util::future::join_all(futs).await;
-        for r in results {
-            pre_embeddings.push(r.unwrap_or_default().into_iter().next().unwrap_or_default());
-        }
+    for batch in qa_pairs.chunks(EMBED_BATCH) {
+        let texts: Vec<String> = batch.iter().map(|qa| qa.question.clone()).collect();
+        let embeddings = server.embed(texts).await?;
+        pre_embeddings.extend(embeddings);
     }
     let per_query_embed_ms = pre_embed_t0.elapsed().as_secs_f64() * 1000.0
         / qa_pairs.len().max(1) as f64;
@@ -3200,20 +3202,34 @@ async fn cmd_ablate_rrf_k(args: AblateRrfKArgs) -> Result<()> {
     let qa_json = std::fs::read_to_string(&args.qa_file)
         .with_context(|| format!("Cannot read QA file: {}", args.qa_file.display()))?;
     let qa_pairs: Vec<QAPair> = serde_json::from_str(&qa_json).context("Invalid QA file")?;
+    // Cap QA pairs early to keep RAM and runtime bounded.
+    let qa_pairs: Vec<QAPair> = match args.max_qa {
+        Some(n) => {
+            println!("[ablate-rrf-k] QA pairs capped to {} (--max-qa)", n);
+            qa_pairs.into_iter().take(n).collect()
+        }
+        None => qa_pairs,
+    };
+    println!("[ablate-rrf-k] {} QA pairs to evaluate over {} k-values",
+        qa_pairs.len(), rrf_k_vals.len());
     let top_ks = vec![5usize, 10];
     let server = EmbedServer::start(&server_bin, &args.embed_model, args.embed_port).await?;
     let mut points: Vec<RrfKPoint> = Vec::new();
 
-    // Pre-embed all queries once before sweeping k values — avoids 5× re-embedding.
-    const EMBED_CONCURRENCY: usize = 8;
+    // Pre-embed all queries once before sweeping k values — avoids N× re-embedding.
+    // Send queries in true batches of 64 so the GPU sees real parallelism instead of
+    // 8 concurrent single-string requests (which keep utilisation near 0).
+    const EMBED_BATCH: usize = 64;
     let mut query_embeddings: Vec<Vec<f32>> = Vec::with_capacity(qa_pairs.len());
-    for batch in qa_pairs.chunks(EMBED_CONCURRENCY) {
-        let futs: Vec<_> = batch.iter()
-            .map(|qa| server.embed(vec![qa.question.clone()]))
-            .collect();
-        let results = futures_util::future::join_all(futs).await;
-        for r in results {
-            query_embeddings.push(r.unwrap_or_default().into_iter().next().unwrap_or_default());
+    let n_batches = (qa_pairs.len() + EMBED_BATCH - 1) / EMBED_BATCH;
+    println!("[ablate-rrf-k] pre-embedding {} queries in {} batches of {} …",
+        qa_pairs.len(), n_batches, EMBED_BATCH);
+    for (bi, batch) in qa_pairs.chunks(EMBED_BATCH).enumerate() {
+        let texts: Vec<String> = batch.iter().map(|qa| qa.question.clone()).collect();
+        let embeddings = server.embed(texts).await?;
+        query_embeddings.extend(embeddings);
+        if (bi + 1) % 20 == 0 || bi + 1 == n_batches {
+            println!("[ablate-rrf-k]   embedded {}/{} queries", query_embeddings.len(), qa_pairs.len());
         }
     }
 

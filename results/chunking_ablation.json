@@ -1,0 +1,122 @@
+[
+  {
+    "chunk_size": 512,
+    "overlap": 64,
+    "n_chunks_total": 0,
+    "recall_5": 0.938,
+    "recall_10": 0.958,
+    "mrr": 0.8241960317460314,
+    "avg_query_ms": 2.6576398840000026,
+    "ingest_total_ms": 0
+  },
+  {
+    "chunk_size": 512,
+    "overlap": 128,
+    "n_chunks_total": 0,
+    "recall_5": 0.936,
+    "recall_10": 0.968,
+    "mrr": 0.8141579365079359,
+    "avg_query_ms": 3.1221263259999996,
+    "ingest_total_ms": 0
+  },
+  {
+    "chunk_size": 512,
+    "overlap": 256,
+    "n_chunks_total": 0,
+    "recall_5": 0.934,
+    "recall_10": 0.964,
+    "mrr": 0.8254357142857143,
+    "avg_query_ms": 4.613517293999997,
+    "ingest_total_ms": 0
+  },
+  {
+    "chunk_size": 1024,
+    "overlap": 64,
+    "n_chunks_total": 0,
+    "recall_5": 0.94,
+    "recall_10": 0.974,
+    "mrr": 0.8229007936507934,
+    "avg_query_ms": 1.3688072100000002,
+    "ingest_total_ms": 0
+  },
+  {
+    "chunk_size": 1024,
+    "overlap": 128,
+    "n_chunks_total": 0,
+    "recall_5": 0.94,
+    "recall_10": 0.978,
+    "mrr": 0.8066531746031744,
+    "avg_query_ms": 1.4229324899999996,
+    "ingest_total_ms": 0
+  },
+  {
+    "chunk_size": 1024,
+    "overlap": 256,
+    "n_chunks_total": 0,
+    "recall_5": 0.942,
+    "recall_10": 0.97,
+    "mrr": 0.8243182539682534,
+    "avg_query_ms": 1.519245824,
+    "ingest_total_ms": 0
+  },
+  {
+    "chunk_size": 1536,
+    "overlap": 64,
+    "n_chunks_total": 0,
+    "recall_5": 0.942,
+    "recall_10": 0.968,
+    "mrr": 0.808876984126984,
+    "avg_query_ms": 0.9816454199999997,
+    "ingest_total_ms": 0
+  },
+  {
+    "chunk_size": 1536,
+    "overlap": 128,
+    "n_chunks_total": 0,
+    "recall_5": 0.93,
+    "recall_10": 0.964,
+    "mrr": 0.7837730158730156,
+    "avg_query_ms": 1.0077572839999998,
+    "ingest_total_ms": 0
+  },
+  {
+    "chunk_size": 1536,
+    "overlap": 256,
+    "n_chunks_total": 0,
+    "recall_5": 0.948,
+    "recall_10": 0.974,
+    "mrr": 0.7965666666666662,
+    "avg_query_ms": 1.1108405220000008,
+    "ingest_total_ms": 0
+  },
+  {
+    "chunk_size": 2048,
+    "overlap": 64,
+    "n_chunks_total": 0,
+    "recall_5": 0.928,
+    "recall_10": 0.974,
+    "mrr": 0.7924730158730154,
+    "avg_query_ms": 0.7479686499999999,
+    "ingest_total_ms": 0
+  },
+  {
+    "chunk_size": 2048,
+    "overlap": 128,
+    "n_chunks_total": 0,
+    "recall_5": 0.926,
+    "recall_10": 0.966,
+    "mrr": 0.7824436507936505,
+    "avg_query_ms": 0.7641231319999995,
+    "ingest_total_ms": 0
+  },
+  {
+    "chunk_size": 2048,
+    "overlap": 256,
+    "n_chunks_total": 0,
+    "recall_5": 0.928,
+    "recall_10": 0.966,
+    "mrr": 0.7906365079365081,
+    "avg_query_ms": 0.815613908,
+    "ingest_total_ms": 0
+  }
+]

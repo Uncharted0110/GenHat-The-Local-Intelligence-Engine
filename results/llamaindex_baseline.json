@@ -1,0 +1,5012 @@
+{
+  "system": "llamaindex_bge_base_q8",
+  "n": 500,
+  "exact_match": 0.456,
+  "f1": 0.5725642827670414,
+  "avg_latency_ms": 280.077513217926,
+  "p50_latency_ms": 280.5438041687012,
+  "p95_latency_ms": 298.94232749938965,
+  "p99_latency_ms": 322.3416805267334,
+  "per_question": [
+    {
+      "question": "To whom did the Virgin Mary allegedly appear in 1858 in Lourdes France?",
+      "pred": "The Virgin Mary appeared to the Virgin Mary.",
+      "gold": [
+        "Saint Bernadette Soubirous"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 321.7437267303467
+    },
+    {
+      "question": "What is in front of the Notre Dame Main Building?",
+      "pred": "A copper statue of Christ with arms upraised and the legend \"Venite Ad Me Omnes\" is in front of the Notre Dame Main Building.",
+      "gold": [
+        "a copper statue of Christ"
+      ],
+      "exact_match": false,
+      "f1": 0.3448275862068966,
+      "latency_ms": 335.47520637512207
+    },
+    {
+      "question": "The Basilica of the Sacred heart at Notre Dame is beside to which structure?",
+      "pred": "The Basilica of the Sacred Heart.",
+      "gold": [
+        "the Main Building"
+      ],
+      "exact_match": false,
+      "f1": 0.2222222222222222,
+      "latency_ms": 292.12188720703125
+    },
+    {
+      "question": "What is the Grotto at Notre Dame?",
+      "pred": "A Marian place of prayer and reflection, a replica of the grotto at Lourdes, France.",
+      "gold": [
+        "a Marian place of prayer and reflection"
+      ],
+      "exact_match": false,
+      "f1": 0.6363636363636364,
+      "latency_ms": 316.86925888061523
+    },
+    {
+      "question": "What sits on top of the Main Building at Notre Dame?",
+      "pred": "A golden statue of the Virgin Mary.",
+      "gold": [
+        "a golden statue of the Virgin Mary"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 292.9673194885254
+    },
+    {
+      "question": "When did the Scholastic Magazine of Notre dame begin publishing?",
+      "pred": "September 1876",
+      "gold": [
+        "September 1876"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 291.46862030029297
+    },
+    {
+      "question": "How often is Notre Dame's the Juggler published?",
+      "pred": "Twice a year",
+      "gold": [
+        "twice"
+      ],
+      "exact_match": false,
+      "f1": 0.5,
+      "latency_ms": 280.23242950439453
+    },
+    {
+      "question": "What is the daily student paper at Notre Dame called?",
+      "pred": "The Observer",
+      "gold": [
+        "The Observer"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 281.14962577819824
+    },
+    {
+      "question": "How many student news papers are found at Notre Dame?",
+      "pred": "Three",
+      "gold": [
+        "three"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 278.80191802978516
+    },
+    {
+      "question": "In what year did the student paper Common Sense begin publication at Notre Dame?",
+      "pred": "1987",
+      "gold": [
+        "1987"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 292.0501232147217
+    },
+    {
+      "question": "Where is the headquarters of the Congregation of the Holy Cross?",
+      "pred": "None",
+      "gold": [
+        "Rome"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 269.8974609375
+    },
+    {
+      "question": "What is the primary seminary of the Congregation of the Holy Cross?",
+      "pred": "Moreau Seminary",
+      "gold": [
+        "Moreau Seminary"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 284.35635566711426
+    },
+    {
+      "question": "What is the oldest structure at Notre Dame?",
+      "pred": "Old College",
+      "gold": [
+        "Old College"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 281.0022830963135
+    },
+    {
+      "question": "What individuals live at Fatima House at Notre Dame?",
+      "pred": "None.",
+      "gold": [
+        "Retired priests and brothers"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 281.59046173095703
+    },
+    {
+      "question": "Which prize did Frederick Buechner create?",
+      "pred": "No prize.",
+      "gold": [
+        "Buechner Prize for Preaching"
+      ],
+      "exact_match": false,
+      "f1": 0.3333333333333333,
+      "latency_ms": 283.886194229126
+    },
+    {
+      "question": "How many BS level degrees are offered in the College of Engineering at Notre Dame?",
+      "pred": "1200",
+      "gold": [
+        "eight"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 285.9776020050049
+    },
+    {
+      "question": "In what year was the College of Engineering at Notre Dame formed?",
+      "pred": "1865",
+      "gold": [
+        "1920"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 285.89534759521484
+    },
+    {
+      "question": "Before the creation of the College of Engineering similar studies were carried out at which Notre Dame college?",
+      "pred": "The College of Arts and Letters.",
+      "gold": [
+        "the College of Science"
+      ],
+      "exact_match": false,
+      "f1": 0.6,
+      "latency_ms": 291.46552085876465
+    },
+    {
+      "question": "How many departments are within the Stinson-Remick Hall of Engineering?",
+      "pred": "1",
+      "gold": [
+        "five"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 280.1861763000488
+    },
+    {
+      "question": "The College of Science began to offer civil engineering courses beginning at what time at Notre Dame?",
+      "pred": "1865",
+      "gold": [
+        "the 1870s"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 285.27283668518066
+    },
+    {
+      "question": "What entity provides help with the management of time for new students at Notre Dame?",
+      "pred": "Learning Resource Center",
+      "gold": [
+        "Learning Resource Center"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 283.5230827331543
+    },
+    {
+      "question": "How many colleges for undergraduates are at Notre Dame?",
+      "pred": "5",
+      "gold": [
+        "five"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 279.19983863830566
+    },
+    {
+      "question": "What was created at Notre Dame in 1962 to assist first year students?",
+      "pred": "The first year residence halls.",
+      "gold": [
+        "The First Year of Studies program"
+      ],
+      "exact_match": false,
+      "f1": 0.5454545454545454,
+      "latency_ms": 291.35727882385254
+    },
+    {
+      "question": "Which organization declared the First Year of Studies program at Notre Dame \"outstanding?\"",
+      "pred": "U.S. News & World Report",
+      "gold": [
+        "U.S. News & World Report"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 289.76988792419434
+    },
+    {
+      "question": "The granting of Doctorate degrees first occurred in what year at Notre Dame?",
+      "pred": "1924",
+      "gold": [
+        "1924"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 284.39831733703613
+    },
+    {
+      "question": "What type of degree is an M.Div.?",
+      "pred": "Master of Divinity (M.Div.)",
+      "gold": [
+        "Master of Divinity"
+      ],
+      "exact_match": false,
+      "f1": 0.8571428571428571,
+      "latency_ms": 290.03238677978516
+    },
+    {
+      "question": "Which program at Notre Dame offers a Master of Education degree?",
+      "pred": "The Alliance for Catholic Education program offers a Master of Education degree.",
+      "gold": [
+        "Alliance for Catholic Education"
+      ],
+      "exact_match": false,
+      "f1": 0.5,
+      "latency_ms": 300.9662628173828
+    },
+    {
+      "question": "In what year was a Master of Arts course first offered at Notre Dame?",
+      "pred": "1854",
+      "gold": [
+        "1854"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 291.4581298828125
+    },
+    {
+      "question": "Which department at Notre Dame is the only one to not offer a PhD program?",
+      "pred": "Department of Pre-Professional Studies",
+      "gold": [
+        "Department of Pre-Professional Studies"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 289.20650482177734
+    },
+    {
+      "question": "What institute at Notre Dame studies  the reasons for violent conflict?",
+      "pred": "Joan B. Kroc Institute for International Peace Studies",
+      "gold": [
+        "Joan B. Kroc Institute for International Peace Studies"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 291.45121574401855
+    },
+    {
+      "question": "What is the title of Notre Dame's Theodore Hesburgh?",
+      "pred": "Rev. Theodore Hesburgh",
+      "gold": [
+        "President Emeritus of the University of Notre Dame"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 280.41839599609375
+    },
+    {
+      "question": "In what year was the Joan B. Kroc Institute for International Peace Studies founded?",
+      "pred": "1986",
+      "gold": [
+        "1986"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 282.47618675231934
+    },
+    {
+      "question": "To whom was John B. Kroc married?",
+      "pred": "John B. Kroc was married to Mary Kroc.",
+      "gold": [
+        "Ray Kroc"
+      ],
+      "exact_match": false,
+      "f1": 0.2,
+      "latency_ms": 295.55368423461914
+    },
+    {
+      "question": "What company did Ray Kroc own?",
+      "pred": "Ray Kroc owned the company known as McDonald's.",
+      "gold": [
+        "McDonald's"
+      ],
+      "exact_match": false,
+      "f1": 0.2222222222222222,
+      "latency_ms": 291.7160987854004
+    },
+    {
+      "question": "How many stories tall is the main library at Notre Dame?",
+      "pred": "83,000 square feet",
+      "gold": [
+        "14"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 293.99561882019043
+    },
+    {
+      "question": "What is the name of the main library at Notre Dame?",
+      "pred": "Theodore Hesburgh Library",
+      "gold": [
+        "Theodore M. Hesburgh Library"
+      ],
+      "exact_match": false,
+      "f1": 0.8571428571428571,
+      "latency_ms": 294.266939163208
+    },
+    {
+      "question": "In what year was the Theodore M. Hesburgh Library at Notre Dame finished?",
+      "pred": "1963",
+      "gold": [
+        "1963"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 278.9778709411621
+    },
+    {
+      "question": "Which artist created the mural on the Theodore M. Hesburgh Library?",
+      "pred": "Art Whino",
+      "gold": [
+        "Millard Sheets"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 281.8870544433594
+    },
+    {
+      "question": "What is a common name to reference the mural created by Millard Sheets at Notre Dame?",
+      "pred": "Touchdown Jesus",
+      "gold": [
+        "Touchdown Jesus"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 282.38582611083984
+    },
+    {
+      "question": "How many incoming students did Notre Dame admit in fall 2015?",
+      "pred": "3,577",
+      "gold": [
+        "3,577"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 286.24820709228516
+    },
+    {
+      "question": "What percentage of students were admitted to Notre Dame in fall 2015?",
+      "pred": "19.7%",
+      "gold": [
+        "19.7%"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 286.11111640930176
+    },
+    {
+      "question": "Where does Notre Dame rank in terms of academic profile among research universities in the US?",
+      "pred": "Top twenty",
+      "gold": [
+        "the top 10 to 15 in the nation"
+      ],
+      "exact_match": false,
+      "f1": 0.2,
+      "latency_ms": 280.8394432067871
+    },
+    {
+      "question": "What percentage of students at Notre Dame participated in the Early Action program?",
+      "pred": "39.1%",
+      "gold": [
+        "39.1%"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 286.1347198486328
+    },
+    {
+      "question": "How many miles does the average student at Notre Dame travel to study there?",
+      "pred": "750 miles",
+      "gold": [
+        "more than 750 miles"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 284.6031188964844
+    },
+    {
+      "question": "Where did U.S. News & World Report rank Notre Dame in its 2015-2016 university rankings?",
+      "pred": "18th overall",
+      "gold": [
+        "18th overall"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 284.1756343841553
+    },
+    {
+      "question": "Forbes.com placed Notre Dame at what position compared to other US research universities?",
+      "pred": "13th",
+      "gold": [
+        "8th"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 281.5871238708496
+    },
+    {
+      "question": "The undergrad school at the Mendoza College of Business was ranked where according to BusinessWeek?",
+      "pred": "1st overall",
+      "gold": [
+        "1st overall"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 281.8758487701416
+    },
+    {
+      "question": "In 2014 what entity named Notre Dame 10th best of all American universities?",
+      "pred": "USA Today",
+      "gold": [
+        "USA Today"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 281.71443939208984
+    },
+    {
+      "question": "What percentage of Notre Dame students decide to study abroad?",
+      "pred": "57.6%",
+      "gold": [
+        "57.6%"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 285.98546981811523
+    },
+    {
+      "question": "What person was the Director of the Science Museum at Notre Dame in the late 19th century?",
+      "pred": "Father Joseph Carrier",
+      "gold": [
+        "Father Joseph Carrier, C.S.C."
+      ],
+      "exact_match": false,
+      "f1": 0.8571428571428571,
+      "latency_ms": 277.53496170043945
+    },
+    {
+      "question": "What was the lifespan of John Augustine Zahm?",
+      "pred": "1851\u20131921",
+      "gold": [
+        "1851\u20131921"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 287.14895248413086
+    },
+    {
+      "question": "What program did John Augustine Zahm come to co-direct at Nore Dame?",
+      "pred": "Professor of Chemistry and Physics",
+      "gold": [
+        "the Science Department"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 284.1534614562988
+    },
+    {
+      "question": "What book did John Zahm write in 1896?",
+      "pred": "Evolution and Dogma",
+      "gold": [
+        "Evolution and Dogma"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 284.85870361328125
+    },
+    {
+      "question": "What professorship did Father Josh Carrier hold at Notre Dame?",
+      "pred": "Professor of Chemistry and Physics.",
+      "gold": [
+        "Professor of Chemistry and Physics"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 288.5322570800781
+    },
+    {
+      "question": "In what year did Albert Zahm begin comparing aeronatical models at Notre Dame?",
+      "pred": "1882",
+      "gold": [
+        "1882"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 271.82888984680176
+    },
+    {
+      "question": "Which professor sent the first wireless message in the USA?",
+      "pred": "Thomas Edison",
+      "gold": [
+        "Professor Jerome Green"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 280.3637981414795
+    },
+    {
+      "question": "In what year did Jerome Green send his first wireless message?",
+      "pred": "1880",
+      "gold": [
+        "Around 1899"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 284.14082527160645
+    },
+    {
+      "question": "Which individual worked on projects at Notre Dame that eventually created neoprene?",
+      "pred": "No individual is mentioned in the provided text as working on projects at Notre Dame that created neoprene.",
+      "gold": [
+        "Father Julius Nieuwland"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 313.6413097381592
+    },
+    {
+      "question": "What did the brother of John Zahm construct at Notre Dame?",
+      "pred": "Albert Zahm built an early wind tunnel.",
+      "gold": [
+        "an early wind tunnel"
+      ],
+      "exact_match": false,
+      "f1": 0.7272727272727273,
+      "latency_ms": 292.8178310394287
+    },
+    {
+      "question": "Work on a germ-free-life ended up in the creation of which Notre Dame institute?",
+      "pred": "Gnotobiotics",
+      "gold": [
+        "The Lobund Institute"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 283.2951545715332
+    },
+    {
+      "question": "Around what time did Lobund of Notre Dame become independent?",
+      "pred": "1940s",
+      "gold": [
+        "the 1940s"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 286.45968437194824
+    },
+    {
+      "question": "In what year did Lobund at Notre Dame become an Institute?",
+      "pred": "1950",
+      "gold": [
+        "1950"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 260.99586486816406
+    },
+    {
+      "question": "The Lobund Institute was merged into the Department of Biology at Notre Dame in what year?",
+      "pred": "1958",
+      "gold": [
+        "1958"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 284.6181392669678
+    },
+    {
+      "question": "When did study of a germ-free-life begin at Notre Dame?",
+      "pred": "1842",
+      "gold": [
+        "1928"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 290.2376651763916
+    },
+    {
+      "question": "Gurian created what in 1939 at Notre Dame?",
+      "pred": "The Review of Politics",
+      "gold": [
+        "The Review of Politics"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 278.44929695129395
+    },
+    {
+      "question": "What was the Review of Politics inspired by?",
+      "pred": "The Enlightenment.",
+      "gold": [
+        "German Catholic journals"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 280.11536598205566
+    },
+    {
+      "question": "Over how many years did Gurian edit the Review of Politics at Notre Dame?",
+      "pred": "44 years",
+      "gold": [
+        "44"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 282.5181484222412
+    },
+    {
+      "question": "Thomas Stritch was an editor of which publican from Notre Dame?",
+      "pred": "The Review of Politics",
+      "gold": [
+        "Review of Politics"
+      ],
+      "exact_match": false,
+      "f1": 0.8571428571428571,
+      "latency_ms": 284.81030464172363
+    },
+    {
+      "question": "Who was the president of Notre Dame in 2012?",
+      "pred": "John I. Jenkins",
+      "gold": [
+        "John Jenkins"
+      ],
+      "exact_match": false,
+      "f1": 0.8,
+      "latency_ms": 284.3587398529053
+    },
+    {
+      "question": "The Kellogg Institute for International Studies is part of which university?",
+      "pred": "Kellogg Institute for International Studies is part of the University of Kansas.",
+      "gold": [
+        "Notre Dame"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 302.0963668823242
+    },
+    {
+      "question": "What does the Kroc Institute at Notre Dame focus on?",
+      "pred": "International Peace Studies",
+      "gold": [
+        "International Peace studies"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 282.15718269348145
+    },
+    {
+      "question": "In what year did Notre Dame begin to host the Global Adaptation Index?",
+      "pred": "2012",
+      "gold": [
+        "2013"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 283.54406356811523
+    },
+    {
+      "question": "What threat does the Global Adaptation Index study?",
+      "pred": "It studies the threat of climate change and biodiversity loss.",
+      "gold": [
+        "climate change"
+      ],
+      "exact_match": false,
+      "f1": 0.33333333333333337,
+      "latency_ms": 277.9867649078369
+    },
+    {
+      "question": "How many undergrads were attending Notre Dame in 2014?",
+      "pred": "12,179",
+      "gold": [
+        "8,448"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 286.70215606689453
+    },
+    {
+      "question": "What percentage of students at Notre Dame are the children of former Notre Dame students?",
+      "pred": "21\u201324%",
+      "gold": [
+        "21\u201324%"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 288.39588165283203
+    },
+    {
+      "question": "How many teams participate in the Notre Dame Bookstore Basketball tournament?",
+      "pred": "1",
+      "gold": [
+        "over 700"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 280.17234802246094
+    },
+    {
+      "question": "For what cause is money raised at the Bengal Bouts tournament at Notre Dame?",
+      "pred": "The text does not contain information about the Bengal Bouts tournament or its funding source.",
+      "gold": [
+        "the Holy Cross Missions in Bangladesh"
+      ],
+      "exact_match": false,
+      "f1": 0.09523809523809522,
+      "latency_ms": 301.0823726654053
+    },
+    {
+      "question": "How many students in total were at Notre Dame in 2014?",
+      "pred": "12,179",
+      "gold": [
+        "12,179"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 287.0810031890869
+    },
+    {
+      "question": "What percentage of undergrads live on the Notre Dame campus?",
+      "pred": "80%",
+      "gold": [
+        "80%"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 285.2435111999512
+    },
+    {
+      "question": "How many student housing areas are reserved for Notre Dame's graduate students?",
+      "pred": "None",
+      "gold": [
+        "four"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 280.45034408569336
+    },
+    {
+      "question": "How many dorms for males are on the Notre Dame campus?",
+      "pred": "15",
+      "gold": [
+        "15"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 287.13274002075195
+    },
+    {
+      "question": "What amount of the graduate student body at Notre Dame live on the campus?",
+      "pred": "80%",
+      "gold": [
+        "20%"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 279.82330322265625
+    },
+    {
+      "question": "There are how many dorms for females at Notre Dame?",
+      "pred": "14",
+      "gold": [
+        "14"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 283.97297859191895
+    },
+    {
+      "question": "What is Congregation of Holy Cross in Latin?",
+      "pred": "Ordinis Praedicatorum (OP)",
+      "gold": [
+        "Congregatio a Sancta Cruce"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 287.4417304992676
+    },
+    {
+      "question": "What percentage of Notre Dame students feel they are Christian?",
+      "pred": "80%",
+      "gold": [
+        "more than 93%"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 275.2726078033447
+    },
+    {
+      "question": "How often is Catholic mass held at Notre Dame in a week?",
+      "pred": "100 times",
+      "gold": [
+        "over 100 times"
+      ],
+      "exact_match": false,
+      "f1": 0.8,
+      "latency_ms": 279.6893119812012
+    },
+    {
+      "question": "How many chapels are on the Notre Dame campus?",
+      "pred": "57",
+      "gold": [
+        "Fifty-seven"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 281.8717956542969
+    },
+    {
+      "question": "What amount of the student body of Notre Dame identifies as Catholic?",
+      "pred": "80%",
+      "gold": [
+        "over 80%"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 279.2391777038574
+    },
+    {
+      "question": "What was the music hall at Notre Dame called?",
+      "pred": "Washington Hall",
+      "gold": [
+        "Washington Hall"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 271.1613178253174
+    },
+    {
+      "question": "In what year was the Main Building at Notre Dame razed in a fire?",
+      "pred": "1865",
+      "gold": [
+        "1879"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 279.7212600708008
+    },
+    {
+      "question": "Who was the president of Notre Dame in 1879?",
+      "pred": "Father Lemonnier",
+      "gold": [
+        "Rev. William Corby"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 276.6234874725342
+    },
+    {
+      "question": "On what date was the rebuilding of The Main Building begun at Notre Dame after the fire that claimed the previous?",
+      "pred": "1865",
+      "gold": [
+        "17th of May"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 279.9417972564697
+    },
+    {
+      "question": "What did the Science Hall at Notre Dame come to be known as?",
+      "pred": "The Lobund Institute for Animal Studies.",
+      "gold": [
+        "LaFortune Student Center"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 288.26069831848145
+    },
+    {
+      "question": "What type of education was pushed at Notre Dame before its embracing of national standards?",
+      "pred": "Advanced studies and research",
+      "gold": [
+        "scholastic and classical"
+      ],
+      "exact_match": false,
+      "f1": 0.28571428571428575,
+      "latency_ms": 280.20334243774414
+    },
+    {
+      "question": "Which college did Notre Dame add in 1921?",
+      "pred": "College of Commerce",
+      "gold": [
+        "College of Commerce"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.49976921081543
+    },
+    {
+      "question": "In 1919 a new president of Notre Dame was named, who was it?",
+      "pred": "Edward Malloy",
+      "gold": [
+        "Father James Burns"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 272.9930877685547
+    },
+    {
+      "question": "Over how many years did the change to national standards undertaken at Notre Dame in the early 20th century take place?",
+      "pred": "1920s",
+      "gold": [
+        "three years"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 282.1846008300781
+    },
+    {
+      "question": "Those who attended a Jesuit college may have been forbidden from joining which Law School due to the curricula at the Jesuit institution?",
+      "pred": "Jesuit colleges typically offer a curriculum that includes theology and canon law, which are subjects required for admission to the Bar (Barons) of the Church of England.",
+      "gold": [
+        "Harvard Law School"
+      ],
+      "exact_match": false,
+      "f1": 0.06666666666666667,
+      "latency_ms": 334.16271209716797
+    },
+    {
+      "question": "The Notre Dame football team got a new head coach in 1918, who was it?",
+      "pred": "Knute Rockne",
+      "gold": [
+        "Knute Rockne"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 274.1351127624512
+    },
+    {
+      "question": "What was the amount of wins Knute Rockne attained at Notre Dame while head coach?",
+      "pred": "105",
+      "gold": [
+        "105"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 271.5620994567871
+    },
+    {
+      "question": "In what year did the team lead by Knute Rockne win the Rose Bowl?",
+      "pred": "1925",
+      "gold": [
+        "1925"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 252.72226333618164
+    },
+    {
+      "question": "How many years was Knute Rockne head coach at Notre Dame?",
+      "pred": "13",
+      "gold": [
+        "13"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 267.9920196533203
+    },
+    {
+      "question": "How many national titles were won when Knute Rockne coached at Notre Dame?",
+      "pred": "11",
+      "gold": [
+        "three"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 162.6741886138916
+    },
+    {
+      "question": "Catholic people identified with Notre Dame, what religious group did people feel Yale represented?",
+      "pred": "Yale represented the Congregationalist faith.",
+      "gold": [
+        "the Protestant establishment"
+      ],
+      "exact_match": false,
+      "f1": 0.25,
+      "latency_ms": 290.2860641479492
+    },
+    {
+      "question": "Notre Dame students had a showdown in 1924 with which anti-catholic group?",
+      "pred": "Ku Klux Klan",
+      "gold": [
+        "the Ku Klux Klan"
+      ],
+      "exact_match": false,
+      "f1": 0.8571428571428571,
+      "latency_ms": 273.24461936950684
+    },
+    {
+      "question": "Which college president of Notre Dame is credited with preventing more confrontations between students and the KKK?",
+      "pred": "Fr. Matthew Walsh",
+      "gold": [
+        "Fr. Matthew Walsh"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 273.3721733093262
+    },
+    {
+      "question": "What type of event did the Klan intend to have at Notre Dame in March of 1924?",
+      "pred": "A week-long Klavern.",
+      "gold": [
+        "a week-long Klavern"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 283.67042541503906
+    },
+    {
+      "question": "Where did Notre Dame students and the KKK have their encounter?",
+      "pred": "South Bend, Indiana",
+      "gold": [
+        "South Bend"
+      ],
+      "exact_match": false,
+      "f1": 0.8,
+      "latency_ms": 285.1672172546387
+    },
+    {
+      "question": "Which person became vice-president of Notre Dame in 1933?",
+      "pred": "Holy Cross Father John Francis O'Hara",
+      "gold": [
+        "Father John Francis O'Hara"
+      ],
+      "exact_match": false,
+      "f1": 0.8,
+      "latency_ms": 280.4996967315674
+    },
+    {
+      "question": "Who was the president of Notre Dame in 1934?",
+      "pred": "John Francis O'Hara",
+      "gold": [
+        "Father John Francis O'Hara"
+      ],
+      "exact_match": false,
+      "f1": 0.8571428571428571,
+      "latency_ms": 278.5017490386963
+    },
+    {
+      "question": "Irvin Abell was given what award by Notre Dame?",
+      "pred": "The Driehaus Architecture Prize.",
+      "gold": [
+        "Laetare Medal"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 285.3116989135742
+    },
+    {
+      "question": "Which year was the Laetare Medal first given out at Notre Dame?",
+      "pred": "1883",
+      "gold": [
+        "1883"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 271.8024253845215
+    },
+    {
+      "question": "For whos glory did Father O'Hara believed that the Notre Dame football team played?",
+      "pred": "for the honor and glory of God and of his Blessed Mother.",
+      "gold": [
+        "God"
+      ],
+      "exact_match": false,
+      "f1": 0.15384615384615385,
+      "latency_ms": 290.04883766174316
+    },
+    {
+      "question": "Around the time that Rev. Cavanaugh became president of Notre Dame by how much did the undergrad student body of Notre Dame increase?",
+      "pred": "more than half",
+      "gold": [
+        "more than half"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 272.005558013916
+    },
+    {
+      "question": "Which institute involving animal life did Cavanaugh create at Notre Dame?",
+      "pred": "Lobund Institute for Animal Studies",
+      "gold": [
+        "Lobund Institute for Animal Studies"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 290.4520034790039
+    },
+    {
+      "question": "What is O'Shaughnessy Hall of Notre Dame formerly known as?",
+      "pred": "O'Shaughnessy Hall",
+      "gold": [
+        "Hall of Liberal Arts"
+      ],
+      "exact_match": false,
+      "f1": 0.3333333333333333,
+      "latency_ms": 287.0347499847412
+    },
+    {
+      "question": "Which president did Notre Dame have in 1947?",
+      "pred": "John O'Hara",
+      "gold": [
+        "Rev. John J. Cavanaugh, C.S.C."
+      ],
+      "exact_match": false,
+      "f1": 0.28571428571428575,
+      "latency_ms": 273.0560302734375
+    },
+    {
+      "question": "Outside of an institute studying animals, what other institute did Cavanugh create at Notre Dame?",
+      "pred": "Lobund Institute for Animal Studies",
+      "gold": [
+        "Medieval Institute"
+      ],
+      "exact_match": false,
+      "f1": 0.28571428571428575,
+      "latency_ms": 285.9814167022705
+    },
+    {
+      "question": "What was the lifespan of Theodore Hesburgh?",
+      "pred": "1925\u20131962",
+      "gold": [
+        "1917\u20132015"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 271.8472480773926
+    },
+    {
+      "question": "In the time that Hesburgh was president of Notre Dame by what factor did the operating budget increase?",
+      "pred": "18",
+      "gold": [
+        "18"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 275.73084831237793
+    },
+    {
+      "question": "What was the size of the Notre Dame endowment when Theodore Hesburgh became president?",
+      "pred": "$350 million",
+      "gold": [
+        "$9 million"
+      ],
+      "exact_match": false,
+      "f1": 0.5,
+      "latency_ms": 282.3307514190674
+    },
+    {
+      "question": "During what years was Theodor Hesburgh president of Notre Dame?",
+      "pred": "1952\u20131987",
+      "gold": [
+        "1952\u201387"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 288.6483669281006
+    },
+    {
+      "question": "How many faculty members were at Notre Dame when Hesburgh left the role of president?",
+      "pred": "35",
+      "gold": [
+        "950"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 275.8784294128418
+    },
+    {
+      "question": "What type of educational institute is Hesburgh given credit for creating at Notre Dame?",
+      "pred": "Catholic research university",
+      "gold": [
+        "coeducational"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 280.8418273925781
+    },
+    {
+      "question": "Which role did Charles Sheedy have at Notre Dame?",
+      "pred": "He served as a student at Notre Dame.",
+      "gold": [
+        "Dean of Arts and Letters"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 283.57648849487305
+    },
+    {
+      "question": "What title did Thomas Blantz have at Notre Dame?",
+      "pred": "Thomas Blantz was a professor at Notre Dame.",
+      "gold": [
+        "Vice President of Student Affairs"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 284.0299606323242
+    },
+    {
+      "question": "In what year did Notre Dame have its earliest undergraduate that was female?",
+      "pred": "1900",
+      "gold": [
+        "1971"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 279.26039695739746
+    },
+    {
+      "question": "With what institute did Notre Dame agree to an exchange program in the 1960s?",
+      "pred": "Co-exchange program with Saint Mary's College.",
+      "gold": [
+        "Saint Mary's College"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 291.2123203277588
+    },
+    {
+      "question": "During what years was Edward Malloy president of Notre Dame?",
+      "pred": "1987\u20132005",
+      "gold": [
+        "1987\u20132005"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 290.3099060058594
+    },
+    {
+      "question": "What was the SAT score, on average, at Notre Dame when Edward Malloy became president?",
+      "pred": "1360",
+      "gold": [
+        "1240"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 274.4424343109131
+    },
+    {
+      "question": "When Malloy became president of Notre Dame what was the size of the endowment?",
+      "pred": "$3 billion",
+      "gold": [
+        "$350 million"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 282.98330307006836
+    },
+    {
+      "question": "When Malloy reached the end of his time as president how much annuals funding for research did Notre Dame have?",
+      "pred": "$15 million",
+      "gold": [
+        "more than $70 million"
+      ],
+      "exact_match": false,
+      "f1": 0.3333333333333333,
+      "latency_ms": 286.36860847473145
+    },
+    {
+      "question": "The amount of professors at Notre Dame increased by what amount under Malloy?",
+      "pred": "500",
+      "gold": [
+        "500"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 284.46006774902344
+    },
+    {
+      "question": "When did John Jenkins become the president of Notre Dame?",
+      "pred": "July 1, 2005",
+      "gold": [
+        "2005"
+      ],
+      "exact_match": false,
+      "f1": 0.5,
+      "latency_ms": 282.49478340148926
+    },
+    {
+      "question": "In terms of the amount of presidents Notre Dame has had, where is John Jenkins on the list?",
+      "pred": "17th",
+      "gold": [
+        "17th"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 251.8007755279541
+    },
+    {
+      "question": "Who was the Notre Dame president that preceded John Jenkins?",
+      "pred": "Malloy",
+      "gold": [
+        "Malloy"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 249.85480308532715
+    },
+    {
+      "question": "Which arena was constructed under Jenkins at Notre Dame?",
+      "pred": "Compton Family Ice Arena",
+      "gold": [
+        "Compton Family Ice Arena"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.8570861816406
+    },
+    {
+      "question": "How much money was spent on enhancing Notre Dame Stadium under John Jenkins?",
+      "pred": "$400 million",
+      "gold": [
+        "$400m"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 281.5423011779785
+    },
+    {
+      "question": "Which congregation is in charge of the Old College at Notre Dame?",
+      "pred": "Congregation of Holy Cross",
+      "gold": [
+        "Congregation of Holy Cross"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 281.72755241394043
+    },
+    {
+      "question": "What structure is found on the location of the original church of Father Sorin at Notre Dame?",
+      "pred": "The Basilica of the Sacred Heart.",
+      "gold": [
+        "Basilica of the Sacred Heart"
+      ],
+      "exact_match": false,
+      "f1": 0.9090909090909091,
+      "latency_ms": 287.5502109527588
+    },
+    {
+      "question": "In which architectural style is the Basilica of the Sacred Heart at Notre Dame made?",
+      "pred": "French Revival style",
+      "gold": [
+        "French Revival"
+      ],
+      "exact_match": false,
+      "f1": 0.8,
+      "latency_ms": 278.3091068267822
+    },
+    {
+      "question": "Which individual painted the inside of the Basilica of the Sacred Heart at Notre Dame?",
+      "pred": "Luigi Gregori",
+      "gold": [
+        "Luigi Gregori"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.36697006225586
+    },
+    {
+      "question": "In what year was the Grotto of Our Lady of Lourdes at Notre Dame constructed?",
+      "pred": "1896",
+      "gold": [
+        "1896"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.2236804962158
+    },
+    {
+      "question": "Which person oversaw the creation of a science hall at Notre Dame in 1883?",
+      "pred": "Fr. Zahm",
+      "gold": [
+        "Fr. Zahm"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.47657012939453
+    },
+    {
+      "question": "In what year did the student union building at Notre Dame get renamed to LaFortune Center?",
+      "pred": "1950",
+      "gold": [
+        "1950"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.90405464172363
+    },
+    {
+      "question": "After which individual was the LaFortune Center Notre Dame named?",
+      "pred": "Joseph LaFortune",
+      "gold": [
+        "Joseph LaFortune"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 285.60686111450195
+    },
+    {
+      "question": "How large in square feet is the LaFortune Center at Notre Dame?",
+      "pred": "83,000 square feet",
+      "gold": [
+        "83,000 square feet"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 267.4391269683838
+    },
+    {
+      "question": "What is the annual budget of Notre Dame's LaFortune Center?",
+      "pred": "$1.2 million",
+      "gold": [
+        "$1.2 million"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 262.06040382385254
+    },
+    {
+      "question": "How many halls are at Notre Dame that house students?",
+      "pred": "29",
+      "gold": [
+        "29"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 276.82971954345703
+    },
+    {
+      "question": "Which library was built at Notre Dame in 1963?",
+      "pred": "Theodore Hesburgh Library",
+      "gold": [
+        "Theodore Hesburgh Library"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 282.3140621185303
+    },
+    {
+      "question": "How many books are housed at the Theodore Hesburgh Library?",
+      "pred": "120,000",
+      "gold": [
+        "almost 4 million"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 272.1598148345947
+    },
+    {
+      "question": "Construction for which hall started on March 8th 2007 at Notre Dame?",
+      "pred": "Duncan Hall",
+      "gold": [
+        "Duncan Hall"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 277.19569206237793
+    },
+    {
+      "question": "Which baseball stadium is found at Notre Dame?",
+      "pred": "Frank Eck Stadium",
+      "gold": [
+        "Frank Eck Stadium"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 283.4506034851074
+    },
+    {
+      "question": "In what year did Notre Dame create the Office of Sustainability?",
+      "pred": "2008",
+      "gold": [
+        "2008"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 281.0218334197998
+    },
+    {
+      "question": "What percentage of the food served at Notre Dame is locally grown?",
+      "pred": "40%",
+      "gold": [
+        "40%"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 278.9335250854492
+    },
+    {
+      "question": "Notre Dame got a \"B\" for its sustainability practices from which entity?",
+      "pred": "The Sustainable Endowments Institute.",
+      "gold": [
+        "Sustainable Endowments Institute"
+      ],
+      "exact_match": false,
+      "f1": 0.8571428571428571,
+      "latency_ms": 292.4509048461914
+    },
+    {
+      "question": "Gustavo Gutierrez is faculty of which institute?",
+      "pred": "Faculty of Liberation Theology",
+      "gold": [
+        "Kroc Institute for International Peace Studies"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 282.6247215270996
+    },
+    {
+      "question": "In what year did Notre Dame first have a facility in England?",
+      "pred": "1968",
+      "gold": [
+        "1968"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.85501289367676
+    },
+    {
+      "question": "At which location is the London Center operated by Notre Dame found?",
+      "pred": "O'Shaughnessy Hall",
+      "gold": [
+        "1 Suffolk Street in Trafalgar Square"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 291.0425662994385
+    },
+    {
+      "question": "Notre Dame has a center in Beijing, what is it referred to as?",
+      "pred": "Beijing Gateways",
+      "gold": [
+        "Global Gateways"
+      ],
+      "exact_match": false,
+      "f1": 0.5,
+      "latency_ms": 279.88147735595703
+    },
+    {
+      "question": "In what year did the Suffolk Street location start to house a Notre Dame facility?",
+      "pred": "1968",
+      "gold": [
+        "1998"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 279.9668312072754
+    },
+    {
+      "question": "What was Notre Dame's first college?",
+      "pred": "The College of Arts and Letters.",
+      "gold": [
+        "The College of Arts and Letters"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 285.6862545013428
+    },
+    {
+      "question": "In what year was the The College of Arts and Letters at Notre Dame created?",
+      "pred": "1842",
+      "gold": [
+        "1842"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.7079086303711
+    },
+    {
+      "question": "In what year did the College of Arts and Letters at Notre Dame grant its first degree?",
+      "pred": "1849",
+      "gold": [
+        "1849"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 281.9654941558838
+    },
+    {
+      "question": "On which university did Notre Dame base its curriculum on?",
+      "pred": "The Jesuit Ratio Studiorum.",
+      "gold": [
+        "Saint Louis University"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 287.7681255340576
+    },
+    {
+      "question": "How many BA majors does the College of Arts and Letters at Notre Dame offer?",
+      "pred": "33",
+      "gold": [
+        "33"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 283.3867073059082
+    },
+    {
+      "question": "Which president at Notre Dame created the College of Science?",
+      "pred": "Father Julius Nieuwland",
+      "gold": [
+        "Father Patrick Dillon"
+      ],
+      "exact_match": false,
+      "f1": 0.3333333333333333,
+      "latency_ms": 295.20535469055176
+    },
+    {
+      "question": "In what year was the Notre Dame College of Science formed?",
+      "pred": "1865",
+      "gold": [
+        "1865"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.34114837646484
+    },
+    {
+      "question": "How many years long was a scientific course under Patrick Dillon at Notre Dame?",
+      "pred": "1940s",
+      "gold": [
+        "six years"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 282.9570770263672
+    },
+    {
+      "question": "Which hall at Notre Dame contains the current College of Science?",
+      "pred": "Jordan Hall of Science",
+      "gold": [
+        "Jordan Hall of Science"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.9407711029053
+    },
+    {
+      "question": "How many undergrad students attend the College of Science at Notre Dame today?",
+      "pred": "1,200",
+      "gold": [
+        "over 1,200"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 282.2692394256592
+    },
+    {
+      "question": "In 1899 Notre Dame formed which college?",
+      "pred": "The School of Architecture",
+      "gold": [
+        "School of Architecture"
+      ],
+      "exact_match": false,
+      "f1": 0.8571428571428571,
+      "latency_ms": 281.03113174438477
+    },
+    {
+      "question": "In what building is the current School of Architecture housed at Notre Dame?",
+      "pred": "Bond Hall",
+      "gold": [
+        "Bond Hall"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 275.9866714477539
+    },
+    {
+      "question": "What length is the course of study at the Notre Dame School of Architecture?",
+      "pred": "Five-year undergraduate program",
+      "gold": [
+        "five-year"
+      ],
+      "exact_match": false,
+      "f1": 0.5,
+      "latency_ms": 279.76179122924805
+    },
+    {
+      "question": "In which location do students of the School of Architecture of Notre Dame spend their 3rd year?",
+      "pred": "Rome",
+      "gold": [
+        "Rome"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 276.0779857635498
+    },
+    {
+      "question": "Which prestigious prize does the School of Architecture at Notre Dame give out?",
+      "pred": "Driehaus Architecture Prize",
+      "gold": [
+        "Driehaus Architecture Prize"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 284.76476669311523
+    },
+    {
+      "question": "In what year did the opening of a theology library at Notre Dame occur?",
+      "pred": "Fall of 2015",
+      "gold": [
+        "2015"
+      ],
+      "exact_match": false,
+      "f1": 0.5,
+      "latency_ms": 285.3834629058838
+    },
+    {
+      "question": "Where is the theology library at Notre Dame?",
+      "pred": "O'Shaughnessy Hall",
+      "gold": [
+        "the first floor of Stanford Hall"
+      ],
+      "exact_match": false,
+      "f1": 0.25,
+      "latency_ms": 290.79341888427734
+    },
+    {
+      "question": "How many books are held by the Notre Dame libraries?",
+      "pred": "Over three million volumes",
+      "gold": [
+        "over three million volumes"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.2608013153076
+    },
+    {
+      "question": "Currently where does Notre Dame's library rank in the nation?",
+      "pred": "The University of Notre Dame is one of the 100 largest libraries in the country.",
+      "gold": [
+        "one of the 100 largest"
+      ],
+      "exact_match": false,
+      "f1": 0.5,
+      "latency_ms": 307.4684143066406
+    },
+    {
+      "question": "What caused many intellectual Catholics to leave europe in the 1930s?",
+      "pred": "The Great Depression and the rise of Nazism.",
+      "gold": [
+        "The rise of Hitler and other dictators"
+      ],
+      "exact_match": false,
+      "f1": 0.5333333333333333,
+      "latency_ms": 286.6675853729248
+    },
+    {
+      "question": "From where did Anton-Hermann Chroust come to reach Notre Dame?",
+      "pred": "Germany",
+      "gold": [
+        "Germany"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 272.7398872375488
+    },
+    {
+      "question": "What field of study did Anton-Hermann Chroust specialize in?",
+      "pred": "Sociocultural anthropology",
+      "gold": [
+        "classics and law"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 274.9059200286865
+    },
+    {
+      "question": "Who did Waldemar Gurian receive his tutelage under while seeking his doctorate?",
+      "pred": "Gurian",
+      "gold": [
+        "Max Scheler"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 260.80322265625
+    },
+    {
+      "question": "What was Ivan Me\u0161trovi\u0107 known for being?",
+      "pred": "A Croatian writer and linguist.",
+      "gold": [
+        "a renowned sculptor"
+      ],
+      "exact_match": false,
+      "f1": 0.25,
+      "latency_ms": 282.11116790771484
+    },
+    {
+      "question": "The school known as Notre Dame is known by a more lengthy name, what is it?",
+      "pred": "The University of Notre Dame",
+      "gold": [
+        "University of Notre Dame du"
+      ],
+      "exact_match": false,
+      "f1": 0.8000000000000002,
+      "latency_ms": 281.552791595459
+    },
+    {
+      "question": "What type of institution is the Notre Dame?",
+      "pred": "Catholic research university",
+      "gold": [
+        "Catholic research university"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.7262668609619
+    },
+    {
+      "question": "The French words Notre Dame du Lac translate to what in English?",
+      "pred": "Our Lady of the Lake",
+      "gold": [
+        "Our Lady of the Lake"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.8833122253418
+    },
+    {
+      "question": "Who is the patron saint of Notre Dame?",
+      "pred": "The Virgin Mary.",
+      "gold": [
+        "the Virgin Mary"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 284.31224822998047
+    },
+    {
+      "question": "How large is Notre Dame in acres?",
+      "pred": "1,250 acres",
+      "gold": [
+        "1,250"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 283.74218940734863
+    },
+    {
+      "question": "What caused Notre Dame to become notable in the early 20th century?",
+      "pred": "The addition of the College of Commerce and the establishment of the Fighting Irish football team.",
+      "gold": [
+        "its Fighting Irish football team"
+      ],
+      "exact_match": false,
+      "f1": 0.38095238095238093,
+      "latency_ms": 297.23644256591797
+    },
+    {
+      "question": "Which 20th century Notre Dame football coach is most notable?",
+      "pred": "Knute Rockne",
+      "gold": [
+        "Knute Rockne"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 272.4769115447998
+    },
+    {
+      "question": "Which athletic association are the student athletes at Notre Dame a part of?",
+      "pred": "NCAA",
+      "gold": [
+        "NCAA Division I"
+      ],
+      "exact_match": false,
+      "f1": 0.5,
+      "latency_ms": 269.6716785430908
+    },
+    {
+      "question": "How many students at Notre Dame received the Heisman Trophy?",
+      "pred": "0",
+      "gold": [
+        "seven"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 266.6606903076172
+    },
+    {
+      "question": "There were multiple students from Notre Dame who entered the Pro Football Hall of Fame, how many?",
+      "pred": "13",
+      "gold": [
+        "13"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 258.4846019744873
+    },
+    {
+      "question": "Where among US universities does Notre Dame rank?",
+      "pred": "US News & World Report",
+      "gold": [
+        "among the top twenty"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 280.0614833831787
+    },
+    {
+      "question": "How many individual colleges are part of Notre Dame?",
+      "pred": "Five",
+      "gold": [
+        "four"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 275.18343925476074
+    },
+    {
+      "question": "Which prize does the Architecture School at Notre Dame give out?",
+      "pred": "Driehaus Architecture Prize",
+      "gold": [
+        "Driehaus Architecture Prize"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 283.88381004333496
+    },
+    {
+      "question": "How many doctorate and masters programs are available at Notre Dame?",
+      "pred": "10",
+      "gold": [
+        "more than 50"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 276.6289710998535
+    },
+    {
+      "question": "Which art museum does Notre Dame administer?",
+      "pred": "Hesburgh Library and the Snite Museum of Art.",
+      "gold": [
+        "Snite Museum of Art"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 295.0153350830078
+    },
+    {
+      "question": "In what year was Father Edward Sorin given two years to create a college?",
+      "pred": "1842",
+      "gold": [
+        "1842"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.1644802093506
+    },
+    {
+      "question": "Which individual offered land to Father Edward Sorin?",
+      "pred": "C\u00e9lestine Guynemer de la Hailandi\u00e8re",
+      "gold": [
+        "C\u00e9lestine Guynemer de la Hailandi\u00e8re"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 322.3416805267334
+    },
+    {
+      "question": "Which church was Father Edward Sorin representing?",
+      "pred": "Congregation of the Holy Cross",
+      "gold": [
+        "the Congregation of the Holy Cross"
+      ],
+      "exact_match": false,
+      "f1": 0.9090909090909091,
+      "latency_ms": 278.0032157897949
+    },
+    {
+      "question": "On what date did brothers from Holy Cross arrive at the future location of Notre Dame?",
+      "pred": "November 26, 1842",
+      "gold": [
+        "November 26, 1842"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 290.677547454834
+    },
+    {
+      "question": "Which structure was the first used for the purposes of the college?",
+      "pred": "The collegiate or tutorial model.",
+      "gold": [
+        "Father Stephen Badin's old log chapel"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 276.78585052490234
+    },
+    {
+      "question": "In what year did the initial degrees get handed out at Notre Dame?",
+      "pred": "1849",
+      "gold": [
+        "1849"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.1709175109863
+    },
+    {
+      "question": "In what year did the original Sorin built Main Building get replaced?",
+      "pred": "1865",
+      "gold": [
+        "1865"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 289.25132751464844
+    },
+    {
+      "question": "Which individual began a library at Notre Dame?",
+      "pred": "Father Lemonnier",
+      "gold": [
+        "Father Lemonnier"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 277.5881290435791
+    },
+    {
+      "question": "In what year had the library at Notre Dame reach 10,000 books?",
+      "pred": "1879",
+      "gold": [
+        "1879"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.88927268981934
+    },
+    {
+      "question": "In what year was the library at Notre Dame started?",
+      "pred": "1879",
+      "gold": [
+        "1873"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 285.56275367736816
+    },
+    {
+      "question": "Which television station finds its home at Notre Dame?",
+      "pred": "WSND-FM",
+      "gold": [
+        "NDtv"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 280.9605598449707
+    },
+    {
+      "question": "How many programs did NDtv feature in 2002?",
+      "pred": "0",
+      "gold": [
+        "one show"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 274.1389274597168
+    },
+    {
+      "question": "Which radio station provides radio to the students of Notre Dame at 88.9 FM?",
+      "pred": "WSND-FM",
+      "gold": [
+        "WSND-FM"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 273.49352836608887
+    },
+    {
+      "question": "Which internet radio station of Notre Dame is served as an internet stream?",
+      "pred": "WVFI",
+      "gold": [
+        "WVFI"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 278.3839702606201
+    },
+    {
+      "question": "How much is Eddy Street Commons at Notre Dame expected to cost?",
+      "pred": "$215 million",
+      "gold": [
+        "$215 million"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 282.412052154541
+    },
+    {
+      "question": "When was ground broke on the Eddy Street Commons Project of Notre Dame?",
+      "pred": "June 3, 2008",
+      "gold": [
+        "June 3, 2008"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 178.23553085327148
+    },
+    {
+      "question": "Who is the developer of Eddy Street Commons?",
+      "pred": "None",
+      "gold": [
+        "Kite Realty"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 280.4141044616699
+    },
+    {
+      "question": "Which entity did Notre Dame hire to build a parking structure outside of Eddy Street Commons?",
+      "pred": "Kite Realty",
+      "gold": [
+        "the City of South Bend"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 278.82933616638184
+    },
+    {
+      "question": "There were protested as a part of the construction at Eddy Street Commons, they came due tot he hiring of whom?",
+      "pred": "The hiring of a new construction manager.",
+      "gold": [
+        "non-union workers"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 284.9278450012207
+    },
+    {
+      "question": "What does the acronym NCAA stand for?",
+      "pred": "National Association of College and Educational Schools",
+      "gold": [
+        "National Collegiate Athletic Association"
+      ],
+      "exact_match": false,
+      "f1": 0.36363636363636365,
+      "latency_ms": 265.9192085266113
+    },
+    {
+      "question": "Which league did Notre Dame Fighting Irish teams participate in in 1982?",
+      "pred": "AFL",
+      "gold": [
+        "Horizon League"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 275.043249130249
+    },
+    {
+      "question": "What when conference do the Notre Dame fencing teams take part in?",
+      "pred": "Midwest Fencing Conference",
+      "gold": [
+        "Midwest Fencing Conference"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 287.2426509857178
+    },
+    {
+      "question": "There is a conference that the male hockey team of Notre Dame competes in, what is it?",
+      "pred": "Hockey East",
+      "gold": [
+        "Hockey East"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 258.6669921875
+    },
+    {
+      "question": "In what conference did the Fighting Irish take part in in 2012?",
+      "pred": "Hockey East",
+      "gold": [
+        "Big East Conference"
+      ],
+      "exact_match": false,
+      "f1": 0.4,
+      "latency_ms": 271.85893058776855
+    },
+    {
+      "question": "To what conference did the Fighting Irish go after the Big East?",
+      "pred": "ACC",
+      "gold": [
+        "the ACC"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 271.9895839691162
+    },
+    {
+      "question": "How many teams in each season do the Fighting Irish commit to play against ACC opponents?",
+      "pred": "five",
+      "gold": [
+        "five"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 274.18971061706543
+    },
+    {
+      "question": "Where did the Fighting Irish hockey team compete prior to a move to Hockey East, in terms of conference?",
+      "pred": "Hockey East",
+      "gold": [
+        "Central Collegiate Hockey Association"
+      ],
+      "exact_match": false,
+      "f1": 0.3333333333333333,
+      "latency_ms": 284.268856048584
+    },
+    {
+      "question": "What colors are the official ones used by Notre Dame in sport competition?",
+      "pred": "Navy Blue and Gold Rush",
+      "gold": [
+        "Navy Blue and Gold Rush"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 257.0469379425049
+    },
+    {
+      "question": "What type of mascot do the Notre Dame sport teams have?",
+      "pred": "Leprechaun",
+      "gold": [
+        "Leprechaun"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 144.00124549865723
+    },
+    {
+      "question": "Who currently provides uniforms to Notre Dame sport teams?",
+      "pred": "Under Armour",
+      "gold": [
+        "Under Armour"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 275.0272750854492
+    },
+    {
+      "question": "What is the value of the contract between Under Armour and Notre Dame?",
+      "pred": "$100 million",
+      "gold": [
+        "almost $100 million"
+      ],
+      "exact_match": false,
+      "f1": 0.8,
+      "latency_ms": 261.80171966552734
+    },
+    {
+      "question": "When did the Notre Dame marching band form?",
+      "pred": "1846",
+      "gold": [
+        "1846"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 273.7298011779785
+    },
+    {
+      "question": "What is notable about the Notre Dame marching band?",
+      "pred": "It is the oldest university band in continuous existence in the United States and is honored as a Landmark of American Music.",
+      "gold": [
+        "oldest university band in continuous existence in the United States"
+      ],
+      "exact_match": false,
+      "f1": 0.625,
+      "latency_ms": 308.93397331237793
+    },
+    {
+      "question": "What is the Notre Dame fight song?",
+      "pred": "The Notre Dame Victory March.",
+      "gold": [
+        "Notre Dame Victory March"
+      ],
+      "exact_match": false,
+      "f1": 0.888888888888889,
+      "latency_ms": 276.72791481018066
+    },
+    {
+      "question": "Which team did Notre Dame's football team find inspiration from?",
+      "pred": "Knute Rockne",
+      "gold": [
+        "Michigan Wolverines football team"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 273.17166328430176
+    },
+    {
+      "question": "In what year did Notre Dame football begin?",
+      "pred": "1887",
+      "gold": [
+        "1887"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.5066833496094
+    },
+    {
+      "question": "What university is Notre Dame tied with in terms of most Heisman Trophy winners?",
+      "pred": "No.",
+      "gold": [
+        "Ohio State University"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 271.604061126709
+    },
+    {
+      "question": "Against which team does Notre Dame compete for the Jeweled Shillelagh?",
+      "pred": "USC",
+      "gold": [
+        "USC"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 270.59364318847656
+    },
+    {
+      "question": "In terms of Notre Dame students in the College Football Hall of Fame the amount of students named is what ?",
+      "pred": "100",
+      "gold": [
+        "the most"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 271.4731693267822
+    },
+    {
+      "question": "What notable football player played at Notre Dame from 1916 to 1920?",
+      "pred": "George Gipp",
+      "gold": [
+        "George Gipp"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 272.45450019836426
+    },
+    {
+      "question": "Against which opponent did Knute Rockne tell his team to \"win one for the Gipper?\"",
+      "pred": "Army",
+      "gold": [
+        "the Army team"
+      ],
+      "exact_match": false,
+      "f1": 0.5,
+      "latency_ms": 231.60314559936523
+    },
+    {
+      "question": "Which person portrayed Knute Rockne in the 1940 movie \"Knute Rockne?\"",
+      "pred": "Ronald Reagan",
+      "gold": [
+        "Pat O'Brien"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 237.24699020385742
+    },
+    {
+      "question": "Ronald Reagan played the role of whom in 1940's \"Knute Rockne?\"",
+      "pred": "Gipp",
+      "gold": [
+        "Gipp"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 262.5138759613037
+    },
+    {
+      "question": "How many seats are in Notre Dame Stadium?",
+      "pred": "80,795",
+      "gold": [
+        "80,795"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 282.8402519226074
+    },
+    {
+      "question": "What is displayed at Zahm House for football home games at Notre Dame?",
+      "pred": "Zahm House's two-story banner",
+      "gold": [
+        "two-story banner"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 288.55347633361816
+    },
+    {
+      "question": "What occurs at midnight preceding a football home game at Notre Dame?",
+      "pred": "The Drummers' Circle begins with the band playing the Notre Dame Victory March and the Notre Dame Alma Mater under the dome.",
+      "gold": [
+        "the Drummers' Circle"
+      ],
+      "exact_match": false,
+      "f1": 0.24000000000000002,
+      "latency_ms": 305.41038513183594
+    },
+    {
+      "question": "From where does the Band of the Fighting Irish lead a march to the Notre Dame Stadium for football home games?",
+      "pred": "The steps of Bond Hall.",
+      "gold": [
+        "the steps of Bond Hall"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 278.5677909851074
+    },
+    {
+      "question": "What songs does the trumpet section of the Band of the Fighting Irish play preceding home football games?",
+      "pred": "The Notre Dame Victory March.",
+      "gold": [
+        "the Notre Dame Victory March and the Notre Dame Alma Mater"
+      ],
+      "exact_match": false,
+      "f1": 0.625,
+      "latency_ms": 271.5790271759033
+    },
+    {
+      "question": "On what day do Notre Dame home football games occur?",
+      "pred": "July 1",
+      "gold": [
+        "Saturday"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 282.72199630737305
+    },
+    {
+      "question": "How many wins does the Notre Dame men's basketball team have?",
+      "pred": "1,600",
+      "gold": [
+        "over 1,600"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 281.0513973236084
+    },
+    {
+      "question": "How many schools have a similar men's basketball record to Notre Dame in terms of wins?",
+      "pred": "1,600",
+      "gold": [
+        "12"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 276.42202377319336
+    },
+    {
+      "question": "How many NCAA tournaments did the Notre Dame men's basketball team take part in?",
+      "pred": "28",
+      "gold": [
+        "28"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 270.888090133667
+    },
+    {
+      "question": "Which Notre Dame men's basketball player has the record for more points in one game?",
+      "pred": "Austin Carr",
+      "gold": [
+        "Austin Carr"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 271.1308002471924
+    },
+    {
+      "question": "Who was the Notre Dame men's basketball coach in 2014?",
+      "pred": "Mike Brey",
+      "gold": [
+        "Mike Brey"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.1576385498047
+    },
+    {
+      "question": "Who wrote the original lyrics to the Notre Dame Victory March?",
+      "pred": "John F. Shea",
+      "gold": [
+        "John F. Shea"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 274.72615242004395
+    },
+    {
+      "question": "In what year did Michael J. Shea graduate from Notre Dame?",
+      "pred": "1904",
+      "gold": [
+        "1904"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 273.190975189209
+    },
+    {
+      "question": "Who is responsible for writing the music for \"Notre Dame Victory March?\"",
+      "pred": "Rev. Michael J. Shea",
+      "gold": [
+        "Rev. Michael J. Shea"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 278.19061279296875
+    },
+    {
+      "question": "In what year did \"Notre Dame Victory March\" get copyrighted?",
+      "pred": "1928",
+      "gold": [
+        "1928"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 142.13848114013672
+    },
+    {
+      "question": "To where are the loyal sons in \"Notre Dame Fight Song\" marching?",
+      "pred": "onward to victory",
+      "gold": [
+        "onward to victory"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.4759273529053
+    },
+    {
+      "question": "Ronald Reagan had a nickname, what was it?",
+      "pred": "Mad Dog",
+      "gold": [
+        "The Gipper"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 275.4509449005127
+    },
+    {
+      "question": "In what film did a parody of the \"Win one for the Gipper\" speech appear?",
+      "pred": "Airplane!",
+      "gold": [
+        "Airplane!"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 246.690034866333
+    },
+    {
+      "question": "Who starred as Daniel Ruettiger in the film Rudy?",
+      "pred": "Sean Astin",
+      "gold": [
+        "Sean Astin"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 243.93010139465332
+    },
+    {
+      "question": "Which person was a former comrade to Ted Striker in the film Airplane!?",
+      "pred": "None.",
+      "gold": [
+        "George Zipp"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 273.55146408081055
+    },
+    {
+      "question": "Pat O'Brien portrayed which person in the film Knute Rockne?",
+      "pred": "Ronald Reagan",
+      "gold": [
+        "Knute Rockne"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 257.45582580566406
+    },
+    {
+      "question": "Which Secretary of State attended Notre Dame?",
+      "pred": "Condoleezza Rice",
+      "gold": [
+        "Condoleezza Rice"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 270.7388401031494
+    },
+    {
+      "question": "Which Notre Dame alum from the College of Science won a Nobel Prize?",
+      "pred": "Eric F. Wieschaus",
+      "gold": [
+        "Eric F. Wieschaus"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 277.4090766906738
+    },
+    {
+      "question": "Who is the current president of Notre Dame?",
+      "pred": "John I. Jenkins, C.S.C.",
+      "gold": [
+        "Rev. John Jenkins"
+      ],
+      "exact_match": false,
+      "f1": 0.5714285714285715,
+      "latency_ms": 282.6809883117676
+    },
+    {
+      "question": "Mariel Zagunis is notable for winning what?",
+      "pred": "The UEFA European Championship.",
+      "gold": [
+        "Olympic gold"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 279.8495292663574
+    },
+    {
+      "question": "Which notable astronaut is known to have attended Notre Dame?",
+      "pred": "Jim Wetherbee",
+      "gold": [
+        "Jim Wetherbee"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 273.01645278930664
+    },
+    {
+      "question": "When did Beyonce start becoming popular?",
+      "pred": "1990s",
+      "gold": [
+        "in the late 1990s"
+      ],
+      "exact_match": false,
+      "f1": 0.4,
+      "latency_ms": 281.71658515930176
+    },
+    {
+      "question": "What areas did Beyonce compete in when she was growing up?",
+      "pred": "St. Mary's Elementary School, Parker Elementary School, and the High School for the Performing and Visual Arts.",
+      "gold": [
+        "singing and dancing"
+      ],
+      "exact_match": false,
+      "f1": 0.1,
+      "latency_ms": 312.33739852905273
+    },
+    {
+      "question": "When did Beyonce leave Destiny's Child and become a solo singer?",
+      "pred": "2003",
+      "gold": [
+        "2003"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.0946960449219
+    },
+    {
+      "question": "In what city and state did Beyonce  grow up?",
+      "pred": "Houston, Texas",
+      "gold": [
+        "Houston, Texas"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 278.10168266296387
+    },
+    {
+      "question": "In which decade did Beyonce become famous?",
+      "pred": "1990s",
+      "gold": [
+        "late 1990s"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 281.18324279785156
+    },
+    {
+      "question": "In what R&B group was she the lead singer?",
+      "pred": "Destiny's Child",
+      "gold": [
+        "Destiny's Child"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.06227111816406
+    },
+    {
+      "question": "What album made her a worldwide known artist?",
+      "pred": "Ray of Light",
+      "gold": [
+        "Dangerously in Love"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 258.0125331878662
+    },
+    {
+      "question": "Who managed the Destiny's Child group?",
+      "pred": "Rowland",
+      "gold": [
+        "Mathew Knowles"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 270.03979682922363
+    },
+    {
+      "question": "In what city did Beyonce grow up?",
+      "pred": "Houston, Texas",
+      "gold": [
+        "Houston"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 278.43761444091797
+    },
+    {
+      "question": "What was the name of Beyonce's first solo album?",
+      "pred": "Dangerously in Love",
+      "gold": [
+        "Dangerously in Love"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 281.264066696167
+    },
+    {
+      "question": "On what date was Beyonce born?",
+      "pred": "September 4, 1981",
+      "gold": [
+        "September 4, 1981"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 290.11034965515137
+    },
+    {
+      "question": "What is Beyonce's full name?",
+      "pred": "Beyonc\u00e9 Giselle Knowles-Carter",
+      "gold": [
+        "Beyonc\u00e9 Giselle Knowles-Carter"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 287.0802879333496
+    },
+    {
+      "question": "When did Beyonc\u00e9 rise to fame?",
+      "pred": "Late 1990s",
+      "gold": [
+        "late 1990s"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 285.87889671325684
+    },
+    {
+      "question": "What role did Beyonc\u00e9 have in Destiny's Child?",
+      "pred": "Lead singer and manager.",
+      "gold": [
+        "lead singer"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 280.3351879119873
+    },
+    {
+      "question": "What was the first album Beyonc\u00e9 released as a solo artist?",
+      "pred": "Dangerously in Love",
+      "gold": [
+        "Dangerously in Love"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 284.5344543457031
+    },
+    {
+      "question": "When did Beyonc\u00e9 release Dangerously in Love?",
+      "pred": "November 15, 2003",
+      "gold": [
+        "2003"
+      ],
+      "exact_match": false,
+      "f1": 0.5,
+      "latency_ms": 292.10948944091797
+    },
+    {
+      "question": "How many Grammy awards did Beyonc\u00e9 win for her first solo album?",
+      "pred": "5",
+      "gold": [
+        "five"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 279.1178226470947
+    },
+    {
+      "question": "What was Beyonc\u00e9's role in Destiny's Child?",
+      "pred": "Lead singer and manager.",
+      "gold": [
+        "lead singer"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 281.6426753997803
+    },
+    {
+      "question": "What was the name of Beyonc\u00e9's first solo album?",
+      "pred": "Dangerously in Love",
+      "gold": [
+        "Dangerously in Love"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.487060546875
+    },
+    {
+      "question": "When did Beyonc\u00e9 release her first solo album?",
+      "pred": "September 5, 2006",
+      "gold": [
+        "2003"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 273.0703353881836
+    },
+    {
+      "question": "After her second solo album, what other entertainment venture did Beyonce explore?",
+      "pred": "She explored acting, including roles in films like Dreamgirls and The Pink Panther.",
+      "gold": [
+        "acting"
+      ],
+      "exact_match": false,
+      "f1": 0.14285714285714288,
+      "latency_ms": 308.56871604919434
+    },
+    {
+      "question": "Which artist did Beyonce marry?",
+      "pred": "Jay Z",
+      "gold": [
+        "Jay Z"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 301.62644386291504
+    },
+    {
+      "question": "To set the record for Grammys, how many did Beyonce win?",
+      "pred": "6",
+      "gold": [
+        "six"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 273.2205390930176
+    },
+    {
+      "question": "For what movie did Beyonce receive  her first Golden Globe nomination?",
+      "pred": "Dreamgirls",
+      "gold": [
+        "Dreamgirls"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 281.22401237487793
+    },
+    {
+      "question": "When did Beyonce take a hiatus in her career and take control of her management?",
+      "pred": "January 2010",
+      "gold": [
+        "2010"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 289.37697410583496
+    },
+    {
+      "question": "Which album was darker in tone from her previous work?",
+      "pred": "Like a Prayer",
+      "gold": [
+        "Beyonc\u00e9"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 275.41136741638184
+    },
+    {
+      "question": "After what movie portraying Etta James, did Beyonce create Sasha Fierce?",
+      "pred": "Cadillac Records",
+      "gold": [
+        "Cadillac Records"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 276.7319679260254
+    },
+    {
+      "question": "When did Destiny's Child end their group act?",
+      "pred": "June 2005",
+      "gold": [
+        "June 2005"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 282.95159339904785
+    },
+    {
+      "question": "What was the name of Beyonc\u00e9's second solo album?",
+      "pred": "B'Day",
+      "gold": [
+        "B'Day"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 288.1360054016113
+    },
+    {
+      "question": "What was Beyonc\u00e9's first acting job, in 2006?",
+      "pred": "The Pink Panther",
+      "gold": [
+        "Dreamgirls"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 279.3693542480469
+    },
+    {
+      "question": "Who is Beyonc\u00e9 married to?",
+      "pred": "Jay Z",
+      "gold": [
+        "Jay Z"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 276.99899673461914
+    },
+    {
+      "question": "What is the name of Beyonc\u00e9's alter-ego?",
+      "pred": "Sasha Fierce",
+      "gold": [
+        "Sasha Fierce"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.9973487854004
+    },
+    {
+      "question": "In her music, what are some recurring elements in them?",
+      "pred": "She admires Diana Ross and Whitney Houston, and credits Mariah Carey's \"Vision of Love\" as a major influence on her vocal runs.",
+      "gold": [
+        "love, relationships, and monogamy"
+      ],
+      "exact_match": false,
+      "f1": 0.15384615384615385,
+      "latency_ms": 321.1071491241455
+    },
+    {
+      "question": "Time magazine named her one of the most 100 what people of the century?",
+      "pred": "The most 100 women of the century.",
+      "gold": [
+        "influential"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 298.94232749938965
+    },
+    {
+      "question": "Which magazine declared her the most dominant woman musician?",
+      "pred": "Rolling Stone",
+      "gold": [
+        "Forbes"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 259.54723358154297
+    },
+    {
+      "question": "In which decade did the Recording Industry Association of America recognize Beyonce as the The Top Certified Artist?",
+      "pred": "2000s",
+      "gold": [
+        "2000s"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.5438041687012
+    },
+    {
+      "question": "What magazine rated Beyonce as the most powerful female musician in 2015?",
+      "pred": "Forbes",
+      "gold": [
+        "Forbes"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.65712547302246
+    },
+    {
+      "question": "How did Beyonce describe herself as a feminist?",
+      "pred": "She described herself as a \"modern-day feminist\" and a \"feminist\" who believes in equality.",
+      "gold": [
+        "modern-day feminist"
+      ],
+      "exact_match": false,
+      "f1": 0.25,
+      "latency_ms": 311.9697570800781
+    },
+    {
+      "question": "In which years did Time rate Beyonce in the 100 most influential people in the world?",
+      "pred": "2013, 2014",
+      "gold": [
+        "2013 and 2014"
+      ],
+      "exact_match": false,
+      "f1": 0.8,
+      "latency_ms": 291.1815643310547
+    },
+    {
+      "question": "How many records has Beyonce sold in her 19 year career?",
+      "pred": "118 million",
+      "gold": [
+        "118 million"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.407190322876
+    },
+    {
+      "question": "How many records did Beyonc\u00e9 sell as part of Destiny's Child?",
+      "pred": "60 million",
+      "gold": [
+        "60 million"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 278.66268157958984
+    },
+    {
+      "question": "After leaving Destiny's Child, how many records did Beyonc\u00e9 release under her own name?",
+      "pred": "118 million",
+      "gold": [
+        "118 million"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 285.6438159942627
+    },
+    {
+      "question": "How many Grammy awards has Beyonc\u00e9 won?",
+      "pred": "20",
+      "gold": [
+        "20"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 277.9200077056885
+    },
+    {
+      "question": "What magazine named Beyonc\u00e9 as the most powerful female musician for 2015?",
+      "pred": "Forbes",
+      "gold": [
+        "Forbes"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.8168659210205
+    },
+    {
+      "question": "Beyonce's younger sibling also sang with her in what band?",
+      "pred": "Girl's Tyme",
+      "gold": [
+        "Destiny's Child"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 285.2344512939453
+    },
+    {
+      "question": "Where did Beyonce get her name from?",
+      "pred": "Houston, Texas",
+      "gold": [
+        "her mother's maiden name"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 278.60426902770996
+    },
+    {
+      "question": "What race was Beyonce's father?",
+      "pred": "African American",
+      "gold": [
+        "African-American"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 277.0190238952637
+    },
+    {
+      "question": "Beyonce's childhood home believed in what religion?",
+      "pred": "Methodist",
+      "gold": [
+        "Methodist"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 273.57983589172363
+    },
+    {
+      "question": "Beyonce's father worked as a sales manager for what company?",
+      "pred": "Xerox",
+      "gold": [
+        "Xerox"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 274.95336532592773
+    },
+    {
+      "question": "Beyonce's mother worked in what industry?",
+      "pred": "hairdresser",
+      "gold": [
+        "hairdresser and salon owner"
+      ],
+      "exact_match": false,
+      "f1": 0.4,
+      "latency_ms": 276.6456604003906
+    },
+    {
+      "question": "What younger sister of Beyonce also appeared in Destiny's Child?",
+      "pred": "Solange",
+      "gold": [
+        "Solange"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 275.30407905578613
+    },
+    {
+      "question": "Beyonce is a descendent of what Arcadian leader?",
+      "pred": "Joseph Broussard",
+      "gold": [
+        "Joseph Broussard"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.3469429016113
+    },
+    {
+      "question": "What company did Beyonc\u00e9's father work for when she was a child?",
+      "pred": "Xerox",
+      "gold": [
+        "Xerox"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 274.28245544433594
+    },
+    {
+      "question": "What did Beyonc\u00e9's mother own when Beyonc\u00e9 was a child?",
+      "pred": "Tina Knowles",
+      "gold": [
+        "salon"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 278.1193256378174
+    },
+    {
+      "question": "What is the name of Beyonc\u00e9's younger sister?",
+      "pred": "Solange",
+      "gold": [
+        "Solange"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 274.75833892822266
+    },
+    {
+      "question": "Beyonc\u00e9 is a descendant of which Acadian leader?",
+      "pred": "Joseph Broussard",
+      "gold": [
+        "Joseph Broussard."
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 266.10708236694336
+    },
+    {
+      "question": "Beyonc\u00e9 was raised in what religion?",
+      "pred": "Methodist",
+      "gold": [
+        "Methodist"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 278.9306640625
+    },
+    {
+      "question": "What town did Beyonce go to school in?",
+      "pred": "Fredericksburg, Texas",
+      "gold": [
+        "Fredericksburg"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 289.2730236053467
+    },
+    {
+      "question": "Who was the first person to notice Beyonce's singing ability?",
+      "pred": "Darlette Johnson",
+      "gold": [
+        "Darlette Johnson"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 283.34927558898926
+    },
+    {
+      "question": "Beyonce moved to which town after she left her first elementary school?",
+      "pred": "Fredericksburg",
+      "gold": [
+        "Houston"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 286.0674858093262
+    },
+    {
+      "question": "Which of her teachers discovered Beyonce's musical talent?",
+      "pred": "Darlette Johnson",
+      "gold": [
+        "dance instructor Darlette Johnson"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 276.8588066101074
+    },
+    {
+      "question": "I which church was Beyonce  a member and soloist  in the choir?",
+      "pred": "St. John's United Methodist Church",
+      "gold": [
+        "St. John's United Methodist Church"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 311.8467330932617
+    },
+    {
+      "question": "What type of school was Parker Elementary School?",
+      "pred": "Parke Elementary School was a comprehensive school.",
+      "gold": [
+        "music magnet school"
+      ],
+      "exact_match": false,
+      "f1": 0.2,
+      "latency_ms": 278.17654609680176
+    },
+    {
+      "question": "Which song did Beyonce sing to win a competition at age 7?",
+      "pred": "Imagine",
+      "gold": [
+        "Imagine"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 271.0545063018799
+    },
+    {
+      "question": "What city was Beyonc\u00e9's elementary school located in?",
+      "pred": "Fredericksburg, Texas",
+      "gold": [
+        "Fredericksburg"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 284.3341827392578
+    },
+    {
+      "question": "What was the name of Beyonc\u00e9's first dance instructor?",
+      "pred": "Darlette Johnson",
+      "gold": [
+        "Darlette Johnson"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 278.6574363708496
+    },
+    {
+      "question": "How old was Beyonc\u00e9 when she won a school talent show?",
+      "pred": "She was seven years old.",
+      "gold": [
+        "seven"
+      ],
+      "exact_match": false,
+      "f1": 0.33333333333333337,
+      "latency_ms": 290.2061939239502
+    },
+    {
+      "question": "What choir did Beyonc\u00e9 sing in for two years?",
+      "pred": "St. John's United Methodist Church",
+      "gold": [
+        "St. John's United Methodist Church"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 285.264253616333
+    },
+    {
+      "question": "Who decided to place Beyonce's group in Star Search the talent show?",
+      "pred": "Arne Frager",
+      "gold": [
+        "Arne Frager"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.0963649749756
+    },
+    {
+      "question": "In 1995, who decided to manage the girls singing group?",
+      "pred": "Arne Frager",
+      "gold": [
+        "Beyonc\u00e9's father"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 279.2818546295166
+    },
+    {
+      "question": "Who was the first record label to give the girls a record deal?",
+      "pred": "Madonna",
+      "gold": [
+        "Elektra Records"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 276.2730121612549
+    },
+    {
+      "question": "Who brought Beyonce to California and enter her group in Star Search?",
+      "pred": "Arne Frager",
+      "gold": [
+        "Arne Frager"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.5173397064209
+    },
+    {
+      "question": "In what year did Beyonce's father quit his job to manage her group?",
+      "pred": "1995",
+      "gold": [
+        "1995"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 284.698486328125
+    },
+    {
+      "question": "What large record company recorded Beyonce's group's first album?",
+      "pred": "Sony Music Entertainment Inc.",
+      "gold": [
+        "Sony Music"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 281.2309265136719
+    },
+    {
+      "question": "What record company first signed Beyonce's group and later cut them?",
+      "pred": "Elektra Records",
+      "gold": [
+        "Elektra Records"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 276.49402618408203
+    },
+    {
+      "question": "At what age did Beyonce meet LaTavia Robertson?",
+      "pred": "At age eight.",
+      "gold": [
+        "age eight"
+      ],
+      "exact_match": false,
+      "f1": 0.8,
+      "latency_ms": 279.54673767089844
+    },
+    {
+      "question": "How old was Beyonc\u00e9 when she met LaTavia Roberson?",
+      "pred": "1995",
+      "gold": [
+        "eight"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 277.74691581726074
+    },
+    {
+      "question": "What was the name of the first group Beyonc\u00e9 was a part of?",
+      "pred": "Destiny's Child",
+      "gold": [
+        "Girl's Tyme"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 279.42609786987305
+    },
+    {
+      "question": "Who placed Girl's Tyme in Star Search?",
+      "pred": "Unknown",
+      "gold": [
+        "Arne Frager"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 273.63014221191406
+    },
+    {
+      "question": "When did Beyonc\u00e9 begin to manage the girl group?",
+      "pred": "1995",
+      "gold": [
+        "1995"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 277.62532234191895
+    },
+    {
+      "question": "Who signed the girl group on October 5, 1995?",
+      "pred": "Dwayne Wiggins",
+      "gold": [
+        "Dwayne Wiggins's Grass Roots Entertainment"
+      ],
+      "exact_match": false,
+      "f1": 0.28571428571428575,
+      "latency_ms": 277.15373039245605
+    },
+    {
+      "question": "Which film featured Destiny's Child's first major single?",
+      "pred": "The Pink Panther",
+      "gold": [
+        "Men in Black"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 281.4197540283203
+    },
+    {
+      "question": "For which song, did Destiny's Child take home the grammy award for best R&B performance?",
+      "pred": "No, Destiny's Child did not win the Grammy Award for Best R&B Performance. They won it for their song \"No, No, No\".",
+      "gold": [
+        "\"Say My Name\""
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 331.0692310333252
+    },
+    {
+      "question": "Who did Beyonce record with for the movie \"The Best Man?\"",
+      "pred": "Marc Nelson",
+      "gold": [
+        "Marc Nelson"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 275.5250930786133
+    },
+    {
+      "question": "Beyonce's group changed their name to Destiny's Child in what year?",
+      "pred": "1996",
+      "gold": [
+        "1996"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.0522575378418
+    },
+    {
+      "question": "The name Destiny's Child was based on a quote in which book of the Bible?",
+      "pred": "The Bible.",
+      "gold": [
+        "Book of Isaiah"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 275.21610260009766
+    },
+    {
+      "question": "Debut song, \"Killing Time\" was featured on what movie's sound track?",
+      "pred": "The film *Killing Time*",
+      "gold": [
+        "Men in Black"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 254.9147605895996
+    },
+    {
+      "question": "What song won Best R&B Performance in the 43 Annual Grammy Awards?",
+      "pred": "Crazy in Love",
+      "gold": [
+        "Say My Name"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 273.14090728759766
+    },
+    {
+      "question": "What singer did Beyonce record a song with for the movie, ''The Best Man\"?",
+      "pred": "Marc Nelson",
+      "gold": [
+        "Marc Nelson"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 276.5848636627197
+    },
+    {
+      "question": "Where did Destiny's Child get their name from?",
+      "pred": "The name Destiny's Child is derived from the name of the band's lead singer, Destiny, which was originally a nickname for the band's first member.",
+      "gold": [
+        "Book of Isaiah."
+      ],
+      "exact_match": false,
+      "f1": 0.07142857142857142,
+      "latency_ms": 326.0343074798584
+    },
+    {
+      "question": "Destiny's Child song, Killing Time, was included in which film's soundtrack?",
+      "pred": "The film *Skyfall*.",
+      "gold": [
+        "Men in Black."
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 270.8728313446045
+    },
+    {
+      "question": "What was Destiny's Child's first major song hit?",
+      "pred": "\"No, No, No\"",
+      "gold": [
+        "No, No, No"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.90882301330566
+    },
+    {
+      "question": "When did Destiny's Child release their second album?",
+      "pred": "2005",
+      "gold": [
+        "1999"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 284.7931385040283
+    },
+    {
+      "question": "Who did Beyonc\u00e9 sing a duet with for \"The Best Man\" film?",
+      "pred": "Marc Nelson",
+      "gold": [
+        "Marc Nelson"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 277.00018882751465
+    },
+    {
+      "question": "What mental health issue did Beyonce go through?",
+      "pred": "Depression",
+      "gold": [
+        "depression"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 276.031494140625
+    },
+    {
+      "question": "What event occured after she was publicly criticized?",
+      "pred": "She was publicly criticized by President Barack Obama and other celebrities.",
+      "gold": [
+        "boyfriend left her"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 293.2302951812744
+    },
+    {
+      "question": "Who supported Beyonce through her depression?",
+      "pred": "Michelle Williams",
+      "gold": [
+        "her mother"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 276.3700485229492
+    },
+    {
+      "question": "What event caused Beyonce's depression?",
+      "pred": "The breakup with her boyfriend.",
+      "gold": [
+        "split with Luckett and Rober"
+      ],
+      "exact_match": false,
+      "f1": 0.20000000000000004,
+      "latency_ms": 282.08327293395996
+    },
+    {
+      "question": "How long was Beyonce depressed?",
+      "pred": "A couple of years",
+      "gold": [
+        "a couple of years"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 283.1463813781738
+    },
+    {
+      "question": "Who helped Beyonce fight her depression the most?",
+      "pred": "Beyonc\u00e9's mother.",
+      "gold": [
+        "her mother"
+      ],
+      "exact_match": false,
+      "f1": 0.5,
+      "latency_ms": 280.5814743041992
+    },
+    {
+      "question": "Who replaced Luckett and Roberson in Destiny's Child?",
+      "pred": "Farrah Franklin and Michelle Williams.",
+      "gold": [
+        "Farrah Franklin and Michelle Williams."
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 283.34712982177734
+    },
+    {
+      "question": "Who was blamed for Luckett and Roberson leaving Destiny's Child?",
+      "pred": "The media, critics, and blogs.",
+      "gold": [
+        "Beyonc\u00e9"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 284.318208694458
+    },
+    {
+      "question": "Who helped Beyonc\u00e9 overcome her depression during the years following the Destiny's Child split?",
+      "pred": "Michelle Williams",
+      "gold": [
+        "her mother"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 281.6119194030762
+    },
+    {
+      "question": "Which newest member was removed from Destiny's Child?",
+      "pred": "Rowland",
+      "gold": [
+        "Farrah Franklin"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 276.0050296783447
+    },
+    {
+      "question": "\"Charlie's Angels\" featured which single from the band members?",
+      "pred": "None",
+      "gold": [
+        "Independent Women Part I"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 278.9013385772705
+    },
+    {
+      "question": "How many weeks did their single \"Independent Women Part I\" stay on top?",
+      "pred": "eleven",
+      "gold": [
+        "eleven"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 259.0770721435547
+    },
+    {
+      "question": "For what network, did Beyonce land a major movie role in?",
+      "pred": "The 2006 film Dreamgirls.",
+      "gold": [
+        "MTV"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 287.04261779785156
+    },
+    {
+      "question": "Their third album, Survivor, sold how many during its first week?",
+      "pred": "N/A",
+      "gold": [
+        "663,000 copies"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 275.5777835845947
+    },
+    {
+      "question": "What French composer wrote the original opera ''Carmen'' in the 19th century?",
+      "pred": "Maurice Ravel",
+      "gold": [
+        "Georges Bizet"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 278.6440849304199
+    },
+    {
+      "question": "What album caused a lawsuit to be filed in 2001?",
+      "pred": "Erotica",
+      "gold": [
+        "Survivor"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 272.3541259765625
+    },
+    {
+      "question": "Independent Women Part I was on which 2000 film's soundtrack?",
+      "pred": "Charlie's Angels",
+      "gold": [
+        "Charlie's Angels."
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 275.90298652648926
+    },
+    {
+      "question": "Which film did Beyonc\u00e9 star in 2001 with Mekhi Phifer?",
+      "pred": "Carmen: A Hip Hopera",
+      "gold": [
+        "Carmen: A Hip Hopera"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 296.8106269836426
+    },
+    {
+      "question": "What was the name of Destiny Child's third album?",
+      "pred": "Number 1's",
+      "gold": [
+        "Survivor"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 280.4396152496338
+    },
+    {
+      "question": "Who filed a lawsuit over Survivor?",
+      "pred": "None.",
+      "gold": [
+        "Luckett and Roberson"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 259.047269821167
+    },
+    {
+      "question": "When did Destiny's Child announce their hiatus?",
+      "pred": "June 2005",
+      "gold": [
+        "October 2001"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 280.8525562286377
+    },
+    {
+      "question": "Who did Beyonce star with in the movie, \"Austin Powers in Goldmember\"?",
+      "pred": "Mike Myers",
+      "gold": [
+        "Mike Myers"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 275.88796615600586
+    },
+    {
+      "question": "Which three countries did Beyonce's song \"Work It Out\" achieve top ten status?",
+      "pred": "United States, United Kingdom, and United States (United States)",
+      "gold": [
+        "UK, Norway, and Belgium"
+      ],
+      "exact_match": false,
+      "f1": 0.15384615384615383,
+      "latency_ms": 302.11710929870605
+    },
+    {
+      "question": "Beyonce starred with Cuba Gooding Jr. in which film?",
+      "pred": "The Fighting Temptations",
+      "gold": [
+        "The Fighting Temptations"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 289.66665267944336
+    },
+    {
+      "question": "Who did Beyonce record the lead single with in the movie \"The Fighting Temptations\"?",
+      "pred": "Cuba Gooding, Jr.",
+      "gold": [
+        "Missy Elliott"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 289.517879486084
+    },
+    {
+      "question": "Which other song from the soundtrack did better in the charts?",
+      "pred": "\"Bootylicious\"",
+      "gold": [
+        "Summertime"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 275.0875949859619
+    },
+    {
+      "question": "What film did Beyonce appear in with Mike Myers?",
+      "pred": "Austin Powers in Goldmember",
+      "gold": [
+        "Austin Powers in Goldmember"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.96277809143066
+    },
+    {
+      "question": "What large amount did the movie \"Goldmember\" gross?",
+      "pred": "$1.1 billion",
+      "gold": [
+        "73 million"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 281.18205070495605
+    },
+    {
+      "question": "What genre of movie did Beyonce star in with Cuba Gooding, Jr?",
+      "pred": "The Fighting Temptations",
+      "gold": [
+        "musical comedy"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 281.50439262390137
+    },
+    {
+      "question": "What song was the lead single from the film's sound track?",
+      "pred": "Bohemian Rhapsody",
+      "gold": [
+        "Fighting Temptations"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 241.2700653076172
+    },
+    {
+      "question": "How did the critics view the movie, ''The Fighting Temptations''?",
+      "pred": "The provided text does not contain information about the movie \"The Fighting Temptations\" or its critics' views.",
+      "gold": [
+        "mixed reviews"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 305.1908016204834
+    },
+    {
+      "question": "What film did Beyonc\u00e9 star in with Mike Myers in 2002?",
+      "pred": "Austin Powers in Goldmember",
+      "gold": [
+        "Austin Powers in Goldmember"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.6055545806885
+    },
+    {
+      "question": "What was Beyonc\u00e9's character called in Austin Powers in Goldmember?",
+      "pred": "Foxxy Cleopatra",
+      "gold": [
+        "Foxxy Cleopatra"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 286.43274307250977
+    },
+    {
+      "question": "Which song did Beyonc\u00e9 release as the lead single for Austin Powers in Goldmember's soundtrack?",
+      "pred": "Work It Out",
+      "gold": [
+        "Work It Out"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 284.5034599304199
+    },
+    {
+      "question": "What musical comedy did Beyonc\u00e9 star in along with Cuba Gooding, Jr. in 2003?",
+      "pred": "The Fighting Temptations",
+      "gold": [
+        "The Fighting Temptations"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 291.3026809692383
+    },
+    {
+      "question": "What song did Beyonc\u00e9 release as the lead single from The Fighting Tempations?",
+      "pred": "No song.",
+      "gold": [
+        "Fighting Temptations"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 279.6595096588135
+    },
+    {
+      "question": "What was the highest Beyonce's first solo recording achieved in the Billboard Hot 100?",
+      "pred": "Crazy in Love",
+      "gold": [
+        "number four"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 285.8085632324219
+    },
+    {
+      "question": "Beyonce's first album by herself was called what?",
+      "pred": "Dangerously in Love",
+      "gold": [
+        "Dangerously in Love"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 285.8889102935791
+    },
+    {
+      "question": "How many has \"Dangerously in Love\" sould worldwide since its debut?",
+      "pred": "11 million",
+      "gold": [
+        "11 million"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 304.8281669616699
+    },
+    {
+      "question": "Beyonce's first number one song was which song?",
+      "pred": "Crazy in Love",
+      "gold": [
+        "Crazy in Love"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 287.14919090270996
+    },
+    {
+      "question": "How many top five singles came from her first album?",
+      "pred": "1",
+      "gold": [
+        "four"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 255.1553249359131
+    },
+    {
+      "question": "Beyonce's first solo album in the U.S. with what artist in the lead single?",
+      "pred": "Dangerously in Love",
+      "gold": [
+        "Jay Z"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 283.5204601287842
+    },
+    {
+      "question": "What solo album did Beyonce release in 2003?",
+      "pred": "Dangerously in Love",
+      "gold": [
+        "Dangerously in Love"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 286.4055633544922
+    },
+    {
+      "question": "The album, Dangerously in Love  achieved what spot on the Billboard Top 100 chart?",
+      "pred": "number one",
+      "gold": [
+        "number four"
+      ],
+      "exact_match": false,
+      "f1": 0.5,
+      "latency_ms": 277.2552967071533
+    },
+    {
+      "question": "\"The Closer I get to You\" was recorded with which artist?",
+      "pred": "The Beatles",
+      "gold": [
+        "Luther Vandross"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 259.537935256958
+    },
+    {
+      "question": "Which artist was associated with Beyonc\u00e9's premiere solo recording?",
+      "pred": "The album B'Day",
+      "gold": [
+        "Jay Z"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 280.4539203643799
+    },
+    {
+      "question": "When did Beyonc\u00e9 release her first solo album?",
+      "pred": "September 5, 2006",
+      "gold": [
+        "June 24, 2003"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 294.3837642669678
+    },
+    {
+      "question": "What is the lead single on Beyonc\u00e9's first album?",
+      "pred": "Dangerously in Love",
+      "gold": [
+        "Crazy in Love"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 283.0958366394043
+    },
+    {
+      "question": "Who helped Beyonc\u00e9 earn a Grammy award for Best R&B Performance by a Duo or Group at the 46th annual Grammy Awards?",
+      "pred": "Luther Vandross",
+      "gold": [
+        "Luther Vandross."
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.8187732696533
+    },
+    {
+      "question": "How many awards did Beyonc\u00e9 win at the 46th Grammy's Awards?",
+      "pred": "5",
+      "gold": [
+        "five."
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 274.8749256134033
+    },
+    {
+      "question": "Destiny's Child's final album was named what?",
+      "pred": "Number 1's",
+      "gold": [
+        "Destiny Fulfilled"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 280.37285804748535
+    },
+    {
+      "question": "Destiny's Child got a star on the Hollywood Walk of Fame in what year?",
+      "pred": "2006",
+      "gold": [
+        "2006"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 281.08811378479004
+    },
+    {
+      "question": "In what year did Beyonce embark on her Dangerously in Love tour of Europe?",
+      "pred": "2003",
+      "gold": [
+        "November 2003"
+      ],
+      "exact_match": false,
+      "f1": 0.6666666666666666,
+      "latency_ms": 285.21013259887695
+    },
+    {
+      "question": "What was the name of the final album of Destiny's Child?",
+      "pred": "Destiny Fulfilled",
+      "gold": [
+        "Destiny Fulfilled"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 286.12327575683594
+    },
+    {
+      "question": "It was announced that Destiny's Child would  disban in what European city?",
+      "pred": "London",
+      "gold": [
+        "Barcelona"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 280.41768074035645
+    },
+    {
+      "question": "When did Destiny's Child get their star on the Hollywood Walk of Fame?",
+      "pred": "March 2006",
+      "gold": [
+        "March 2006"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 286.7765426635742
+    },
+    {
+      "question": "What was the name of Beyonc\u00e9's European start that started in November 2003?",
+      "pred": "Dangerously in Love",
+      "gold": [
+        "Dangerously in Love Tour"
+      ],
+      "exact_match": false,
+      "f1": 0.8571428571428571,
+      "latency_ms": 280.3521156311035
+    },
+    {
+      "question": "Who did Beyonc\u00e9 tour with for the Verizon Lades First Tour?",
+      "pred": "Alicia Keys",
+      "gold": [
+        "Missy Elliott and Alicia Keys"
+      ],
+      "exact_match": false,
+      "f1": 0.5714285714285715,
+      "latency_ms": 282.65905380249023
+    },
+    {
+      "question": "What major event did Beyonc\u00e9 perform at on February 1, 2004?",
+      "pred": "Super Bowl XXXVIII halftime show",
+      "gold": [
+        "Super Bowl XXXVIII"
+      ],
+      "exact_match": false,
+      "f1": 0.7499999999999999,
+      "latency_ms": 284.49440002441406
+    },
+    {
+      "question": "What is the name of the final studio album from Destiny's Child?",
+      "pred": "Destiny Fulfilled",
+      "gold": [
+        "Destiny Fulfilled."
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.8804512023926
+    },
+    {
+      "question": "How many albums did Beyonce sell in the first week when she released her second album?",
+      "pred": "541,000",
+      "gold": [
+        "541,000"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 174.52335357666016
+    },
+    {
+      "question": "The lead single from the album was which song?",
+      "pred": "Crazy in Love",
+      "gold": [
+        "D\u00e9j\u00e0 Vu"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 266.0505771636963
+    },
+    {
+      "question": "How many countries did her song \"Irreplaceable\" get number one status in?",
+      "pred": "Australia, Hungary, Ireland, New Zealand, and the United States",
+      "gold": [
+        "five"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 276.5307426452637
+    },
+    {
+      "question": "How many singles did her second album produce?",
+      "pred": "Three",
+      "gold": [
+        "five"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 278.00655364990234
+    },
+    {
+      "question": "What birthday did Beyonce's album B'Day celebrate?",
+      "pred": "September 25",
+      "gold": [
+        "twenty-fifth birthday"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 285.4015827178955
+    },
+    {
+      "question": "What artist did Beyonce duet with in the single, \"Deja Vu''?",
+      "pred": "Jay Z",
+      "gold": [
+        "Jay Z"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 283.0686569213867
+    },
+    {
+      "question": "How high did ''Deja Vu'' climb on the Billboard chart?",
+      "pred": "Top Five",
+      "gold": [
+        "top five"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 259.7782611846924
+    },
+    {
+      "question": "What is the name of Beyonc\u00e9's second album?",
+      "pred": "B'Day",
+      "gold": [
+        "B'Day"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 277.179479598999
+    },
+    {
+      "question": "How many copies did B'Day sell during the first week of its release?",
+      "pred": "541,000",
+      "gold": [
+        "541,000"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 291.5158271789551
+    },
+    {
+      "question": "Who collaborated with Beyonc\u00e9 on the single, Deja Vu?",
+      "pred": "Josephine Baker",
+      "gold": [
+        "Jay Z"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 278.2437801361084
+    },
+    {
+      "question": "Which single from B'Day was only released in the U.K.?",
+      "pred": "\"Green Light\"",
+      "gold": [
+        "Green Light"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 286.6353988647461
+    },
+    {
+      "question": "What movie did Beyonce act in 2006?",
+      "pred": "The Pink Panther",
+      "gold": [
+        "The Pink Panther"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 278.6102294921875
+    },
+    {
+      "question": "Her second movie Beyonce did was what film?",
+      "pred": "The Pink Panther",
+      "gold": [
+        "Dreamgirls"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 282.6571464538574
+    },
+    {
+      "question": "The single, \"Listen\" was featured in which movie?",
+      "pred": "None",
+      "gold": [
+        "Dreamgirls"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 267.9276466369629
+    },
+    {
+      "question": "Beyonce's first world tour was when?",
+      "pred": "The Mrs. Carter Show World Tour.",
+      "gold": [
+        "2007"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 286.5266799926758
+    },
+    {
+      "question": "How much money did Beyonce's tour make in 2007?",
+      "pred": "$24 million",
+      "gold": [
+        "24 million"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 281.24070167541504
+    },
+    {
+      "question": "How many millions of dollars did ''The Pink Panther'' gross world-wide?",
+      "pred": "$138.1 million",
+      "gold": [
+        "158.8 million"
+      ],
+      "exact_match": false,
+      "f1": 0.5,
+      "latency_ms": 285.0513458251953
+    },
+    {
+      "question": "What did Beyonce call her first concert tour?",
+      "pred": "The Mrs. Carter Show World Tour",
+      "gold": [
+        "The Beyonc\u00e9 Experience"
+      ],
+      "exact_match": false,
+      "f1": 0.2222222222222222,
+      "latency_ms": 285.88342666625977
+    },
+    {
+      "question": "Who was Beyonce's duet with in ''Beautiful Liar''?",
+      "pred": "Shakira",
+      "gold": [
+        "Shakira"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.2201042175293
+    },
+    {
+      "question": "Which film did Beyonc\u00e9 star with Steve Martin in?",
+      "pred": "Austin Powers in Goldmember",
+      "gold": [
+        "The Pink Panther"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 288.2676124572754
+    },
+    {
+      "question": "Beyonc\u00e9's role in Dreamgirls was based on what pop singer?",
+      "pred": "Mariah Carey",
+      "gold": [
+        "Diana Ross."
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 278.1345844268799
+    },
+    {
+      "question": "What was the lead single for the Dreamgirls soundtrack?",
+      "pred": "Dreamgirls soundtrack lead single: \"Crazy for You\"",
+      "gold": [
+        "Listen"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 296.56505584716797
+    },
+    {
+      "question": "What was the name of Beyonc\u00e9's first international tour?",
+      "pred": "The Mrs. Carter Show World Tour",
+      "gold": [
+        "The Beyonc\u00e9 Experience"
+      ],
+      "exact_match": false,
+      "f1": 0.2222222222222222,
+      "latency_ms": 287.3504161834717
+    },
+    {
+      "question": "What pop singer did a duet with Beyonc\u00e9 on Beautiful Liar?",
+      "pred": "Shakira",
+      "gold": [
+        "Shakira"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.0079116821289
+    },
+    {
+      "question": "Beyonce got married in 2008 to whom?",
+      "pred": "Jay Z",
+      "gold": [
+        "Jay Z"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 276.9913673400879
+    },
+    {
+      "question": "Her third album, \"I am...Sasha Fierce\" was released when?",
+      "pred": "November 18, 2008",
+      "gold": [
+        "November 18, 2008"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 290.0383472442627
+    },
+    {
+      "question": "For which decade, did Beyonce have more top ten songs than any other woman?",
+      "pred": "2000s",
+      "gold": [
+        "2000s"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 282.24968910217285
+    },
+    {
+      "question": "Which singer beat out Beyonce for best video performance?",
+      "pred": "No one beat out Beyonc\u00e9 for best video performance.",
+      "gold": [
+        "Taylor Swift"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 297.8076934814453
+    },
+    {
+      "question": "In 2009, Beyonce started her second world tour and grossed how much money?",
+      "pred": "$119.5 million",
+      "gold": [
+        "119.5 million"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 292.77825355529785
+    },
+    {
+      "question": "How did she reveal the marriage?",
+      "pred": "She was revealed by her husband's death, which she blamed on his philandering.",
+      "gold": [
+        "in a video montage"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 300.62079429626465
+    },
+    {
+      "question": "When did Beyonce begin her second world tour?",
+      "pred": "April 15, 2011",
+      "gold": [
+        "March 2009"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 289.98827934265137
+    },
+    {
+      "question": "Who beat out Beyonce for Best Female Video ?",
+      "pred": "Taylor Swift",
+      "gold": [
+        "Taylor Swift"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.90572357177734
+    },
+    {
+      "question": "How much did the second world tour make in dollars?",
+      "pred": "$12.5 billion",
+      "gold": [
+        "119.5 million"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 279.6659469604492
+    },
+    {
+      "question": "When did Beyonc\u00e9 get married?",
+      "pred": "April 4, 2008",
+      "gold": [
+        "April 4, 2008"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 288.44523429870605
+    },
+    {
+      "question": "Who did Beyonc\u00e9 marry?",
+      "pred": "Jay Z",
+      "gold": [
+        "Jay Z."
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 275.38609504699707
+    },
+    {
+      "question": "Who is Beyonc\u00e9's alter ego?",
+      "pred": "Sasha Fierce",
+      "gold": [
+        "Sasha Fierce"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.56318855285645
+    },
+    {
+      "question": "The video for what song won Beyonc\u00e9 the 2009 MTV Video of the Year award?",
+      "pred": "Single Ladies (Put a Ring on It)",
+      "gold": [
+        "Single Ladies"
+      ],
+      "exact_match": false,
+      "f1": 0.4444444444444445,
+      "latency_ms": 291.32962226867676
+    },
+    {
+      "question": "Which prominent star felt the 2009 Female Video of the Year award should have went to Beyonc\u00e9 instead of Taylor Swift?",
+      "pred": "Kanye West",
+      "gold": [
+        "Kanye West"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 283.6008071899414
+    },
+    {
+      "question": "Beyonce portrayed which character in the film, Cadillac Records?",
+      "pred": "Etta James",
+      "gold": [
+        "Etta James"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 278.6586284637451
+    },
+    {
+      "question": "Beyonce gave her entire salary from Cadillac Records to which organization?",
+      "pred": "None",
+      "gold": [
+        "Phoenix House"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 272.7839946746826
+    },
+    {
+      "question": "Which song did Beyonce sing at the first couple's inaugural ball?",
+      "pred": "At Last",
+      "gold": [
+        "At Last"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.5948257446289
+    },
+    {
+      "question": "What genre of film was the movie, Obsessed, in which Beyonce starred in?",
+      "pred": "Thriller",
+      "gold": [
+        "thriller"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.38930892944336
+    },
+    {
+      "question": "A fight scene from the movie, Obsessed, won which award for Beyonce?",
+      "pred": "2010 MTV Movie Award for Best Fight",
+      "gold": [
+        "MTV Movie Award for Best Fight"
+      ],
+      "exact_match": false,
+      "f1": 0.923076923076923,
+      "latency_ms": 295.26829719543457
+    },
+    {
+      "question": "Where did Beyonce donate her salary from the movie Cadillac Records?",
+      "pred": "Cadillac Records",
+      "gold": [
+        "Phoenix House"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 278.2762050628662
+    },
+    {
+      "question": "What thriller film did Beyonce star in?",
+      "pred": "Obsessed",
+      "gold": [
+        "Obsessed"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 281.45909309387207
+    },
+    {
+      "question": "What was the name of the woman she played in Obsessed?",
+      "pred": "Etta James",
+      "gold": [
+        "Sharon Charles"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 277.46105194091797
+    },
+    {
+      "question": "How much more that the buget did the film gross?",
+      "pred": "$136.3 million",
+      "gold": [
+        "60 million"
+      ],
+      "exact_match": false,
+      "f1": 0.5,
+      "latency_ms": 271.2523937225342
+    },
+    {
+      "question": "Which singer did Beyonc\u00e9 portray in Cadillac Records?",
+      "pred": "Etta James",
+      "gold": [
+        "Etta James"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 277.9853343963623
+    },
+    {
+      "question": "Which organization received Beyonc\u00e9's entire Cadillac Records salary?",
+      "pred": "None",
+      "gold": [
+        "Phoenix House"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 276.2470245361328
+    },
+    {
+      "question": "Where did Beyonc\u00e9 perform on January 20, 2009?",
+      "pred": "First Couple's first inaugural ball.",
+      "gold": [
+        "the First Couple's first inaugural ball."
+      ],
+      "exact_match": false,
+      "f1": 0.9090909090909091,
+      "latency_ms": 290.07554054260254
+    },
+    {
+      "question": "Which thriller film did Beyonc\u00e9 star in with Ali Larter?",
+      "pred": "Obsessed",
+      "gold": [
+        "Obsessed."
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 286.78441047668457
+    },
+    {
+      "question": "How many awards was Beyonce nominated for at the 52nd Grammy Awards?",
+      "pred": "52",
+      "gold": [
+        "ten"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 277.3928642272949
+    },
+    {
+      "question": "Beyonce tied with which artist for most nominations by a female artist?",
+      "pred": "Lauryn Hill",
+      "gold": [
+        "Lauryn Hill"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 281.3286781311035
+    },
+    {
+      "question": "In 2010, Beyonce worked with which other famous singer?",
+      "pred": "Lady Gaga",
+      "gold": [
+        "Lady Gaga"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 275.77781677246094
+    },
+    {
+      "question": "How many number one singles did Beyonce now have after the song \"Telephone\"?",
+      "pred": "1",
+      "gold": [
+        "six"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 279.86764907836914
+    },
+    {
+      "question": "Beyonce tied who for most number one singles by a female?",
+      "pred": "Lauryn Hill",
+      "gold": [
+        "Mariah Carey"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 280.8990478515625
+    },
+    {
+      "question": "Beyonce received how many nominations at the 52nd Annual Grammy Awards?",
+      "pred": "52",
+      "gold": [
+        "ten nominations"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 285.7227325439453
+    },
+    {
+      "question": "What song was the sixth first place song for Beyonce?",
+      "pred": "Telephone",
+      "gold": [
+        "Telephone"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 279.32238578796387
+    },
+    {
+      "question": "Who else appeared with Beyonce in Telephone?",
+      "pred": "Lady Gaga",
+      "gold": [
+        "Lady Gaga"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.4255485534668
+    },
+    {
+      "question": "Who did they tie with for six top songs?",
+      "pred": "The Rolling Stones",
+      "gold": [
+        "Mariah Carey"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 250.27847290039062
+    },
+    {
+      "question": "Who did Beyonce tie with for the most nominations in a year?",
+      "pred": "Lauryn Hill",
+      "gold": [
+        "Lauryn Hill"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 277.74524688720703
+    },
+    {
+      "question": "How many nominations did Beyonc\u00e9 receive at the 52nd Grammy Awards ceremony?",
+      "pred": "52",
+      "gold": [
+        "ten"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 282.4740409851074
+    },
+    {
+      "question": "Who did Beyonc\u00e9 tie with for the most Grammy nominations for female artists?",
+      "pred": "Lauryn Hill",
+      "gold": [
+        "Lauryn Hill"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 285.3834629058838
+    },
+    {
+      "question": "Beyonc\u00e9 was a featured artist on which singer's hit, Telephone?",
+      "pred": "Lady Gaga",
+      "gold": [
+        "Lady Gaga"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 276.61848068237305
+    },
+    {
+      "question": "Who did Beyonc\u00e9 and Lady Gaga tie with for the most number one hits since 1992?",
+      "pred": "Mariah Carey",
+      "gold": [
+        "Mariah Carey"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 283.7667465209961
+    },
+    {
+      "question": "Beyonce would take a break from music in which year?",
+      "pred": "2010",
+      "gold": [
+        "2010"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 278.850793838501
+    },
+    {
+      "question": "Which year did Beyonce and her father part business ways?",
+      "pred": "2010",
+      "gold": [
+        "2010"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.24983406066895
+    },
+    {
+      "question": "Which famous landmark did Beyonce see in China?",
+      "pred": "Nanjing",
+      "gold": [
+        "the Great Wall of China"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 277.9397964477539
+    },
+    {
+      "question": "In what year did Beyonce have her hiatus?",
+      "pred": "2010",
+      "gold": [
+        "2010"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 281.29124641418457
+    },
+    {
+      "question": "Who inspired this hiatus?",
+      "pred": "Beyonc\u00e9",
+      "gold": [
+        "her mother"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 282.50646591186523
+    },
+    {
+      "question": "When did she stop using her father as a manager?",
+      "pred": "1966",
+      "gold": [
+        "During the break"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 265.58542251586914
+    },
+    {
+      "question": "How long did the hiatus last?",
+      "pred": "100 years",
+      "gold": [
+        "nine months"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 276.1118412017822
+    },
+    {
+      "question": "What did Beyonc\u00e9 announce in January 2010?",
+      "pred": "She announced a hiatus from her music career.",
+      "gold": [
+        "a hiatus"
+      ],
+      "exact_match": false,
+      "f1": 0.4,
+      "latency_ms": 288.0394458770752
+    },
+    {
+      "question": "Who suggested the hiatus for Beyonc\u00e9?",
+      "pred": "Mathew Knowles",
+      "gold": [
+        "her mother"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 277.70423889160156
+    },
+    {
+      "question": "Who did Beyonc\u00e9 part ways with during her hiatus?",
+      "pred": "Mathew Knowles",
+      "gold": [
+        "her father"
+      ],
+      "exact_match": false,
+      "f1": 0.0,
+      "latency_ms": 257.9474449157715
+    },
+    {
+      "question": "How long did her hiatus last?",
+      "pred": "Nine months",
+      "gold": [
+        "nine months"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 263.746976852417
+    },
+    {
+      "question": "In which year was reports about Beyonce performing for Muammar Gaddafi surface?",
+      "pred": "2011",
+      "gold": [
+        "2011"
+      ],
+      "exact_match": true,
+      "f1": 1.0,
+      "latency_ms": 280.8563709259033
+    }
+  ]
+}
