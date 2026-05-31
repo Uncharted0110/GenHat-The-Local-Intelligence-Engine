@@ -14,6 +14,7 @@ import type {
   IngestionStatus,
   KittenTtsVoice,
   MindMapGraph,
+  WebSearchResult,
 } from "../types";
 import { extractTaskText, parseMindMapGraph } from "./mindmapUtils";
 import { deriveTitleFromMessage } from "./sessionUtils";
@@ -50,6 +51,8 @@ export interface SendHandlerContext {
   sessions: ChatSession[];
   chatMode: ChatMode;
   ragEnabled: boolean;
+  webEnabled: boolean;
+  webDepth: "snippets" | "full";
   imagePath: string | null;
   directDocumentPaths: string[];
   ragDocs: IngestionStatus[];
@@ -710,6 +713,22 @@ export async function executeHandleSend(
       return;
     }
 
+    // ── Web search context injection ───────────────────────────────────────
+    let webSearchResult: WebSearchResult | null = null;
+    if (ctx.chatMode === "text" && ctx.webEnabled) {
+      try {
+        const fetchContent = ctx.webDepth === "full";
+        const maxResults = fetchContent ? 2 : 5;
+        const result = await Api.webSearch(text.slice(0, 150), maxResults, fetchContent);
+        if (result.results.length > 0) {
+          webSearchResult = result;
+          ctx.updateSession(sid, { webSearchResult: result });
+        }
+      } catch (e) {
+        console.warn("[web_search] Failed, continuing without web context:", e);
+      }
+    }
+
     ctx.setGeneralGenerating(true);
     ctx.setGeneralElapsedTime(0);
     ctx.setGeneralGenerationTime(null);
@@ -728,6 +747,14 @@ export async function executeHandleSend(
     const sessionMessages = session.messages;
     const fullSessionMessages: ChatMessage[] = [...sessionMessages, newMsg];
     let apiMessages = toContextMessages(fullSessionMessages);
+
+    // Prepend web search context as a system message so the model can cite it
+    if (webSearchResult && webSearchResult.formatted_context) {
+      apiMessages = [
+        { role: "system", content: webSearchResult.formatted_context },
+        ...apiMessages,
+      ];
+    }
 
     try {
       const compaction = await Api.compactChatContext({

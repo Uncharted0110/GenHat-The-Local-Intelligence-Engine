@@ -201,6 +201,10 @@ function App() {
   const [ragDocs, setRagDocs] = useState<IngestionStatus[]>([]);
   const [ragIngesting, setRagIngesting] = useState(false);
   const [enrichmentStatus, setEnrichmentStatus] = useState<string | null>(null);
+
+  // ── Web search state ───────────────────────────────────────────────────────
+  const [webEnabled, setWebEnabled] = useState(false);
+  const [webDepth, setWebDepth] = useState<"snippets" | "full">("snippets");
   const [mindmapsBySession, setMindmapsBySession] = useState<Record<string, MindMapGraph[]>>({});
   const [activeMindmapOverlay, setActiveMindmapOverlay] = useState<MindmapOverlayState | null>(null);
 
@@ -1923,6 +1927,8 @@ function App() {
         sessions,
         chatMode,
         ragEnabled,
+        webEnabled,
+        webDepth,
         imagePath,
         directDocumentPaths,
         ragDocs,
@@ -1963,6 +1969,8 @@ function App() {
       sessions,
       chatMode,
       ragEnabled,
+      webEnabled,
+      webDepth,
       imagePath,
       directDocumentPaths,
       ragDocs,
@@ -2012,6 +2020,14 @@ function App() {
     if (enabled) {
       setDirectDocumentPaths([]);
     }
+  }, []);
+
+  const handleWebToggle = useCallback((enabled: boolean) => {
+    setWebEnabled(enabled);
+  }, []);
+
+  const handleWebDepthChange = useCallback((depth: "snippets" | "full") => {
+    setWebDepth(depth);
   }, []);
 
   const getPlaceholder = (): string => {
@@ -2359,6 +2375,10 @@ function App() {
         modeOptions={MODE_CONFIG.map(({ mode, label }) => ({ mode, label }))}
         onSelectMode={handleModeSwitch}
         onToggleRagEnabled={handleRagToggle}
+        webEnabled={webEnabled}
+        onToggleWebEnabled={handleWebToggle}
+        webDepth={webDepth}
+        onWebDepthChange={handleWebDepthChange}
         activeSession={activeSession}
         onSend={(text) => {
           void handleSend(text);

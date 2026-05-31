@@ -610,3 +610,74 @@ pub fn read_file_text(path: String) -> Result<String, String> {
     }
     std::fs::read_to_string(p).map_err(|e| format!("Failed to read file as text: {e}"))
 }
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Watched-paths commands
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/// Register a directory as a watched path for the active workspace.
+/// The directory will be scanned for supported files on the next `trigger_scan` call.
+#[tauri::command]
+pub async fn add_watched_path(
+    path: String,
+    rag: State<'_, RagPipelineState>,
+    workspace: State<'_, crate::commands::workspace::WorkspaceState>,
+) -> Result<(), String> {
+    let pipeline = rag.active_pipeline()?;
+    let ws_id = workspace
+        .0
+        .active_workspace_id()
+        .ok_or("No active workspace")?;
+    let wm = crate::rag::watchman::WatchedPathsManager::new(pipeline.db.clone());
+    wm.add_path(&ws_id, &path)
+}
+
+/// Unregister a watched path from the active workspace.
+/// Already-ingested documents from this path are NOT removed from the KB.
+#[tauri::command]
+pub async fn remove_watched_path(
+    path: String,
+    rag: State<'_, RagPipelineState>,
+    workspace: State<'_, crate::commands::workspace::WorkspaceState>,
+) -> Result<(), String> {
+    let pipeline = rag.active_pipeline()?;
+    let ws_id = workspace
+        .0
+        .active_workspace_id()
+        .ok_or("No active workspace")?;
+    let wm = crate::rag::watchman::WatchedPathsManager::new(pipeline.db.clone());
+    wm.remove_path(&ws_id, &path)
+}
+
+/// List all watched paths registered for the active workspace.
+#[tauri::command]
+pub async fn list_watched_paths(
+    rag: State<'_, RagPipelineState>,
+    workspace: State<'_, crate::commands::workspace::WorkspaceState>,
+) -> Result<Vec<crate::rag::db::WatchedPathRecord>, String> {
+    let pipeline = rag.active_pipeline()?;
+    let ws_id = workspace
+        .0
+        .active_workspace_id()
+        .ok_or("No active workspace")?;
+    let wm = crate::rag::watchman::WatchedPathsManager::new(pipeline.db.clone());
+    wm.list_paths(&ws_id)
+}
+
+/// Trigger an incremental scan of all watched paths for the active workspace.
+/// Emits `rag:scan_progress` events during the scan.
+/// Returns a summary of the scan result.
+#[tauri::command]
+pub async fn trigger_scan(
+    rag: State<'_, RagPipelineState>,
+    workspace: State<'_, crate::commands::workspace::WorkspaceState>,
+    app_handle: tauri::AppHandle,
+) -> Result<crate::rag::watchman::ScanResult, String> {
+    let pipeline = rag.active_pipeline()?;
+    let ws_id = workspace
+        .0
+        .active_workspace_id()
+        .ok_or("No active workspace")?;
+    let wm = crate::rag::watchman::WatchedPathsManager::new(pipeline.db.clone());
+    Ok(wm.scan_diff(pipeline, &ws_id, app_handle).await)
+}

@@ -4,10 +4,23 @@ import {
   Trash2,
   Loader2,
   CheckCircle2,
+  FolderSearch,
+  RefreshCw,
+  X,
+  PlusCircle,
 } from "lucide-react";
-import type { ChatSession, IngestionStatus } from "../types";
+import { useState, useEffect } from "react";
+import { listen } from "@tauri-apps/api/event";
+import { open } from "@tauri-apps/plugin-dialog";
+import type { ChatSession, IngestionStatus, WatchedPath, ScanProgress } from "../types";
 import { VIEWABLE_EXTS } from "../app/constants";
 import { formatPageLabel } from "../app/mindmapUtils";
+import {
+  addWatchedPath,
+  removeWatchedPath,
+  listWatchedPaths,
+  triggerScan,
+} from "../api";
 
 interface KnowledgeBaseSidebarProps {
   docPanelOpen: boolean;
@@ -34,6 +47,70 @@ export default function KnowledgeBaseSidebar({
   onOpenDocViewer,
   onDeleteRagDoc,
 }: KnowledgeBaseSidebarProps) {
+  const [watchedPaths, setWatchedPaths] = useState<WatchedPath[]>([]);
+  const [scanProgress, setScanProgress] = useState<ScanProgress | null>(null);
+  const [scanning, setScanning] = useState(false);
+
+  // Load watched paths when the panel opens
+  useEffect(() => {
+    if (!docPanelOpen) return;
+    listWatchedPaths()
+      .then((paths) => setWatchedPaths(paths))
+      .catch(() => {
+        // Silently ignore if no active workspace yet
+      });
+  }, [docPanelOpen]);
+
+  // Subscribe to scan progress events
+  useEffect(() => {
+    const unlistenPromise = listen<ScanProgress>("rag:scan_progress", (event) => {
+      setScanProgress(event.payload);
+      if (event.payload.done) {
+        setScanning(false);
+        listWatchedPaths()
+          .then((paths) => setWatchedPaths(paths))
+          .catch(() => {});
+      }
+    });
+    return () => {
+      unlistenPromise.then((fn) => fn());
+    };
+  }, []);
+
+  const handleAddPath = async () => {
+    const selected = await open({ directory: true });
+    if (!selected) return;
+    const dir = Array.isArray(selected) ? selected[0] : selected;
+    if (!dir) return;
+    try {
+      await addWatchedPath(dir);
+      const paths = await listWatchedPaths();
+      setWatchedPaths(paths);
+    } catch (e) {
+      console.error("Failed to add watched path:", e);
+    }
+  };
+
+  const handleRemovePath = async (path: string) => {
+    try {
+      await removeWatchedPath(path);
+      setWatchedPaths((prev) => prev.filter((p) => p.path !== path));
+    } catch (e) {
+      console.error("Failed to remove watched path:", e);
+    }
+  };
+
+  const handleScan = async () => {
+    setScanning(true);
+    setScanProgress(null);
+    try {
+      await triggerScan();
+    } catch (e) {
+      console.error("Scan failed:", e);
+      setScanning(false);
+    }
+  };
+
   return (
     <div
       className={`overflow-hidden bg-void-800 flex flex-col shrink-0 ${docPanelOpen ? "w-[320px] min-w-[320px]" : "w-0 min-w-0"} border-l border-glass-border`}
@@ -157,6 +234,72 @@ export default function KnowledgeBaseSidebar({
             ))}
           </div>
         )}
+
+        {/* ── Watched Paths ─────────────────────────────────────── */}
+        <div className="border-t border-glass-border mt-auto shrink-0">
+          <div className="flex items-center justify-between px-3 pt-3 pb-1">
+            <div className="flex items-center gap-1.5 text-[0.82rem] font-semibold text-txt-secondary">
+              <FolderSearch size={14} />
+              Auto-scan Folders
+            </div>
+            <div className="flex items-center gap-1">
+              <button
+                className="glass-btn bg-transparent! border border-transparent! text-txt-muted! cursor-pointer p-1! rounded! flex items-center justify-center transition-all duration-200 hover:text-txt! hover:bg-void-700!"
+                onClick={handleScan}
+                disabled={scanning}
+                title="Re-scan watched folders"
+              >
+                <RefreshCw size={12} className={scanning ? "animate-spin" : ""} />
+              </button>
+              <button
+                className="glass-btn bg-transparent! border border-transparent! text-[#66e5ff]! cursor-pointer p-1! rounded! flex items-center justify-center transition-all duration-200 hover:text-[#99eeff]! hover:bg-void-700!"
+                onClick={handleAddPath}
+                title="Add folder to watch"
+              >
+                <PlusCircle size={13} />
+              </button>
+            </div>
+          </div>
+
+          {watchedPaths.length === 0 ? (
+            <p className="text-[0.74rem] text-txt-muted px-3 pb-2 italic">
+              No folders watched. Add a folder to auto-ingest files.
+            </p>
+          ) : (
+            <ul className="px-3 pb-1 space-y-0.5 max-h-[120px] overflow-y-auto">
+              {watchedPaths.map((wp) => (
+                <li key={wp.id} className="flex items-center justify-between gap-1 text-[0.75rem] text-txt-secondary group">
+                  <span className="truncate flex-1" title={wp.path}>
+                    {wp.path.split(/[\\/]/).pop() || wp.path}
+                  </span>
+                  <button
+                    className="opacity-0 group-hover:opacity-100 transition-opacity text-txt-muted hover:text-red-400 p-0.5 rounded"
+                    onClick={() => handleRemovePath(wp.path)}
+                    title={`Remove ${wp.path}`}
+                  >
+                    <X size={11} />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {scanProgress && (
+            <div className="px-3 pb-2">
+              <p className={`text-[0.72rem] truncate ${scanProgress.done ? "text-[#66e5ff]" : "text-txt-muted"}`}>
+                {scanProgress.status}
+              </p>
+              {!scanProgress.done && scanProgress.found > 0 && (
+                <div className="w-full bg-void-900 rounded-full h-1 mt-1">
+                  <div
+                    className="bg-[#66e5ff] h-1 rounded-full transition-all duration-300"
+                    style={{ width: `${Math.round(((scanProgress.ingested + scanProgress.skipped + scanProgress.errors) / scanProgress.found) * 100)}%` }}
+                  />
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

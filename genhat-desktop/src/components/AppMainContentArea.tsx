@@ -23,6 +23,10 @@ interface AppMainContentAreaProps {
   modeOptions: ModeOption[];
   onSelectMode: (mode: ChatMode) => void;
   onToggleRagEnabled: (enabled: boolean) => void;
+  webEnabled?: boolean;
+  onToggleWebEnabled?: (enabled: boolean) => void;
+  webDepth?: "snippets" | "full";
+  onWebDepthChange?: (depth: "snippets" | "full") => void;
   activeSession: ChatSession | null;
   activeWorkspace: { id: string } | null;
   onSend: (text: string) => void;
@@ -76,6 +80,10 @@ export default function AppMainContentArea({
   modeOptions,
   onSelectMode,
   onToggleRagEnabled,
+  webEnabled,
+  onToggleWebEnabled,
+  webDepth,
+  onWebDepthChange,
   activeSession,
   activeWorkspace,
   onSend,
@@ -157,6 +165,11 @@ export default function AppMainContentArea({
           chatMode={chatMode}
           ragEnabled={ragEnabled}
           onToggleRagEnabled={onToggleRagEnabled}
+          webEnabled={webEnabled}
+          onToggleWebEnabled={onToggleWebEnabled}
+          webDepth={webDepth}
+          onWebDepthChange={onWebDepthChange}
+          webSearchResult={activeSession?.webSearchResult ?? null}
           showRagControls={chatMode === "text" || chatMode === "mindmap"}
           docPanelOpen={docPanelOpen}
           modeOptions={modeOptions}

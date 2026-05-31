@@ -41,6 +41,15 @@ pub struct ChunkRecord {
     pub confidence: Option<f64>,
 }
 
+/// A watched directory path registered for auto-scanning.
+#[derive(Debug, Clone, serde::Serialize)]
+pub struct WatchedPathRecord {
+    pub id: i64,
+    pub workspace_id: String,
+    pub path: String,
+    pub added_at: String,
+}
+
 /// A stored media asset (image or table extracted from a document).
 #[derive(Debug, Clone, serde::Serialize)]
 pub struct MediaAssetRecord {
@@ -179,6 +188,8 @@ impl RagDb {
         db.create_tables()?;
         db.create_raptor_tables()?;
         db.create_media_tables()?;
+        db.create_watched_paths_tables()?;
+        db.migrate_documents_table()?;
         Ok(db)
     }
 
@@ -213,6 +224,65 @@ impl RagDb {
             ",
         )
         .map_err(|e| format!("Failed to create tables: {e}"))
+    }
+
+    fn create_watched_paths_tables(&self) -> Result<(), String> {
+        let conn = self.conn()?;
+        conn.execute_batch(
+            "
+            CREATE TABLE IF NOT EXISTS watched_paths (
+                id           INTEGER PRIMARY KEY AUTOINCREMENT,
+                workspace_id TEXT NOT NULL,
+                path         TEXT NOT NULL,
+                added_at     TEXT NOT NULL DEFAULT (datetime('now')),
+                UNIQUE(workspace_id, path)
+            );
+            CREATE INDEX IF NOT EXISTS idx_watched_workspace ON watched_paths(workspace_id);
+            ",
+        )
+        .map_err(|e| format!("Failed to create watched_paths table: {e}"))
+    }
+
+    /// Add `file_hash` and `file_mtime` columns to documents if not present.
+    /// Safe to run on every startup (ignores already-existing-column errors).
+    fn migrate_documents_table(&self) -> Result<(), String> {
+        let conn = self.conn()?;
+
+        // Check for file_hash column
+        let has_hash: bool = conn
+            .query_row(
+                "SELECT COUNT(*) FROM pragma_table_info('documents') WHERE name = 'file_hash'",
+                [],
+                |row| row.get::<_, i64>(0),
+            )
+            .unwrap_or(0)
+            > 0;
+
+        if !has_hash {
+            conn.execute_batch(
+                "ALTER TABLE documents ADD COLUMN file_hash TEXT DEFAULT NULL;",
+            )
+            .map_err(|e| format!("Migration (file_hash): {e}"))?;
+        }
+
+        // Check for file_mtime column
+        let has_mtime: bool = conn
+            .query_row(
+                "SELECT COUNT(*) FROM pragma_table_info('documents') WHERE name = 'file_mtime'",
+                [],
+                |row| row.get::<_, i64>(0),
+            )
+            .unwrap_or(0)
+            > 0;
+
+        if !has_mtime {
+            conn.execute_batch(
+                "ALTER TABLE documents ADD COLUMN file_mtime INTEGER DEFAULT NULL;",
+            )
+            .map_err(|e| format!("Migration (file_mtime): {e}"))?;
+        }
+
+        Ok(())
     }
 
     fn create_media_tables(&self) -> Result<(), String> {
@@ -294,6 +364,112 @@ impl RagDb {
         conn.execute("DELETE FROM documents WHERE id = ?1", params![doc_id])
             .map_err(|e| format!("Delete doc error: {e}"))?;
         Ok(())
+    }
+
+    /// Get the stored hash and mtime for an already-ingested document path.
+    /// Returns None if the document is not in the DB or has no hash recorded.
+    pub fn get_document_hash_by_path(
+        &self,
+        path: &str,
+    ) -> Result<Option<(i64, String, i64)>, String> {
+        let conn = self.conn()?;
+        let result = conn.query_row(
+            "SELECT id, COALESCE(file_hash, ''), COALESCE(file_mtime, 0)
+             FROM documents WHERE path = ?1",
+            params![path],
+            |row| Ok((row.get::<_, i64>(0)?, row.get::<_, String>(1)?, row.get::<_, i64>(2)?)),
+        );
+        match result {
+            Ok((id, hash, mtime)) => Ok(Some((id, hash, mtime))),
+            Err(rusqlite::Error::QueryReturnedNoRows) => Ok(None),
+            Err(e) => Err(format!("Query error: {e}")),
+        }
+    }
+
+    /// Update the hash and mtime for a document that is already in the DB.
+    pub fn update_document_hash(
+        &self,
+        doc_id: i64,
+        file_hash: &str,
+        file_mtime: i64,
+    ) -> Result<(), String> {
+        let conn = self.conn()?;
+        conn.execute(
+            "UPDATE documents SET file_hash = ?1, file_mtime = ?2 WHERE id = ?3",
+            params![file_hash, file_mtime, doc_id],
+        )
+        .map_err(|e| format!("Update doc hash error: {e}"))
+        .map(|_| ())
+    }
+
+    /// Set hash and mtime when inserting a new document (called right after insert_document).
+    pub fn set_new_document_hash(
+        &self,
+        path: &str,
+        file_hash: &str,
+        file_mtime: i64,
+    ) -> Result<(), String> {
+        let conn = self.conn()?;
+        conn.execute(
+            "UPDATE documents SET file_hash = ?1, file_mtime = ?2 WHERE path = ?3",
+            params![file_hash, file_mtime, path],
+        )
+        .map_err(|e| format!("Set doc hash error: {e}"))
+        .map(|_| ())
+    }
+
+    // ── Watched Paths CRUD ──
+
+    /// Register a path for a workspace. Silently succeeds if already present.
+    pub fn insert_watched_path(
+        &self,
+        workspace_id: &str,
+        path: &str,
+    ) -> Result<(), String> {
+        let conn = self.conn()?;
+        conn.execute(
+            "INSERT OR IGNORE INTO watched_paths (workspace_id, path) VALUES (?1, ?2)",
+            params![workspace_id, path],
+        )
+        .map_err(|e| format!("Insert watched path error: {e}"))
+        .map(|_| ())
+    }
+
+    /// Remove a watched path for a workspace.
+    pub fn delete_watched_path(
+        &self,
+        workspace_id: &str,
+        path: &str,
+    ) -> Result<(), String> {
+        let conn = self.conn()?;
+        conn.execute(
+            "DELETE FROM watched_paths WHERE workspace_id = ?1 AND path = ?2",
+            params![workspace_id, path],
+        )
+        .map_err(|e| format!("Delete watched path error: {e}"))
+        .map(|_| ())
+    }
+
+    /// List all watched paths for a workspace.
+    pub fn list_watched_paths(&self, workspace_id: &str) -> Result<Vec<WatchedPathRecord>, String> {
+        let conn = self.conn()?;
+        let mut stmt = conn
+            .prepare(
+                "SELECT id, workspace_id, path, added_at
+                 FROM watched_paths WHERE workspace_id = ?1 ORDER BY added_at ASC",
+            )
+            .map_err(|e| format!("Query error: {e}"))?;
+        let records = stmt
+            .query_map(params![workspace_id], |row| {
+                Ok(WatchedPathRecord {
+                    id: row.get(0)?,
+                    workspace_id: row.get(1)?,
+                    path: row.get(2)?,
+                    added_at: row.get(3)?,
+                })
+            })
+            .map_err(|e| format!("Query error: {e}"))?;
+        Ok(records.filter_map(|r| r.ok()).collect())
     }
 
     /// Check if a document (by path) is already ingested.

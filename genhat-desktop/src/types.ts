@@ -143,6 +143,18 @@ export interface RagResult {
   sources: SourceChunk[];
 }
 
+export interface SearchHit {
+  title: string;
+  snippet: string;
+  url: string;
+}
+
+export interface WebSearchResult {
+  query: string;
+  results: SearchHit[];
+  formatted_context: string;
+}
+
 export interface RagStreamSetup {
   sources: SourceChunk[];
   prompt: string;
@@ -200,6 +212,31 @@ export interface MindMapGraph {
   createdAt: number;
 }
 
+// ── Watched Paths / Auto-discovery ───────────────────────────────────────────
+
+export interface WatchedPath {
+  id: number;
+  workspace_id: string;
+  path: string;
+  added_at: string;
+}
+
+export interface ScanProgress {
+  status: string;
+  found: number;
+  ingested: number;
+  skipped: number;
+  errors: number;
+  done: boolean;
+}
+
+export interface ScanResult {
+  ingested: number;
+  skipped: number;
+  errors: number;
+  total_files: number;
+}
+
 export type ChatMode = "text" | "vision" | "audio" | "rag" | "podcast" | "mindmap" | "playground";
 
 // ── Multi-Chat Session ────────────────────────────────────────────────────────
@@ -224,6 +261,8 @@ export interface ChatSession {
   cancelled: boolean;
   /** Latest RAG result (sources + answer) for this session. */
   ragResult: RagResult | null;
+  /** Latest web search result for this session. */
+  webSearchResult: WebSearchResult | null;
   /** Media assets keyed by message index. */
   mediaAssets: Record<number, MediaAsset[]>;
   /** Unix timestamp when this session was created (ms). */

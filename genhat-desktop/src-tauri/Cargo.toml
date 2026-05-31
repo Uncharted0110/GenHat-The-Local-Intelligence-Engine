@@ -55,6 +55,10 @@ zip = "2"
 xml-rs = "0.8"
 tempfile = "3"
 sha2 = "0.10"
+hex = "0.4"
+csv = "1"
+calamine = "0.26"
+walkdir = "2"
 
 # ── ONNX Runtime (in-process DistilBERT classifier + KittenTTS + Parakeet ASR) ──
 ort = { version = "2.0.0-rc.11", features = ["download-binaries"] }
@@ -71,6 +75,8 @@ cpal = "0.15"
 # ── KittenTTS text preprocessing ──
 regex = "1"
 fancy-regex = "0.14"
+scraper = "0.22"
+urlencoding = "2"
 
 # ── Playground pipeline engine ──
 imap = "2"
@@ -84,7 +90,3 @@ libc = "0.2"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 ort = { version = "2.0.0-rc.11", features = ["download-binaries", "coreml"] }
-
-[[bin]]
-name = "rag-bench"
-path = "src/bin/rag_bench.rs"

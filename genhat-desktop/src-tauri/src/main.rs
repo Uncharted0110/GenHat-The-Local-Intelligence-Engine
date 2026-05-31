@@ -182,6 +182,20 @@ fn main() {
             // Start background enrichment worker (with app handle for event emission)
             RagPipeline::start_enrichment_worker(rag_pipeline.clone(), app.handle().clone());
 
+            // Start background scan for watched paths on launch
+            {
+                let db_for_scan = rag_pipeline.db.clone();
+                let pipeline_for_scan = rag_pipeline.clone();
+                let ws_id_for_scan = workspace_manager
+                    .active_workspace_id()
+                    .unwrap_or_else(|| "default".to_string());
+                let handle_for_scan = app.handle().clone();
+                tauri::async_runtime::spawn(async move {
+                    let wm = app_lib::rag::watchman::WatchedPathsManager::new(db_for_scan);
+                    wm.scan_diff(pipeline_for_scan, &ws_id_for_scan, handle_for_scan).await;
+                });
+            }
+
             // 9. Register state for Tauri commands
             app.manage(ProcessManagerState(process_manager));
             app.manage(TaskRouterState(router.clone()));
@@ -292,6 +306,11 @@ fn main() {
             // File viewer commands
             app_lib::commands::rag::read_file_base64,
             app_lib::commands::rag::read_file_text,
+            // Watched-paths / auto-discovery commands
+            app_lib::commands::rag::add_watched_path,
+            app_lib::commands::rag::remove_watched_path,
+            app_lib::commands::rag::list_watched_paths,
+            app_lib::commands::rag::trigger_scan,
             // Podcast commands
             app_lib::commands::podcast::generate_podcast,
             // System commands
@@ -309,6 +328,8 @@ fn main() {
             app_lib::commands::playground::playground_run_pipeline,
             app_lib::commands::playground::playground_cancel_run,
             app_lib::commands::playground::playground_store_credential,
+            // Web search commands
+            app_lib::commands::web_search::web_search,
         ])
         .build(tauri::generate_context!())
         .expect("error building tauri app")

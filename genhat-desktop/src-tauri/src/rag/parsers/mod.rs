@@ -5,6 +5,7 @@ pub mod docx;
 pub mod pptx;
 pub mod text;
 pub mod audio;
+pub mod tabular;
 
 use std::path::{Path, PathBuf};
 
@@ -155,7 +156,9 @@ pub fn parse_document_with_media(
         "pdf" => pdf::parse(path, media_dir),
         "docx" => docx::parse(path, media_dir),
         "pptx" => pptx::parse(path, media_dir),
-        "txt" | "md" | "csv" | "json" | "toml" | "yaml" | "yml" | "rs" | "py" | "js" | "ts"
+        "csv" => tabular::parse_csv(path),
+        "xlsx" | "xls" | "ods" => tabular::parse_xlsx(path),
+        "txt" | "md" | "json" | "toml" | "yaml" | "yml" | "rs" | "py" | "js" | "ts"
         | "c" | "cpp" | "h" | "java" | "go" | "rb" | "sh" | "bat" | "html" | "css" | "xml"
         | "log" => text::parse(path),
         "mp3" | "wav" | "m4a" | "ogg" | "flac" | "aac" | "wma" | "webm" => {

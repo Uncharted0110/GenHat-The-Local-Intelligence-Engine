@@ -78,6 +78,10 @@ interface AppMainContentProps {
   modeOptions: ModeOption[];
   onSelectMode: (mode: ChatMode) => void;
   onToggleRagEnabled: (enabled: boolean) => void;
+  webEnabled?: boolean;
+  onToggleWebEnabled?: (enabled: boolean) => void;
+  webDepth?: "snippets" | "full";
+  onWebDepthChange?: (depth: "snippets" | "full") => void;
   activeSession: ChatSession | null;
   onSend: (text: string) => void;
   onCancel: () => void;
@@ -168,6 +172,10 @@ export default function AppMainContent({
   modeOptions,
   onSelectMode,
   onToggleRagEnabled,
+  webEnabled,
+  onToggleWebEnabled,
+  webDepth,
+  onWebDepthChange,
   activeSession,
   onSend,
   onCancel,
@@ -262,6 +270,10 @@ export default function AppMainContent({
         modeOptions={modeOptions}
         onSelectMode={onSelectMode}
         onToggleRagEnabled={onToggleRagEnabled}
+        webEnabled={webEnabled}
+        onToggleWebEnabled={onToggleWebEnabled}
+        webDepth={webDepth}
+        onWebDepthChange={onWebDepthChange}
         activeSession={activeSession}
         activeWorkspace={activeWorkspace}
         onSend={onSend}

@@ -17,6 +17,7 @@ import type {
   RagModelPreferences,
   ChatContextCompactionRequest,
   ChatContextCompactionResult,
+  WebSearchResult,
 } from "./types";
 
 export interface HFModel {
@@ -437,6 +438,24 @@ export const Api = {
   /** Query the RAG pipeline (non-streaming). */
   async queryRag(query: string, topK?: number): Promise<RagResult> {
     return invoke<RagResult>("query_rag", { query, topK });
+  },
+
+  /**
+   * Search the web via DuckDuckGo (no API key required).
+   * @param query - Search query (trimmed to 150 chars by backend).
+   * @param maxResults - Number of results to return (1–10).
+   * @param fetchContent - If true, fetches full-page markdown via Jina AI Reader.
+   */
+  async webSearch(
+    query: string,
+    maxResults: number,
+    fetchContent: boolean
+  ): Promise<WebSearchResult> {
+    return invoke<WebSearchResult>("web_search", {
+      query,
+      maxResults,
+      fetchContent,
+    });
   },
 
   /**
@@ -976,6 +995,24 @@ export async function cancelPipelineRun(runId: string): Promise<void> {
 
 export async function storeCredential(key: string, value: string): Promise<void> {
   return invoke<void>("playground_store_credential", { key, value });
+}
+
+// ── Watched Paths / Auto-discovery ───────────────────────────────────────────
+
+export async function addWatchedPath(path: string): Promise<void> {
+  return invoke<void>("add_watched_path", { path });
+}
+
+export async function removeWatchedPath(path: string): Promise<void> {
+  return invoke<void>("remove_watched_path", { path });
+}
+
+export async function listWatchedPaths(): Promise<import("./types").WatchedPath[]> {
+  return invoke<import("./types").WatchedPath[]>("list_watched_paths");
+}
+
+export async function triggerScan(): Promise<import("./types").ScanResult> {
+  return invoke<import("./types").ScanResult>("trigger_scan");
 }
 
 function convertFileSrc(filePath: string): string {

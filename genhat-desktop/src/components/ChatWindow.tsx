@@ -100,6 +100,11 @@ interface ChatWindowProps {
   enrichmentStatus?: string | null;
   ragEnabled?: boolean;
   onToggleRagEnabled?: (enabled: boolean) => void;
+  webEnabled?: boolean;
+  onToggleWebEnabled?: (enabled: boolean) => void;
+  webDepth?: "snippets" | "full";
+  onWebDepthChange?: (depth: "snippets" | "full") => void;
+  webSearchResult?: import("../types").WebSearchResult | null;
   onIngestFile?: () => void;
   onIngestDir?: () => void;
   onAttachDirectDocuments?: () => void;
@@ -231,6 +236,45 @@ const VisionMessageImage: React.FC<{
   );
 };
 
+/** Collapsible panel showing web search sources used for the last response. */
+const WebSourcesPanel: React.FC<{
+  webSearchResult: import("../types").WebSearchResult;
+}> = ({ webSearchResult }) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="px-6 py-2 border-t border-glass-border bg-void-900/60">
+      <button
+        className="inline-flex items-center gap-1.5 text-[0.72rem] text-txt-secondary hover:text-neon transition-colors"
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span>{open ? "▾" : "▸"}</span>
+        <span>Web sources ({webSearchResult.results.length})</span>
+      </button>
+      {open && (
+        <ul className="mt-1.5 space-y-1.5 max-h-48 overflow-y-auto">
+          {webSearchResult.results.map((hit, i) => (
+            <li key={i} className="text-[0.7rem] leading-snug">
+              <a
+                href={hit.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-neon hover:underline font-medium block truncate"
+                title={hit.url}
+              >
+                {hit.title || hit.url}
+              </a>
+              {hit.snippet && (
+                <p className="text-txt-muted mt-0.5 line-clamp-2">{hit.snippet}</p>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
 const ChatWindow: React.FC<ChatWindowProps> = memo(({
   messages,
   streamingContent,
@@ -251,6 +295,11 @@ const ChatWindow: React.FC<ChatWindowProps> = memo(({
   enrichmentStatus = null,
   ragEnabled = false,
   onToggleRagEnabled,
+  webEnabled = false,
+  onToggleWebEnabled,
+  webDepth = "snippets",
+  onWebDepthChange,
+  webSearchResult = null,
   onIngestFile,
   onIngestDir,
   onAttachDirectDocuments,
@@ -444,6 +493,61 @@ const ChatWindow: React.FC<ChatWindowProps> = memo(({
     );
   };
 
+  const renderWebToggle = () => {
+    if (chatMode !== "text" || !onToggleWebEnabled) return null;
+
+    return (
+      <div className="flex items-center justify-center gap-2 mb-2">
+        <button
+          className={`inline-flex items-center gap-2 py-1 px-2 rounded-full border text-[0.72rem] transition-all duration-200 ${
+            webEnabled
+              ? "bg-neon-subtle text-neon border-neon/40"
+              : "bg-glass-bg text-txt-secondary border-glass-border hover:border-neon/30 hover:text-neon"
+          }`}
+          onClick={() => onToggleWebEnabled(!webEnabled)}
+          title="Toggle web search"
+        >
+          <span className="font-semibold">Web {webEnabled ? "On" : "Off"}</span>
+          <span
+            className={`relative inline-flex h-4 w-8 rounded-full transition-colors ${
+              webEnabled ? "bg-neon" : "bg-void-700"
+            }`}
+          >
+            <span
+              className={`absolute top-0.5 h-3 w-3 rounded-full bg-white transition-transform ${
+                webEnabled ? "translate-x-4" : "translate-x-0.5"
+              }`}
+            />
+          </span>
+        </button>
+        {webEnabled && (
+          <div className="inline-flex rounded-full border border-glass-border overflow-hidden text-[0.68rem]">
+            <button
+              className={`px-2 py-0.5 transition-colors ${
+                webDepth === "snippets"
+                  ? "bg-neon-subtle text-neon"
+                  : "bg-glass-bg text-txt-muted hover:text-txt"
+              }`}
+              onClick={() => onWebDepthChange?.("snippets")}
+            >
+              Snippets
+            </button>
+            <button
+              className={`px-2 py-0.5 transition-colors ${
+                webDepth === "full"
+                  ? "bg-neon-subtle text-neon"
+                  : "bg-glass-bg text-txt-muted hover:text-txt"
+              }`}
+              onClick={() => onWebDepthChange?.("full")}
+            >
+              Full
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const renderVisionAttachment = () => {
     if (chatMode !== "vision" || !visionImagePreview) return null;
 
@@ -549,9 +653,10 @@ const ChatWindow: React.FC<ChatWindowProps> = memo(({
         {/* Centered Input */}
         <div className="relative z-10 w-full max-w-2xl">
           {renderRagToggle()}
+          {renderWebToggle()}
 
           {/* RAG doc indicators */}
-          {showRagControls && ragDocs.length > 0 && (
+          {showRagControls && (
             <div className="flex items-center gap-2 mb-2 justify-center">
               <button
                 className={`glass-btn inline-flex items-center gap-1.5 py-1 px-3 text-[0.78rem] font-medium rounded-full cursor-pointer transition-all duration-200 border backdrop-blur-md ${docPanelOpen ? "bg-neon-subtle text-neon border-neon/30 shadow-[0_0_12px_rgba(0,212,255,0.12)]" : "bg-glass-bg text-txt-secondary border-glass-border hover:border-neon hover:text-neon hover:shadow-[0_0_12px_rgba(0,212,255,0.08)]"}`}
@@ -562,7 +667,7 @@ const ChatWindow: React.FC<ChatWindowProps> = memo(({
                   <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
                   <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
                 </svg>
-                {ragDocs.length} file{ragDocs.length !== 1 ? "s" : ""} loaded
+                {ragDocs.length > 0 ? `${ragDocs.length} file${ragDocs.length !== 1 ? "s" : ""} loaded` : "Knowledge Base"}
               </button>
               {ragIngesting && (
                 <span className="inline-flex items-center gap-1 text-[0.72rem] text-warning">
@@ -885,12 +990,18 @@ const ChatWindow: React.FC<ChatWindowProps> = memo(({
         <div ref={endRef} />
       </div>
 
+      {/* ── Web Sources Panel ── */}
+      {webSearchResult && webSearchResult.results.length > 0 && (
+        <WebSourcesPanel webSearchResult={webSearchResult} />
+      )}
+
       {/* ── Input Area ── */}
       <div className="px-6 py-3 shrink-0 border-t border-glass-border bg-void-900">
         {renderRagToggle()}
+        {renderWebToggle()}
 
         {/* RAG doc indicators */}
-        {showRagControls && ragDocs.length > 0 && (
+        {showRagControls && (
           <div className="flex items-center gap-2 mb-2 max-w-3xl mx-auto">
             <button
               className={`glass-btn inline-flex items-center gap-1.5 py-1 px-3 text-[0.78rem] font-medium rounded-full cursor-pointer transition-all duration-200 border backdrop-blur-md ${docPanelOpen ? "bg-neon-subtle text-neon border-neon/30 shadow-[0_0_12px_rgba(0,212,255,0.12)]" : "bg-glass-bg text-txt-secondary border-glass-border hover:border-neon hover:text-neon hover:shadow-[0_0_12px_rgba(0,212,255,0.08)]"}`}
@@ -901,7 +1012,7 @@ const ChatWindow: React.FC<ChatWindowProps> = memo(({
                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
                 <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
               </svg>
-              {ragDocs.length} file{ragDocs.length !== 1 ? "s" : ""} loaded
+              {ragDocs.length > 0 ? `${ragDocs.length} file${ragDocs.length !== 1 ? "s" : ""} loaded` : "Knowledge Base"}
             </button>
             {ragIngesting && (
               <span className="inline-flex items-center gap-1 text-[0.72rem] text-warning">
